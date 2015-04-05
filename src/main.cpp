@@ -52,6 +52,7 @@ int main(void)
 	std::vector<Item> itemAtlas;
 	std::vector<Weapon> weaponAtlas;
 	std::vector<Armour> armourAtlas;
+	std::vector<Door> doorAtlas;
 	std::vector<Area> areaAtlas;
 
 	Creature player;
@@ -62,6 +63,9 @@ int main(void)
 	buildatlas_weapon(weaponAtlas);
 	buildatlas_armour(armourAtlas);
 	buildatlas_area(areaAtlas, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+	buildatlas_door(doorAtlas, areaAtlas, itemAtlas);
+	// Add the doors to the areas
+	attachDoors(doorAtlas, areaAtlas);
 
 	// Seed the random number generator with the system time, so the
 	// random numbers produced by rand() will be different each time
@@ -80,7 +84,7 @@ int main(void)
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
-	Area* currentArea = &(areaAtlas[0]);
+	player.currentArea = &(areaAtlas[0]);
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
@@ -97,66 +101,61 @@ int main(void)
 		// then begin a battle with the last creature in the list
 		// before moving on the next one. This makes the creature
 		// list act like a stack
-		if(currentArea->creatures.size() > 0)
+		if(player.currentArea->creatures.size() > 0)
 		{
-		    for(int i = currentArea->creatures.size() - 1; i >= 0; --i)
+		    for(int i = player.currentArea->creatures.size() - 1; i >= 0; --i)
 		    {
-			    Battle(&player, currentArea->creatures[i]).run();
+			    Battle(&player, player.currentArea->creatures[i]).run();
 			    // Remove the creature from the area. This is fine to do
 			    // because if the player wins the creature will not respawn,
 			    // and if the creature wins the player isn't around to see it
 			    // (This does break the 'non-mutable' feature of the atlases,
 			    // but doing so saves a lot of memory, as we don't need to keep
 			    // two versions of each area)
-			    currentArea->creatures.pop_back();
+			    player.currentArea->creatures.pop_back();
 		    }
         }
 
+        // Add the search and movement options to the dialogue
+        Dialogue roomOptions = player.currentArea->dialogue;
+        for(auto door : player.currentArea->doors)
+        {
+        	roomOptions.addChoice("Go through the " + door->description);
+	    }
+        roomOptions.addChoice("Search");
 		// Activate the current area's dialogue
-		result = currentArea->dialogue.activate();
+		result = roomOptions.activate();
 
-		// These could be moved inside of the area code using an event
-		// style system, but that allows for much less flexibility with
-		// what happens in each area. Since we're defining the areas in
-		// code anyway, sticking with this isn't too much of a problem,
-		// and it keeps things easy to understand
 		if(result == 0)
 		{
-			// Open the menu
 			dialogue_menu(player);
-			continue;
 		}
-		if(currentArea == &(areaAtlas[0]))
+		else if(result <= player.currentArea->dialogue.size())
 		{
-			switch(result)
+			// Add more events here
+		}
+		else if(result < roomOptions.size())
+		{
+			Door* door = player.currentArea->doors.at(result-player.currentArea->dialogue.size()-1);
+			int flag = player.traverse(door);
+
+			switch(flag)
 			{
+				default:
+				case 0:
+					std::cout << "The " << door->description << " is locked." << std::endl;
+					break;
 				case 1:
-				// Move to area 1
-					currentArea = &(areaAtlas[1]);
+					std::cout << "You unlock the " << door->description << " and go through it." << std::endl;
 					break;
 				case 2:
-				// Search the area
-					currentArea->search(player);
-					break;
-				default:
+					std::cout << "You go through the " << door->description << "." << std::endl;
 					break;
 			}
 		}
-		else if(currentArea == &(areaAtlas[1]))
+		else
 		{
-			switch(result)
-			{
-				// Move to area 0
-				case 1:
-					currentArea = &(areaAtlas[0]);
-					break;
-				// Search the area
-				case 2:
-					currentArea->search(player);
-					break;
-				default:
-					break;
-			}
+			player.currentArea->search(player);
 		}
 	}
 

@@ -82,6 +82,18 @@ class Dialogue
 	Dialogue()
 	{
 	}
+
+	void addChoice(std::string choice)
+	{
+		this->choices.push_back(choice);
+
+		return;
+	}
+
+	unsigned int size()
+	{
+		return this->choices.size();
+	}
 };
 
 #endif /* DIALOGUE_HPP */

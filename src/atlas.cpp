@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "atlas.hpp"
 
+#include <utility>
+
 void buildatlas_creature(std::vector<Creature>& atlas)
 {
 	// Fill the atlas
@@ -65,11 +67,11 @@ void buildatlas_area(std::vector<Area>& atlas,
 	// Area definitions are somewhat more complicated:
 	atlas.push_back(Area(Dialogue(			// Standard dialogue definiton
 		"You are in room 1",				// Description
-		{"Go to room 2", "Search"}),		// Choices
+		{}),		// Choices
 		Inventory(							// Area inventory
 		{
-			std::make_pair(&items[0], 5)	// Pair of item and quantity
-
+			std::make_pair(&items[0], 5),	// Pair of item and quantity
+			std::make_pair(&items[1], 1)
 		},
 		{
 			std::make_pair(&weapons[0], 1)	// Pair of weapon and quantity
@@ -82,20 +84,42 @@ void buildatlas_area(std::vector<Area>& atlas,
 
 	atlas.push_back(Area(Dialogue(
 		"You are in room 2",
-		{"Go to room 1", "Search"}),
+		{}),
 		Inventory(
 		{
 			std::make_pair(&items[0], 10),
-			std::make_pair(&items[1], 1)
 		},
 		{
 		},
 		{
 		}),
 		{
-			&creatures[0],
 			&creatures[0]
 		}));
+
+	return;
+}
+
+void buildatlas_door(std::vector<Door>& doors, std::vector<Area>& areas,
+	std::vector<Item>& items)
+{
+	doors.push_back(Door(
+		"sturdy wooden door",
+		std::make_pair(&areas[0], &areas[1]),
+		1,
+		&items[1]
+		));
+
+	return;
+}
+
+void attachDoors(std::vector<Door>& doors, std::vector<Area>& areas)
+{
+	for(int i = 0; i < doors.size(); ++i)
+	{
+		doors[i].areas.first->doors.push_back(&doors[i]);
+		doors[i].areas.second->doors.push_back(&doors[i]);
+	}
 
 	return;
 }

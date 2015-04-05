@@ -30,6 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <vector>
 
+class Door;
+
 // Movement is achieved through the use of areas, which are contained
 // units of space consisting of an inventory, a list of creatures and
 // a dialogue
@@ -43,6 +45,10 @@ class Area
 	// Items contained within the area. Not split into individual containers
 	// for simplicity
 	Inventory items;
+
+	// Links between rooms. Every door should have this as one of its area
+	// pointers
+	std::vector<Door*> doors;
 
 	// Creatures contained within the area. Currently this is limited
 	// to just one creature due to how the battle system works, but it

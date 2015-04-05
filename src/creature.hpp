@@ -27,8 +27,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "inventory.hpp"
 #include "weapon.hpp"
 #include "armour.hpp"
+#include "door.hpp"
 
 #include <string>
+
+class Area;
 
 class Creature
 {
@@ -67,6 +70,10 @@ class Creature
 
 	// Armour currently equipped into each slot
 	Armour* equippedArmour[Armour::Slot::N];
+
+	// Area the creature resides in. Used for player motion but also could
+	// be used for enemy AI
+	Area* currentArea;
 
 	Creature(std::string name, int health, int str, int end, int dex, double hitRate,
 		unsigned int level = 1, std::string className = "")
@@ -194,6 +201,45 @@ class Creature
 			return true;
 		}
 		return false;
+	}
+
+	// Go through a door
+	// 0 = Door is locked
+	// 1 = Door unlocked using key
+	// 2 = Door is open
+	int traverse(Door* door)
+	{
+		int flag = 2;
+		// Open the door if it is shut
+		if(door->locked == 0)
+		{
+			door->locked = -1;
+			flag = 2;
+		}
+		else if(door->locked > 0)
+		{
+			// Unlock and open the door if the creature has the key
+			if(this->inventory.has_item(door->key))
+			{
+				door->locked = -1;
+				flag = 1;
+			}
+			// Creature does not have key so door remains locked
+			else
+			{
+				return 0;
+			}
+		}
+		if(door->areas.first == this->currentArea)
+		{
+			this->currentArea = door->areas.second;
+		}
+		else if(door->areas.second == this->currentArea)
+		{
+			this->currentArea = door->areas.first;
+		}
+
+		return flag;
 	}
 };
 
