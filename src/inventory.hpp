@@ -123,7 +123,11 @@ class Inventory
 		// the quantity by the quantity removed
 		for(auto& it : this->items)
 		{
-			if(it.first == item) it.second -= count;
+			if(it.first == item)
+			{
+				it.second -= count;
+				break;
+			}
 		}
 		// Iterate through the list again, and remove any elements from
 		// the list that have zero or less for their quantity
@@ -141,7 +145,11 @@ class Inventory
 	{
 		for(auto& it : this->weapons)
 		{
-			if(it.first == weapon) it.second -= count;
+			if(it.first == weapon)
+			{
+				it.second -= count;
+				break;
+			}
 		}
 		this->weapons.remove_if([](std::pair<Weapon*, int>& element)
 		{
@@ -154,7 +162,11 @@ class Inventory
 	{
 		for(auto& it : this->armour)
 		{
-			if(it.first == armour) it.second -= count;
+			if(it.first == armour)
+			{
+				it.second -= count;
+				break;
+			}
 		}
 		this->armour.remove_if([](std::pair<Armour*, int>& element)
 		{
