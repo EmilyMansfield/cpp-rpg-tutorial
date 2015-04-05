@@ -93,6 +93,7 @@ void buildatlas_area(std::vector<Area>& atlas,
 		{
 		}),
 		{
+			&creatures[0],
 			&creatures[0]
 		}));
 

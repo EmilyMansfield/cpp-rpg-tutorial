@@ -64,7 +64,7 @@ class Dialogue
 		{
 			std::cin >> userInput;
 			// 'Valid' means within the range of numbers outputted
-			if(userInput >= 0 && userInput <= choices.size())
+			if(userInput >= 0 && userInput <= this->choices.size())
 			{
 				return userInput;
 			}
