@@ -174,6 +174,39 @@ class Inventory
 		});
 	}
 
+	// Returns the count of the specified item
+	unsigned int has_item(Item* item)
+	{
+		unsigned int count = 0;
+		for(auto it : this->items)
+		{
+			if(it.first == item) ++count;
+		}
+		return count;
+	}
+
+	// Same for weapon
+	unsigned int has_weapon(Weapon* weapon)
+	{
+		unsigned int count = 0;
+		for(auto it : this->weapons)
+		{
+			if(it.first == weapon) ++count;
+		}
+		return count;
+	}
+
+	// Same for armour
+	unsigned int has_armour(Armour* armour)
+	{
+		unsigned int count = 0;
+		for(auto it : this->armour)
+		{
+			if(it.first == armour) ++count;
+		}
+		return count;
+	}
+
 	// Merge the specified inventory with the current one, adding
 	// item quantities together if they already exist and adding the item
 	// into a new slot if they do not
