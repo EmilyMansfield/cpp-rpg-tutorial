@@ -120,14 +120,16 @@ int main(void)
 		// what happens in each area. Since we're defining the areas in
 		// code anyway, sticking with this isn't too much of a problem,
 		// and it keeps things easy to understand
+		if(result == 0)
+		{
+			// Open the menu
+			dialogue_menu(player);
+			continue;
+		}
 		if(currentArea == &(areaAtlas[0]))
 		{
 			switch(result)
 			{
-				// Open the menu
-				case 0:
-					dialogue_menu(player);
-					break;
 				case 1:
 				// Move to area 1
 					currentArea = &(areaAtlas[1]);
@@ -144,10 +146,6 @@ int main(void)
 		{
 			switch(result)
 			{
-				// Open the menu
-				case 0:
-					dialogue_menu(player);
-					break;
 				// Move to area 0
 				case 1:
 					currentArea = &(areaAtlas[0]);
