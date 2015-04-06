@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2013 Daniel Mansfield
+Copyright (c) 2015 Daniel Mansfield
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "armour.hpp"
 
 #include <string>
+#include "JsonBox.h"
 
 class Creature
 {
@@ -194,6 +195,24 @@ class Creature
 			return true;
 		}
 		return false;
+	}
+
+	void save()
+	{
+		JsonBox::Object o;
+		o["name"] = JsonBox::Value(this->name);
+		o["className"] = JsonBox::Value(this->className);
+		o["health"] = JsonBox::Value(this->health);
+		o["maxHealth"] = JsonBox::Value(this->maxHealth);
+		o["str"] = JsonBox::Value(this->str);
+		o["end"] = JsonBox::Value(this->end);
+		o["dex"] = JsonBox::Value(this->dex);
+		o["hitRate"] = JsonBox::Value(this->hitRate);
+		o["level"] = JsonBox::Value(this->level);
+		o["exp"] = JsonBox::Value(this->exp);
+		JsonBox::Value v(o);
+		v.writeToFile(this->name + ".json");
+		return;
 	}
 };
 
