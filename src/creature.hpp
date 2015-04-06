@@ -208,8 +208,8 @@ class Creature
 		o["end"] = JsonBox::Value(this->end);
 		o["dex"] = JsonBox::Value(this->dex);
 		o["hitRate"] = JsonBox::Value(this->hitRate);
-		o["level"] = JsonBox::Value(this->level);
-		o["exp"] = JsonBox::Value(this->exp);
+		o["level"] = JsonBox::Value(int(this->level));
+		o["exp"] = JsonBox::Value(int(this->exp));
 		JsonBox::Value v(o);
 		v.writeToFile(this->name + ".json");
 		return;

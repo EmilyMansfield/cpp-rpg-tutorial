@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <list>
 #include <utility>
 #include <cstdlib>
@@ -48,11 +49,11 @@ void dialogue_menu(Creature& player);
 
 int main(void)
 {
-	std::vector<Creature> creatureAtlas;
-	std::vector<Item> itemAtlas;
-	std::vector<Weapon> weaponAtlas;
-	std::vector<Armour> armourAtlas;
-	std::vector<Area> areaAtlas;
+	std::map<std::string, Creature> creatureAtlas;
+	std::map<std::string, Item> itemAtlas;
+	std::map<std::string, Weapon> weaponAtlas;
+	std::map<std::string, Armour> armourAtlas;
+	std::map<std::string, Area> areaAtlas;
 
 	Creature player;
 
@@ -80,7 +81,7 @@ int main(void)
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
-	Area* currentArea = &(areaAtlas[0]);
+	Area* currentArea = &(areaAtlas["area_01"]);
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
@@ -126,13 +127,13 @@ int main(void)
 			dialogue_menu(player);
 			continue;
 		}
-		if(currentArea == &(areaAtlas[0]))
+		if(currentArea == &(areaAtlas["area_01"]))
 		{
 			switch(result)
 			{
 				case 1:
 				// Move to area 1
-					currentArea = &(areaAtlas[1]);
+					currentArea = &(areaAtlas["area_02"]);
 					break;
 				case 2:
 				// Search the area
@@ -142,13 +143,13 @@ int main(void)
 					break;
 			}
 		}
-		else if(currentArea == &(areaAtlas[1]))
+		else if(currentArea == &(areaAtlas["area_02"]))
 		{
 			switch(result)
 			{
 				// Move to area 0
 				case 1:
-					currentArea = &(areaAtlas[0]);
+					currentArea = &(areaAtlas["area_01"]);
 					break;
 				// Search the area
 				case 2:

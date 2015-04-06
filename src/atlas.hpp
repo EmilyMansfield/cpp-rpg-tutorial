@@ -24,7 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ATLAS_HPP
 #define ATLAS_HPP
 
-#include <vector>
+#include <map>
+#include <string>
 
 #include "creature.hpp"
 #include "item.hpp"
@@ -36,12 +37,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // is not modified in gameplay, so the base versions of creatures, items
 // etc. Could easily be replaced with functions that load the information
 // from config files instead of just defining the values in code
-void buildatlas_creature(std::vector<Creature>& atlas);
-void buildatlas_item(std::vector<Item>& atlas);
-void buildatlas_weapon(std::vector<Weapon>& atlas);
-void buildatlas_armour(std::vector<Armour>& atlas);
-void buildatlas_area(std::vector<Area>& atlas,
-	std::vector<Item>& items, std::vector<Weapon>& weapons,
-	std::vector<Armour>& armour, std::vector<Creature>& creatures);
+void buildatlas_creature(std::map<std::string, Creature>& atlas);
+void buildatlas_item(std::map<std::string, Item>& atlas);
+void buildatlas_weapon(std::map<std::string, Weapon>& atlas);
+void buildatlas_armour(std::map<std::string, Armour>& atlas);
+void buildatlas_area(std::map<std::string, Area>& atlas,
+	std::map<std::string, Item>& items, std::map<std::string, Weapon>& weapons,
+	std::map<std::string, Armour>& armour, std::map<std::string, Creature>& creatures);
 
 #endif /* ATLAS_HPP */
