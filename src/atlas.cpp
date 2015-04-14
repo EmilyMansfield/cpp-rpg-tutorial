@@ -34,10 +34,7 @@ void buildatlas_creature(std::map<std::string, Creature>& atlas)
 	for(auto creature : o)
 	{
 		std::string key = creature.first;
-		// Nicer with a constructor but that makes the Creature code ugly
-		// TODO?
-		atlas[key] = Creature();
-		atlas[key].load(key, creature.second);
+		atlas[key] = Creature(key, creature.second);
 	}
 
 	return;

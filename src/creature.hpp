@@ -100,6 +100,11 @@ class Creature : public Entity
 		this->exp = 0;
 	}
 
+	Creature(std::string id, JsonBox::Value v) : Creature()
+	{
+		this->load(id, v);
+	}
+
 	// Equip a weapon by setting the equipped weapon pointer. Currently
 	// a pointless function (simple enough to be rewritten each time)
 	// but handy if dual wielding is ever added, or shields etc
@@ -239,6 +244,8 @@ class Creature : public Entity
 		this->dex = o["dex"].getInteger();
 		this->hitRate = o["hitRate"].getDouble();
 		this->level = o["level"].getInteger();
+
+		this->id = id;
 	}
 
 	// Attempt to load the creature's data from the given JSON file
