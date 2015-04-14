@@ -242,28 +242,56 @@ class Creature : public Entity
 			JsonBox::Value v;
 			v.loadFromFile(name + ".json");
 			JsonBox::Object o = v.getObject();
-			this->name = o["name"].getString();;
-			this->className = o["className"].getString();
+			this->name = o["name"].getString();
+			// Set className if it exists
+			if(o.find("className") != o.end())
+			{
+				this->className = o["className"].getString();
+			}
+			else
+			{
+				this->className = "";
+			}
 			this->health = o["health"].getInteger();
-			this->maxHealth = o["maxHealth"].getInteger();
+			if(o.find("maxHealth") != o.end())
+			{
+				this->maxHealth = o["maxHealth"].getInteger();
+			}
+			else
+			{
+				this->maxHealth = this->health;
+			}
 			this->str = o["str"].getInteger();
 			this->end = o["end"].getInteger();
 			this->dex = o["dex"].getInteger();
 			this->hitRate = o["hitRate"].getDouble();
 			this->level = o["level"].getInteger();
-			this->exp = o["exp"].getInteger();
-			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
-
-			std::string equippedWeaponName = o["equipped_weapon"].getString();
-			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
-
-			JsonBox::Array a = o["equipped_amour"].getArray();
-			for(int i = 0; i < a.size(); ++i)
+			if(o.find("exp") != o.end())
 			{
-				std::string equippedArmourName = a[i].getString();
-				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+				this->exp = o["exp"].getInteger();
 			}
-
+			else
+			{
+				this->exp = 0;
+			}
+			if(o.find("inventory") != o.end())
+			{
+				this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+			}
+			if(o.find("equipped_weapon") != o.end())
+			{
+				std::string equippedWeaponName = o["equipped_weapon"].getString();
+				this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
+			}
+			if(o.find("equipped_armour") != o.end())
+			{
+				JsonBox::Array a = o["equipped_amour"].getArray();
+				for(int i = 0; i < a.size(); ++i)
+				{
+					std::string equippedArmourName = a[i].getString();
+					this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+				}
+			}
 			return true;
 		}
 		else
