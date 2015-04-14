@@ -253,6 +253,17 @@ class Creature : public Entity
 			this->level = o["level"].getInteger();
 			this->exp = o["exp"].getInteger();
 			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+
+			std::string equippedWeaponName = o["equipped_weapon"].getString();
+			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
+
+			JsonBox::Array a = o["equipped_amour"].getArray();
+			for(int i = 0; i < a.size(); ++i)
+			{
+				std::string equippedArmourName = a[i].getString();
+				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+			}
+
 			return true;
 		}
 		else
