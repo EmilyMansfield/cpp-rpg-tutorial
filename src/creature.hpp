@@ -228,8 +228,21 @@ class Creature : public Entity
 		return;
 	}
 
+	// Load the creature's compulsory variable from the JSON value
+	void load(std::string id, JsonBox::Value v)
+	{
+		JsonBox::Object o = v.getObject();
+		this->name = o["name"].getString();
+		this->health = o["health"].getInteger();
+		this->str = o["str"].getInteger();
+		this->end = o["end"].getInteger();
+		this->dex = o["dex"].getInteger();
+		this->hitRate = o["hitRate"].getDouble();
+		this->level = o["level"].getInteger();
+	}
+
 	// Attempt to load the creature's data from the given JSON file
-	bool load(std::string name,
+	bool load(std::string id,
 		std::map<std::string, Item>& itemAtlas,
 		std::map<std::string, Weapon>& weaponAtlas,
 		std::map<std::string, Armour>& armourAtlas)
@@ -241,8 +254,10 @@ class Creature : public Entity
 			f.close();
 			JsonBox::Value v;
 			v.loadFromFile(name + ".json");
+			// Load compulsory variables
+			this->load(id, v);
+			// Load optional variables
 			JsonBox::Object o = v.getObject();
-			this->name = o["name"].getString();
 			// Set className if it exists
 			if(o.find("className") != o.end())
 			{
@@ -252,7 +267,6 @@ class Creature : public Entity
 			{
 				this->className = "";
 			}
-			this->health = o["health"].getInteger();
 			if(o.find("maxHealth") != o.end())
 			{
 				this->maxHealth = o["maxHealth"].getInteger();
@@ -261,11 +275,6 @@ class Creature : public Entity
 			{
 				this->maxHealth = this->health;
 			}
-			this->str = o["str"].getInteger();
-			this->end = o["end"].getInteger();
-			this->dex = o["dex"].getInteger();
-			this->hitRate = o["hitRate"].getDouble();
-			this->level = o["level"].getInteger();
 			if(o.find("exp") != o.end())
 			{
 				this->exp = o["exp"].getInteger();
