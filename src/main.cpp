@@ -86,6 +86,7 @@ int main(void)
 	// Play the game until a function breaks the loop and closes it
 	while(1)
 	{
+		player.save();
 		// If the player has died then inform them as such and close
 		// the program
 		if(player.health <= 0)
