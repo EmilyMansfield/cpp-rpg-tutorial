@@ -257,12 +257,12 @@ class Creature : public Entity
 		std::map<std::string, Armour>& armourAtlas)
 	{
 		// Check for existence then open using JsonBox if it exists
-		std::ifstream f((name + ".json").c_str());
+		std::ifstream f((id + ".json").c_str());
 		if(f.good())
 		{
 			f.close();
 			JsonBox::Value v;
-			v.loadFromFile(name + ".json");
+			v.loadFromFile(id + ".json");
 			// Load compulsory variables
 			this->load(id, v);
 			// Load optional variables
