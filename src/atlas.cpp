@@ -22,12 +22,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "atlas.hpp"
+#include "JsonBox.h"
 
 void buildatlas_creature(std::map<std::string, Creature>& atlas)
 {
 	// Fill the atlas
-	// Creature(Name, Health, Str, End, Dex, Hit Rate, Level)
-	atlas["creature_rat"] = Creature("creature_rat", "Rat", 8, 8, 8, 12, 2.0, 1);
+	JsonBox::Value v;
+	v.loadFromFile("creatures.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto creature : o)
+	{
+		std::string key = creature.first;
+		// Nicer with a constructor but that makes the Creature code ugly
+		// TODO?
+		atlas[key] = Creature();
+		atlas[key].load(key, creature.second);
+	}
 
 	return;
 }
