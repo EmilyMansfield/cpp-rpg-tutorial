@@ -238,6 +238,17 @@ class Creature : public Entity
 			f.close();
 			JsonBox::Value v;
 			v.loadFromFile(name + ".json");
+			JsonBox::Object o = v.getObject();
+			this->name = o["name"].getString();;
+			this->className = o["className"].getString();
+			this->health = o["health"].getInteger();
+			this->maxHealth = o["maxHealth"].getInteger();
+			this->str = o["str"].getInteger();
+			this->end = o["end"].getInteger();
+			this->dex = o["dex"].getInteger();
+			this->hitRate = o["hitRate"].getDouble();
+			this->level = o["level"].getInteger();
+			this->exp = o["exp"].getInteger();
 			return true;
 		}
 		else
