@@ -175,26 +175,31 @@ Creature dialogue_newchar()
 	std::string name;
 	std::cin >> name;
 
-	int result = Dialogue(
-		"Choose your class",
-		{"Fighter", "Rogue"}).activate();
-
-	switch(result)
+	Creature player;
+	if(player.load(name))
 	{
-		// Fighter class favours health and strength
-		case 1:
-			return Creature("player", name, 35, 20, 10, 5, 10.0, 1, "Fighter");
-			break;
+		return player;
+	}
+	else
+	{
+		int result = Dialogue(
+			"Choose your class",
+			{"Fighter", "Rogue"}).activate();
 
-		// Rogue class favours dexterity and hit rate
-		case 2:
-			return Creature("player", name, 30, 5, 10, 20, 15.0, 1, "Fighter");
-			break;
+		switch(result)
+		{
+			// Fighter class favours health and strength
+			case 1:
+				return Creature("player", name, 35, 20, 10, 5, 10.0, 1, "Fighter");
 
-		// Default case that should never happen, but it's good to be safe
-		default:
-			return Creature("player", name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
-		break;
+			// Rogue class favours dexterity and hit rate
+			case 2:
+				return Creature("player", name, 30, 5, 10, 20, 15.0, 1, "Fighter");
+
+			// Default case that should never happen, but it's good to be safe
+			default:
+				return Creature("player", name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
+		}
 	}
 }
 

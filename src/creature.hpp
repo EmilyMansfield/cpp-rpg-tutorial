@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "armour.hpp"
 
 #include <string>
+#include <fstream>
 #include "JsonBox.h"
 
 class Creature : public Entity
@@ -225,6 +226,25 @@ class Creature : public Entity
 		v.writeToFile(this->name + ".json");
 
 		return;
+	}
+
+	// Attempt to load the creature's data from the given JSON file
+	bool load(std::string name)
+	{
+		// Check for existence then open using JsonBox if it exists
+		std::ifstream f((name + ".json").c_str());
+		if(f.good())
+		{
+			f.close();
+			JsonBox::Value v;
+			v.loadFromFile(name + ".json");
+			return true;
+		}
+		else
+		{
+			f.close();
+			return false;
+		}
 	}
 };
 
