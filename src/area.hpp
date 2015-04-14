@@ -63,6 +63,15 @@ class Area : public Entity
 	{
 	}
 
+	Area(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas,
+		std::map<std::string, Creature>& creatureAtlas) : Entity(id)
+	{
+		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+	}
+
 	// Search the area for items and give them to the searcher, notifying
 	// them of their rewards
 	void search(Creature& player)
@@ -72,6 +81,38 @@ class Area : public Entity
 		this->items.print();
 		player.inventory.merge(&(this->items));
 		this->items.clear();
+
+		return;
+	}
+
+	void load(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas,
+		std::map<std::string, Creature>& creatureAtlas)
+	{
+		JsonBox::Object o = v.getObject();
+
+		// Build the dialogue
+		JsonBox::Object dialogue = o["dialogue"].getObject();
+		std::string dialogue_description = dialogue["description"].getString();
+		std::vector<std::string> dialogue_choices;
+		for(auto choice : dialogue["choices"].getArray())
+		{
+			dialogue_choices.push_back(choice.getString());
+		}
+		this->dialogue = Dialogue(dialogue_description, dialogue_choices);
+
+		// Build the inventory
+		this->items = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+
+		// Build the creature list
+		for(auto creature : o["creatures"].getArray())
+		{
+			this->creatures.push_back(&creatureAtlas[creature.getString()]);
+		}
+
+		Entity::load(id, v);
 
 		return;
 	}

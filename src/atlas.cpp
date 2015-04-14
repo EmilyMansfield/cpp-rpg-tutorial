@@ -89,39 +89,15 @@ void buildatlas_area(std::map<std::string, Area>& atlas,
 	std::map<std::string, Item>& items, std::map<std::string, Weapon>& weapons,
 	std::map<std::string, Armour>& armour, std::map<std::string, Creature>& creatures)
 {
-	// Area definitions are somewhat more complicated:
-	atlas["area_01"] = Area("area_01", Dialogue( // Standard dialogue definiton
-		"You are in room 1",				// Description
-		{"Go to room 2", "Search"}),		// Choices
-		Inventory(							// Area inventory
-		{
-			std::make_pair(&items["item_gold_coin"], 5)	// Pair of item and quantity
+	JsonBox::Value v;
+	v.loadFromFile("areas.json");
 
-		},
-		{
-			std::make_pair(&weapons["weapon_iron_dagger"], 1)	// Pair of weapon and quantity
-		},
-		{
-			std::make_pair(&armour["armour_leather_cuirass"], 1)	// Pair of armour and quantity
-		}),
-		{									// Creatures
-		});
-
-	atlas["area_02"] = Area("area_02", Dialogue(
-		"You are in room 2",
-		{"Go to room 1", "Search"}),
-		Inventory(
-		{
-			std::make_pair(&items["item_gold_coin"], 10),
-			std::make_pair(&items["item_iron_key"], 1)
-		},
-		{
-		},
-		{
-		}),
-		{
-			&creatures["creature_rat"]
-		});
+	JsonBox::Object o = v.getObject();
+	for(auto area : o)
+	{
+		std::string key = area.first;
+		atlas[key] = Area(key, area.second, items, weapons, armour, creatures);
+	}
 
 	return;
 }
