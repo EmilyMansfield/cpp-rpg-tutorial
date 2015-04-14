@@ -245,7 +245,9 @@ class Creature : public Entity
 		this->hitRate = o["hitRate"].getDouble();
 		this->level = o["level"].getInteger();
 
-		this->id = id;
+		Entity::load(id, v);
+
+		return;
 	}
 
 	// Attempt to load the creature's data from the given JSON file

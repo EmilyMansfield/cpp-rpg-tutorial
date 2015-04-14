@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "entity.hpp"
 
 #include <string>
+#include "JsonBox.h"
 
 class Item : public Entity
 {
@@ -45,6 +46,23 @@ class Item : public Entity
 
 	Item() : Entity("nullid")
 	{
+	}
+
+	Item(std::string id, JsonBox::Value v) : Item()
+	{
+		this->load(id, v);
+	}
+
+	// Load the item information from the JSON value
+	virtual void load(std::string id, JsonBox::Value v)
+	{
+		JsonBox::Object o = v.getObject();
+		this->name = o["name"].getString();
+		this->description = o["description"].getString();
+
+		Entity::load(id, v);
+
+		return;
 	}
 };
 

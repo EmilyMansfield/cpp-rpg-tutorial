@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "item.hpp"
 
 #include <string>
+#include "JsonBox.h"
 
 // Weapons are items, so they should inherit their properties
 class Weapon : public Item
@@ -49,8 +50,23 @@ class Weapon : public Item
 		this->hitRate = hitRate;
 	}
 
-	Weapon()
+	Weapon() : Item()
 	{
+	}
+
+	Weapon(std::string id, JsonBox::Value v) : Item()
+	{
+		this->load(id, v);
+	}
+
+	void load(std::string id, JsonBox::Value v)
+	{
+		Item::load(id, v);
+		JsonBox::Object o = v.getObject();
+		this->damage = o["damage"].getInteger();
+		this->hitRate = o["hitRate"].getDouble();
+
+		return;
 	}
 };
 

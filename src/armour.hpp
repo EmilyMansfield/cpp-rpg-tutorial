@@ -51,8 +51,23 @@ class Armour : public Item
 		this->slot = slot;
 	}
 
-	Armour()
+	Armour() : Item()
 	{
+	}
+
+	Armour(std::string id, JsonBox::Value v) : Item()
+	{
+		this->load(id, v);
+	}
+
+	void load(std::string id, JsonBox::Value v)
+	{
+		Item::load(id, v);
+		JsonBox::Object o = v.getObject();
+		this->defense = o["defense"].getInteger();
+		this->slot = Slot(o["slot"].getInteger());
+
+		return;
 	}
 };
 

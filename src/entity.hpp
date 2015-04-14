@@ -24,6 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include "JsonBox.h"
+#include <string>
+
 class Entity
 {
 	public:
@@ -33,6 +36,13 @@ class Entity
 	Entity(std::string id)
 	{
 		this->id = id;
+	}
+
+	virtual void load(std::string id, JsonBox::Value v)
+	{
+		this->id = id;
+
+		return;
 	}
 };
 
