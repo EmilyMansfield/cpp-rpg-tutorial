@@ -213,6 +213,15 @@ class Creature : public Entity
 		o["hitRate"] = JsonBox::Value(this->hitRate);
 		o["level"] = JsonBox::Value(int(this->level));
 		o["exp"] = JsonBox::Value(int(this->exp));
+		JsonBox::Array a;
+		for(auto item : this->inventory.items)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(item.first->id));
+			pair.push_back(JsonBox::Value(item.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["items"] = JsonBox::Value(a);
 		JsonBox::Value v(o);
 		v.writeToFile(this->name + ".json");
 		return;
