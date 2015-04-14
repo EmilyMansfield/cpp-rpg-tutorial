@@ -42,26 +42,45 @@ void buildatlas_creature(std::map<std::string, Creature>& atlas)
 
 void buildatlas_item(std::map<std::string, Item>& atlas)
 {
-	// Item(Name, Description)
-	atlas["item_gold_coin"] = Item("item_gold_coin", "Gold Coin", "A small disc made of lustrous metal");
-	atlas["item_iron_key"] = Item("item_iron_key", "Iron Key", "A heavy iron key with a simple cut");
+	JsonBox::Value v;
+	v.loadFromFile("items.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto item : o)
+	{
+		std::string key = item.first;
+		atlas[key] = Item(key, item.second);
+	}
 
 	return;
 }
 
 void buildatlas_weapon(std::map<std::string, Weapon>& atlas)
 {
-	// Weapon(Name, Description, Damage, Hit Rate)
-	atlas["weapon_iron_dagger"] = Weapon("weapon_iron_dagger", "Iron Dagger", "A short blade made of iron with a leather-bound hilt", 5, 10.0);
-	atlas["weapon_excalibur"] = Weapon("weapon_excalibure", "Excalibur", "The legendary blade, bestowed upon you by the Lady of the Lake", 35, 35.0);
+	JsonBox::Value v;
+	v.loadFromFile("weapons.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto weapon : o)
+	{
+		std::string key = weapon.first;
+		atlas[key] = Weapon(key, weapon.second);
+	}
 
 	return;
 }
 
 void buildatlas_armour(std::map<std::string, Armour>& atlas)
 {
-	// Armour(Name, Description, Defense, Slot)
-	atlas["armour_leather_cuirass"] = Armour("armour_leather_cuirass", "Leather Cuirass", "Torso armour made of tanned hide", 4, Armour::Slot::TORSO);
+	JsonBox::Value v;
+	v.loadFromFile("armour.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto armour : o)
+	{
+		std::string key = armour.first;
+		atlas[key] = Armour(key, armour.second);
+	}
 
 	return;
 }

@@ -1,0 +1,11 @@
+{
+	"item_gold_coin": {
+		"name": "Gold Coin",
+		"description": "A small disc made of lustrous metal"
+	},
+
+	"item_iron_key": {
+		"name": "Iron Key",
+		"description": "A heavy iron key with a simple cut"
+	}
+}

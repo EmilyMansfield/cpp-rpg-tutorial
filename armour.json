@@ -1,0 +1,8 @@
+{
+	"armour_leather_cuirass": {
+		"name": "Leather Cuirass",
+		"description": "Torso armour made of tanned hide",
+		"defense": 4,
+		"slot": 0
+	}
+}
