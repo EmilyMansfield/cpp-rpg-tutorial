@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2013 Daniel Mansfield
+Copyright (c) 2015 Daniel Mansfield
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,31 +21,19 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef ITEM_HPP
-#define ITEM_HPP
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
-#include "entity.hpp"
-
-#include <string>
-
-class Item : public Entity
+class Entity
 {
 	public:
 
-	// Name and description of the item
-	std::string name;
-	std::string description;
+	std::string id;
 
-	// Standard constructors, nothing special
-	Item(std::string id, std::string name, std::string description) : Entity(id)
+	Entity(std::string id)
 	{
-		this->name = name;
-		this->description = description;
-	}
-
-	Item() : Entity("nullid")
-	{
+		this->id = id;
 	}
 };
 
-#endif /* ITEM_HPP */
+#endif /* ENTITY_HPP */

@@ -44,8 +44,8 @@ class Armour : public Item
 	int defense;
 
 	// Usual constructor
-	Armour(std::string name, std::string description, int defense, Armour::Slot slot) :
-		Item(name, description)
+	Armour(std::string id, std::string name, std::string description, int defense, Armour::Slot slot) :
+		Item(id, name, description)
 	{
 		this->defense = defense;
 		this->slot = slot;

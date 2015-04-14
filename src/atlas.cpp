@@ -27,7 +27,7 @@ void buildatlas_creature(std::map<std::string, Creature>& atlas)
 {
 	// Fill the atlas
 	// Creature(Name, Health, Str, End, Dex, Hit Rate, Level)
-	atlas["creature_rat"] = Creature("Rat", 8, 8, 8, 12, 2.0, 1);
+	atlas["creature_rat"] = Creature("creature_rat", "Rat", 8, 8, 8, 12, 2.0, 1);
 
 	return;
 }
@@ -35,8 +35,8 @@ void buildatlas_creature(std::map<std::string, Creature>& atlas)
 void buildatlas_item(std::map<std::string, Item>& atlas)
 {
 	// Item(Name, Description)
-	atlas["item_gold_coin"] = Item("Gold Coin", "A small disc made of lustrous metal");
-	atlas["item_iron_key"] = Item("Iron Key", "A heavy iron key with a simple cut");
+	atlas["item_gold_coin"] = Item("item_gold_coin", "Gold Coin", "A small disc made of lustrous metal");
+	atlas["item_iron_key"] = Item("item_iron_key", "Iron Key", "A heavy iron key with a simple cut");
 
 	return;
 }
@@ -44,8 +44,8 @@ void buildatlas_item(std::map<std::string, Item>& atlas)
 void buildatlas_weapon(std::map<std::string, Weapon>& atlas)
 {
 	// Weapon(Name, Description, Damage, Hit Rate)
-	atlas["weapon_iron_dagger"] = Weapon("Iron Dagger", "A short blade made of iron with a leather-bound hilt", 5, 10.0);
-	atlas["weapon_excalibur"] = Weapon("Excalibur", "The legendary blade, bestowed upon you by the Lady of the Lake", 35, 35.0);
+	atlas["weapon_iron_dagger"] = Weapon("weapon_iron_dagger", "Iron Dagger", "A short blade made of iron with a leather-bound hilt", 5, 10.0);
+	atlas["weapon_excalibur"] = Weapon("weapon_excalibure", "Excalibur", "The legendary blade, bestowed upon you by the Lady of the Lake", 35, 35.0);
 
 	return;
 }
@@ -53,7 +53,7 @@ void buildatlas_weapon(std::map<std::string, Weapon>& atlas)
 void buildatlas_armour(std::map<std::string, Armour>& atlas)
 {
 	// Armour(Name, Description, Defense, Slot)
-	atlas["armour_leather_cuirass"] = Armour("Leather Cuirass", "Torso armour made of tanned hide", 4, Armour::Slot::TORSO);
+	atlas["armour_leather_cuirass"] = Armour("armour_leather_cuirass", "Leather Cuirass", "Torso armour made of tanned hide", 4, Armour::Slot::TORSO);
 
 	return;
 }
@@ -63,7 +63,7 @@ void buildatlas_area(std::map<std::string, Area>& atlas,
 	std::map<std::string, Armour>& armour, std::map<std::string, Creature>& creatures)
 {
 	// Area definitions are somewhat more complicated:
-	atlas["area_01"] = Area(Dialogue(			// Standard dialogue definiton
+	atlas["area_01"] = Area("area_01", Dialogue( // Standard dialogue definiton
 		"You are in room 1",				// Description
 		{"Go to room 2", "Search"}),		// Choices
 		Inventory(							// Area inventory
@@ -80,7 +80,7 @@ void buildatlas_area(std::map<std::string, Area>& atlas,
 		{									// Creatures
 		});
 
-	atlas["area_02"] = Area(Dialogue(
+	atlas["area_02"] = Area("area_02", Dialogue(
 		"You are in room 2",
 		{"Go to room 1", "Search"}),
 		Inventory(

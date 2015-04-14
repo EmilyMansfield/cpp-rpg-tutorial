@@ -42,8 +42,8 @@ class Weapon : public Item
 	double hitRate;
 
 	// Pass inherited qualities to the normal item constructor
-	Weapon(std::string name, std::string description, int damage, double hitRate) :
-		Item(name, description)
+	Weapon(std::string id, std::string name, std::string description, int damage, double hitRate) :
+		Item(id, name, description)
 	{
 		this->damage = damage;
 		this->hitRate = hitRate;

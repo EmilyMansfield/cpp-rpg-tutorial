@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef AREA_HPP
 #define AREA_HPP
 
+#include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "dialogue.hpp"
@@ -33,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Movement is achieved through the use of areas, which are contained
 // units of space consisting of an inventory, a list of creatures and
 // a dialogue
-class Area
+class Area : public Entity
 {
 	public:
 
@@ -50,15 +51,15 @@ class Area
 	// things later
 	std::vector<Creature*> creatures;
 
-	Area(Dialogue dialogue, Inventory items,
-		std::vector<Creature*> creatures)
+	Area(std::string id, Dialogue dialogue, Inventory items,
+		std::vector<Creature*> creatures) : Entity(id)
 	{
 		this->dialogue = dialogue;
 		this->items = items;
 		this->creatures = creatures;
 	}
 
-	Area()
+	Area() : Entity("nullid")
 	{
 	}
 

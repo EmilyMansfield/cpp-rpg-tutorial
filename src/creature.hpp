@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
+#include "entity.hpp"
 #include "inventory.hpp"
 #include "weapon.hpp"
 #include "armour.hpp"
@@ -31,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include "JsonBox.h"
 
-class Creature
+class Creature : public Entity
 {
 	public:
 
@@ -69,8 +70,8 @@ class Creature
 	// Armour currently equipped into each slot
 	Armour* equippedArmour[Armour::Slot::N];
 
-	Creature(std::string name, int health, int str, int end, int dex, double hitRate,
-		unsigned int level = 1, std::string className = "")
+	Creature(std::string id, std::string name, int health, int str, int end, int dex, double hitRate,
+		unsigned int level = 1, std::string className = "") : Entity(id)
 	{
 		this->name = name;
 		this->health = health;
@@ -88,7 +89,7 @@ class Creature
 		this->exp = 0;
 	}
 
-	Creature()
+	Creature() : Entity("nullid")
 	{
 		this->equippedArmour[Armour::Slot::HEAD] = nullptr;
 		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
@@ -197,6 +198,8 @@ class Creature
 		return false;
 	}
 
+	// Save the creature's data to a JSON file named according to the name
+	// of the creature
 	void save()
 	{
 		JsonBox::Object o;
