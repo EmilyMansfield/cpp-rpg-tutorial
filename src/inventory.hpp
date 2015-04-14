@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <list>
 #include <utility>
 #include <iostream>
+#include "JsonBox.h"
 
 class Inventory
 {
@@ -303,6 +304,43 @@ class Inventory
 		}
 
 		return;
+	}
+
+	JsonBox::Object to_json()
+	{
+		JsonBox::Object o;
+
+		JsonBox::Array a;
+		for(auto item : this->items)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(item.first->id));
+			pair.push_back(JsonBox::Value(item.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["items"] = JsonBox::Value(a);
+
+		a.clear();
+		for(auto weapon : this->weapons)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(weapon.first->id));
+			pair.push_back(JsonBox::Value(weapon.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["weapons"] = a;
+
+		a.clear();
+		for(auto armour : this->armour)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(armour.first->id));
+			pair.push_back(JsonBox::Value(armour.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["armour"] = a;
+
+		return o;
 	}
 };
 
