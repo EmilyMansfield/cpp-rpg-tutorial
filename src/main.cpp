@@ -43,18 +43,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // New character menu
 Creature dialogue_newchar();
 
+std::map<std::string, Creature> creatureAtlas;
+std::map<std::string, Item> itemAtlas;
+std::map<std::string, Weapon> weaponAtlas;
+std::map<std::string, Armour> armourAtlas;
+std::map<std::string, Area> areaAtlas;
+
 // Character information menu, displays the items the player has, their
 // current stats etc.
 void dialogue_menu(Creature& player);
 
 int main(void)
 {
-	std::map<std::string, Creature> creatureAtlas;
-	std::map<std::string, Item> itemAtlas;
-	std::map<std::string, Weapon> weaponAtlas;
-	std::map<std::string, Armour> armourAtlas;
-	std::map<std::string, Area> areaAtlas;
-
 	Creature player;
 
 	// Build the atlases
@@ -176,7 +176,7 @@ Creature dialogue_newchar()
 	std::cin >> name;
 
 	Creature player;
-	if(player.load(name))
+	if(player.load(name, itemAtlas))
 	{
 		return player;
 	}
