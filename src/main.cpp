@@ -176,7 +176,7 @@ Creature dialogue_newchar()
 	std::cin >> name;
 
 	Creature player;
-	if(player.load(name, itemAtlas))
+	if(player.load(name, itemAtlas, weaponAtlas, armourAtlas))
 	{
 		return player;
 	}

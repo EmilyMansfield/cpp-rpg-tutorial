@@ -54,13 +54,27 @@ class Inventory
 
 	// Load the inventory from a JSON value
 	Inventory(JsonBox::Value o,
-		std::map<std::string, Item>& itemAtlas)
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas)
 	{
 		for(auto item : o["items"].getArray())
 		{
 			std::string itemName = item.getArray()[0].getString();
 			int itemQuantity = item.getArray()[1].getInteger();
 			this->items.push_back(std::make_pair(&itemAtlas[itemName], itemQuantity));
+		}
+		for(auto weapon : o["weapons"].getArray())
+		{
+			std::string weaponName = weapon.getArray()[0].getString();
+			int weaponQuantity = weapon.getArray()[1].getInteger();
+			this->weapons.push_back(std::make_pair(&weaponAtlas[weaponName], weaponQuantity));
+		}
+		for(auto armour : o["armour"].getArray())
+		{
+			std::string armourName = armour.getArray()[0].getString();
+			int armourQuantity = armour.getArray()[1].getInteger();
+			this->armour.push_back(std::make_pair(&armourAtlas[armourName], armourQuantity));
 		}
 	}
 

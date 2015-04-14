@@ -230,7 +230,9 @@ class Creature : public Entity
 
 	// Attempt to load the creature's data from the given JSON file
 	bool load(std::string name,
-		std::map<std::string, Item>& itemAtlas)
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas)
 	{
 		// Check for existence then open using JsonBox if it exists
 		std::ifstream f((name + ".json").c_str());
@@ -250,7 +252,7 @@ class Creature : public Entity
 			this->hitRate = o["hitRate"].getDouble();
 			this->level = o["level"].getInteger();
 			this->exp = o["exp"].getInteger();
-			this->inventory = Inventory(o["inventory"], itemAtlas);
+			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
 			return true;
 		}
 		else
