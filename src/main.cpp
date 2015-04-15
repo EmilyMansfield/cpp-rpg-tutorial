@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 #include <cstdlib>
 #include <ctime>
+#include "JsonBox.h"
 
 #include "atlas.hpp"
 #include "item.hpp"
@@ -86,7 +87,22 @@ int main(void)
 	// Play the game until a function breaks the loop and closes it
 	while(1)
 	{
+		// Mark the current player as visited
+		currentArea->visited = true;
+
+		// Autosave the game
 		player.save();
+		JsonBox::Object o;
+		for(auto area : areaAtlas)
+		{
+			if(area.second.visited)
+			{
+				o[area.first] = area.second.to_json();
+			}
+		}
+		JsonBox::Value v(o);
+		v.writeToFile(player.name + "_areas.json");
+
 		// If the player has died then inform them as such and close
 		// the program
 		if(player.health <= 0)
