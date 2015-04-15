@@ -105,6 +105,14 @@ class Creature : public Entity
 		this->load(id, v);
 	}
 
+	Creature(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas) : Creature()
+	{
+		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas);
+	}
+
 	// Equip a weapon by setting the equipped weapon pointer. Currently
 	// a pointless function (simple enough to be rewritten each time)
 	// but handy if dual wielding is ever added, or shields etc
@@ -250,73 +258,61 @@ class Creature : public Entity
 		return;
 	}
 
-	// Attempt to load the creature's data from the given JSON file
-	bool load(std::string id,
+	// Attempt to load all data from the JSON value
+	void load(std::string id, JsonBox::Value v,
 		std::map<std::string, Item>& itemAtlas,
 		std::map<std::string, Weapon>& weaponAtlas,
 		std::map<std::string, Armour>& armourAtlas)
 	{
-		// Check for existence then open using JsonBox if it exists
-		std::ifstream f((id + ".json").c_str());
-		if(f.good())
+		// Load compulsory variables
+		this->load(id, v);
+		// Load optional variables
+		JsonBox::Object o = v.getObject();
+		// Set className if it exists
+		if(o.find("className") != o.end())
 		{
-			f.close();
-			JsonBox::Value v;
-			v.loadFromFile(id + ".json");
-			// Load compulsory variables
-			this->load(id, v);
-			// Load optional variables
-			JsonBox::Object o = v.getObject();
-			// Set className if it exists
-			if(o.find("className") != o.end())
-			{
-				this->className = o["className"].getString();
-			}
-			else
-			{
-				this->className = "";
-			}
-			if(o.find("maxHealth") != o.end())
-			{
-				this->maxHealth = o["maxHealth"].getInteger();
-			}
-			else
-			{
-				this->maxHealth = this->health;
-			}
-			if(o.find("exp") != o.end())
-			{
-				this->exp = o["exp"].getInteger();
-			}
-			else
-			{
-				this->exp = 0;
-			}
-			if(o.find("inventory") != o.end())
-			{
-				this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
-			}
-			if(o.find("equipped_weapon") != o.end())
-			{
-				std::string equippedWeaponName = o["equipped_weapon"].getString();
-				this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
-			}
-			if(o.find("equipped_armour") != o.end())
-			{
-				JsonBox::Array a = o["equipped_amour"].getArray();
-				for(int i = 0; i < a.size(); ++i)
-				{
-					std::string equippedArmourName = a[i].getString();
-					this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
-				}
-			}
-			return true;
+			this->className = o["className"].getString();
 		}
 		else
 		{
-			f.close();
-			return false;
+			this->className = "";
 		}
+		if(o.find("maxHealth") != o.end())
+		{
+			this->maxHealth = o["maxHealth"].getInteger();
+		}
+		else
+		{
+			this->maxHealth = this->health;
+		}
+		if(o.find("exp") != o.end())
+		{
+			this->exp = o["exp"].getInteger();
+		}
+		else
+		{
+			this->exp = 0;
+		}
+		if(o.find("inventory") != o.end())
+		{
+			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+		}
+		if(o.find("equipped_weapon") != o.end())
+		{
+			std::string equippedWeaponName = o["equipped_weapon"].getString();
+			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
+		}
+		if(o.find("equipped_armour") != o.end())
+		{
+			JsonBox::Array a = o["equipped_amour"].getArray();
+			for(int i = 0; i < a.size(); ++i)
+			{
+				std::string equippedArmourName = a[i].getString();
+				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+			}
+		}
+
+		return;
 	}
 };
 

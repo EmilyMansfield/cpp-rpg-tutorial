@@ -176,13 +176,19 @@ Creature dialogue_newchar()
 	std::string name;
 	std::cin >> name;
 
-	Creature player;
-	if(player.load(name, itemAtlas, weaponAtlas, armourAtlas))
+	// Check for existence then open using JsonBox if it exists
+	std::ifstream f((name + ".json").c_str());
+	if(f.good())
 	{
-		return player;
+		f.close();
+		JsonBox::Value v;
+		v.loadFromFile(name + ".json");
+		f.close();
+		return Creature("player", v, itemAtlas, weaponAtlas, armourAtlas);
 	}
 	else
 	{
+		f.close();
 		int result = Dialogue(
 			"Choose your class",
 			{"Fighter", "Rogue"}).activate();
