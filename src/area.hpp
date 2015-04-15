@@ -132,15 +132,15 @@ class Area : public Entity
 		// We don't need to save the dialogue because it doesn't change
 
 		// Save the inventory
-		o["inventory"] = this->items.to_json().getValue();
+		o["inventory"] = this->items.to_json();
 
 		// Save the creatures
 		JsonBox::Array a;
 		for(auto creature : this->creatures)
 		{
-			a.push_back(JsonBox::String(creature->id));
+			a.push_back(JsonBox::Value(creature->id));
 		}
-		o["creatures"] = a.getValue();
+		o["creatures"] = a;
 
 		return o;
 	}
