@@ -197,10 +197,22 @@ Creature dialogue_newchar()
 	if(f.good())
 	{
 		f.close();
+		// Load the player
 		JsonBox::Value v;
 		v.loadFromFile(name + ".json");
-		f.close();
-		return Creature("player", v, itemAtlas, weaponAtlas, armourAtlas);
+		Creature player = Creature("player", v, itemAtlas, weaponAtlas, armourAtlas);
+
+		// Load the area
+		v.loadFromFile(name + "_areas.json");
+		JsonBox::Object o = v.getObject();
+		for(auto area : o)
+		{
+			std::string key = area.first;
+			areaAtlas[key].load(key, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+		}
+
+		// Return the player
+		return player;
 	}
 	else
 	{
