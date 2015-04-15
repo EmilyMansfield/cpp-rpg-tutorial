@@ -99,15 +99,19 @@ class Area : public Entity
 		JsonBox::Object o = v.getObject();
 
 		// Build the dialogue
-		JsonBox::Object dialogue = o["dialogue"].getObject();
-		std::string dialogue_description = dialogue["description"].getString();
-		std::vector<std::string> dialogue_choices;
-		for(auto choice : dialogue["choices"].getArray())
+		// This is an optional parameter because it will not be saved
+		// when the area is modified
+		if(o.find("dialogue") != o.end())
 		{
-			dialogue_choices.push_back(choice.getString());
+			JsonBox::Object dialogue = o["dialogue"].getObject();
+			std::string dialogue_description = dialogue["description"].getString();
+			std::vector<std::string> dialogue_choices;
+			for(auto choice : dialogue["choices"].getArray())
+			{
+				dialogue_choices.push_back(choice.getString());
+			}
+			this->dialogue = Dialogue(dialogue_description, dialogue_choices);
 		}
-		this->dialogue = Dialogue(dialogue_description, dialogue_choices);
-
 		// Build the inventory
 		this->items = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
 
