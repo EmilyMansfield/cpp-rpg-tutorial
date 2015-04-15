@@ -116,6 +116,25 @@ class Area : public Entity
 
 		return;
 	}
+
+	JsonBox::Object to_json()
+	{
+		JsonBox::Object o;
+		// We don't need to save the dialogue because it doesn't change
+
+		// Save the inventory
+		o["inventory"] = this->items.to_json().getValue();
+
+		// Save the creatures
+		JsonBox::Array a;
+		for(auto creature : this->creatures)
+		{
+			a.push_back(JsonBox::String(creature->id));
+		}
+		o["creatures"] = a.getValue();
+
+		return o;
+	}
 };
 
 #endif /* AREA_HPP */
