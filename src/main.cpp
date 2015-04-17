@@ -42,7 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "battle.hpp"
 
 // New character menu
-Creature dialogue_newchar();
+Creature start_game();
 
 std::map<std::string, Creature> creatureAtlas;
 std::map<std::string, Item> itemAtlas;
@@ -69,16 +69,7 @@ int main(void)
 	// random numbers produced by rand() will be different each time
 	srand(time(NULL));
 
-	// Main game menu dialogue
-	int result = Dialogue(
-		"Welcome!",
-		{"New Game"}).activate();
-
-	switch(result)
-	{
-		case 1: player = dialogue_newchar(); break;
-		default: return 0; break;
-	}
+	player = start_game();
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
@@ -131,7 +122,7 @@ int main(void)
         }
 
 		// Activate the current area's dialogue
-		result = currentArea->dialogue.activate();
+		int result = currentArea->dialogue.activate();
 
 		// These could be moved inside of the area code using an event
 		// style system, but that allows for much less flexibility with
@@ -181,14 +172,14 @@ int main(void)
 	return 0;
 }
 
-// Create a new character
-Creature dialogue_newchar()
+// Create a new character or load an existing one
+Creature start_game()
 {
 	// Ask for a name and class
 	// Name does not use a dialogue since dialogues only request options,
 	// not string input. Could be generalised into its own TextInput
 	// class, but not really necessary
-	std::cout << "Choose your name" << std::endl;
+	std::cout << "What's your name?" << std::endl;
 	std::string name;
 	std::cin >> name;
 
