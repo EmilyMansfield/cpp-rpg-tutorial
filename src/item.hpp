@@ -24,9 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
-#include <string>
+#include "entity.hpp"
 
-class Item
+#include <string>
+#include "JsonBox.h"
+
+class Item : public Entity
 {
 	public:
 
@@ -35,14 +38,31 @@ class Item
 	std::string description;
 
 	// Standard constructors, nothing special
-	Item(std::string name, std::string description)
+	Item(std::string id, std::string name, std::string description) : Entity(id)
 	{
 		this->name = name;
 		this->description = description;
 	}
 
-	Item()
+	Item() : Entity("nullid")
 	{
+	}
+
+	Item(std::string id, JsonBox::Value v) : Item()
+	{
+		this->load(id, v);
+	}
+
+	// Load the item information from the JSON value
+	virtual void load(std::string id, JsonBox::Value v)
+	{
+		JsonBox::Object o = v.getObject();
+		this->name = o["name"].getString();
+		this->description = o["description"].getString();
+
+		Entity::load(id, v);
+
+		return;
 	}
 };
 

@@ -1,0 +1,15 @@
+{
+	"weapon_iron_dagger": {
+		"name": "Iron Dagger",
+		"description": "A short blade made of iron with a leather-bound hilt",
+		"damage": 5,
+		"hitRate": 10.0
+	},
+
+	"weapon_excalibur": {
+		"name": "Excalibur",
+		"description": "The legendary blade, bestowed upon you by the Lady of the Lake",
+		"damage": 35,
+		"hitRate": 35.0
+	}
+}

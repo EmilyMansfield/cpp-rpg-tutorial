@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2013 Daniel Mansfield
+Copyright (c) 2015 Daniel Mansfield
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -24,13 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
+#include "entity.hpp"
 #include "inventory.hpp"
 #include "weapon.hpp"
 #include "armour.hpp"
 
 #include <string>
+#include <fstream>
+#include "JsonBox.h"
 
-class Creature
+class Creature : public Entity
 {
 	public:
 
@@ -68,8 +71,8 @@ class Creature
 	// Armour currently equipped into each slot
 	Armour* equippedArmour[Armour::Slot::N];
 
-	Creature(std::string name, int health, int str, int end, int dex, double hitRate,
-		unsigned int level = 1, std::string className = "")
+	Creature(std::string id, std::string name, int health, int str, int end, int dex, double hitRate,
+		unsigned int level = 1, std::string className = "") : Entity(id)
 	{
 		this->name = name;
 		this->health = health;
@@ -87,7 +90,7 @@ class Creature
 		this->exp = 0;
 	}
 
-	Creature()
+	Creature() : Entity("nullid")
 	{
 		this->equippedArmour[Armour::Slot::HEAD] = nullptr;
 		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
@@ -95,6 +98,19 @@ class Creature
 		this->equippedWeapon = nullptr;
 		this->level = 1;
 		this->exp = 0;
+	}
+
+	Creature(std::string id, JsonBox::Value v) : Creature()
+	{
+		this->load(id, v);
+	}
+
+	Creature(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas) : Creature()
+	{
+		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas);
 	}
 
 	// Equip a weapon by setting the equipped weapon pointer. Currently
@@ -194,6 +210,109 @@ class Creature
 			return true;
 		}
 		return false;
+	}
+
+	// Save the creature's data to a JSON file named according to the name
+	// of the creature
+	void save()
+	{
+		JsonBox::Object o;
+		o["name"] = JsonBox::Value(this->name);
+		o["className"] = JsonBox::Value(this->className);
+		o["health"] = JsonBox::Value(this->health);
+		o["maxHealth"] = JsonBox::Value(this->maxHealth);
+		o["str"] = JsonBox::Value(this->str);
+		o["end"] = JsonBox::Value(this->end);
+		o["dex"] = JsonBox::Value(this->dex);
+		o["hitRate"] = JsonBox::Value(this->hitRate);
+		o["level"] = JsonBox::Value(int(this->level));
+		o["exp"] = JsonBox::Value(int(this->exp));
+		o["inventory"] = JsonBox::Value(this->inventory.to_json());
+		o["equipped_weapon"] = JsonBox::Value(this->equippedWeapon == nullptr ? "nullptr" : this->equippedWeapon->id);
+		JsonBox::Array a;
+		for(auto armour : this->equippedArmour)
+		{
+			a.push_back(armour == nullptr ? "nullptr" : armour->id);
+		}
+		o["equipped_armour"] = a;
+		JsonBox::Value v(o);
+		v.writeToFile(this->name + ".json");
+
+		return;
+	}
+
+	// Load the creature's compulsory variable from the JSON value
+	void load(std::string id, JsonBox::Value v)
+	{
+		JsonBox::Object o = v.getObject();
+		this->name = o["name"].getString();
+		this->health = o["health"].getInteger();
+		this->str = o["str"].getInteger();
+		this->end = o["end"].getInteger();
+		this->dex = o["dex"].getInteger();
+		this->hitRate = o["hitRate"].getDouble();
+		this->level = o["level"].getInteger();
+
+		Entity::load(id, v);
+
+		return;
+	}
+
+	// Attempt to load all data from the JSON value
+	void load(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas)
+	{
+		// Load compulsory variables
+		this->load(id, v);
+		// Load optional variables
+		JsonBox::Object o = v.getObject();
+		// Set className if it exists
+		if(o.find("className") != o.end())
+		{
+			this->className = o["className"].getString();
+		}
+		else
+		{
+			this->className = "";
+		}
+		if(o.find("maxHealth") != o.end())
+		{
+			this->maxHealth = o["maxHealth"].getInteger();
+		}
+		else
+		{
+			this->maxHealth = this->health;
+		}
+		if(o.find("exp") != o.end())
+		{
+			this->exp = o["exp"].getInteger();
+		}
+		else
+		{
+			this->exp = 0;
+		}
+		if(o.find("inventory") != o.end())
+		{
+			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+		}
+		if(o.find("equipped_weapon") != o.end())
+		{
+			std::string equippedWeaponName = o["equipped_weapon"].getString();
+			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
+		}
+		if(o.find("equipped_armour") != o.end())
+		{
+			JsonBox::Array a = o["equipped_amour"].getArray();
+			for(int i = 0; i < a.size(); ++i)
+			{
+				std::string equippedArmourName = a[i].getString();
+				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+			}
+		}
+
+		return;
 	}
 };
 

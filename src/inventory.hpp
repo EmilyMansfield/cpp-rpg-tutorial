@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <list>
 #include <utility>
 #include <iostream>
+#include "JsonBox.h"
 
 class Inventory
 {
@@ -49,6 +50,33 @@ class Inventory
 
 	Inventory()
 	{
+	}
+
+	// Load the inventory from a JSON value
+	Inventory(JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas)
+	{
+		JsonBox::Object o = v.getObject();
+		for(auto item : o["items"].getArray())
+		{
+			std::string itemName = item.getArray()[0].getString();
+			int itemQuantity = item.getArray()[1].getInteger();
+			this->items.push_back(std::make_pair(&itemAtlas[itemName], itemQuantity));
+		}
+		for(auto weapon : o["weapons"].getArray())
+		{
+			std::string weaponName = weapon.getArray()[0].getString();
+			int weaponQuantity = weapon.getArray()[1].getInteger();
+			this->weapons.push_back(std::make_pair(&weaponAtlas[weaponName], weaponQuantity));
+		}
+		for(auto armour : o["armour"].getArray())
+		{
+			std::string armourName = armour.getArray()[0].getString();
+			int armourQuantity = armour.getArray()[1].getInteger();
+			this->armour.push_back(std::make_pair(&armourAtlas[armourName], armourQuantity));
+		}
 	}
 
 	Inventory(std::list<std::pair<Item*, int>> items,
@@ -303,6 +331,43 @@ class Inventory
 		}
 
 		return;
+	}
+
+	JsonBox::Object to_json()
+	{
+		JsonBox::Object o;
+
+		JsonBox::Array a;
+		for(auto item : this->items)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(item.first->id));
+			pair.push_back(JsonBox::Value(item.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["items"] = JsonBox::Value(a);
+
+		a.clear();
+		for(auto weapon : this->weapons)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(weapon.first->id));
+			pair.push_back(JsonBox::Value(weapon.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["weapons"] = a;
+
+		a.clear();
+		for(auto armour : this->armour)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(armour.first->id));
+			pair.push_back(JsonBox::Value(armour.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+		o["armour"] = a;
+
+		return o;
 	}
 };
 

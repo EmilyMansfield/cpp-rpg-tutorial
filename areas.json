@@ -1,0 +1,45 @@
+{
+	"area_01": {
+		"dialogue": {
+			"description": "You are in room 1",
+			"choices": [
+				"Go to room 2",
+				"Search"
+			]
+		},
+		"inventory": {
+			"items": [
+				["item_gold_coin", 5]
+			],
+			"weapons": [
+				["weapon_iron_dagger", 1]
+			],
+			"armour": [
+				["armour_leather_cuirass", 1]
+			]
+		},
+		"creatures": []
+	},
+
+	"area_02": {
+		"dialogue": {
+			"description": "You are in room 2",
+			"choices": [
+				"Go to room 1",
+				"Search"
+			]
+		},
+		"inventory": {
+			"items": [
+				["item_gold_coin", 10],
+				["item_iron_key", 1]
+			],
+			"weapons": [],
+			"armour": []
+		},
+		"creatures":
+		[
+			"creature_rat"
+		]
+	}
+}

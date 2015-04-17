@@ -24,10 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <list>
 #include <utility>
 #include <cstdlib>
 #include <ctime>
+#include "JsonBox.h"
 
 #include "atlas.hpp"
 #include "item.hpp"
@@ -40,7 +42,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "battle.hpp"
 
 // New character menu
-Creature dialogue_newchar();
+Creature start_game();
+
+std::map<std::string, Creature> creatureAtlas;
+std::map<std::string, Item> itemAtlas;
+std::map<std::string, Weapon> weaponAtlas;
+std::map<std::string, Armour> armourAtlas;
+std::map<std::string, Area> areaAtlas;
 
 // Character information menu, displays the items the player has, their
 // current stats etc.
@@ -48,12 +56,6 @@ void dialogue_menu(Creature& player);
 
 int main(void)
 {
-	std::vector<Creature> creatureAtlas;
-	std::vector<Item> itemAtlas;
-	std::vector<Weapon> weaponAtlas;
-	std::vector<Armour> armourAtlas;
-	std::vector<Area> areaAtlas;
-
 	Creature player;
 
 	// Build the atlases
@@ -67,24 +69,31 @@ int main(void)
 	// random numbers produced by rand() will be different each time
 	srand(time(NULL));
 
-	// Main game menu dialogue
-	int result = Dialogue(
-		"Welcome!",
-		{"New Game"}).activate();
-
-	switch(result)
-	{
-		case 1: player = dialogue_newchar(); break;
-		default: return 0; break;
-	}
+	player = start_game();
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
-	Area* currentArea = &(areaAtlas[0]);
+	Area* currentArea = &(areaAtlas["area_01"]);
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
 	{
+		// Mark the current player as visited
+		currentArea->visited = true;
+
+		// Autosave the game
+		player.save();
+		JsonBox::Object o;
+		for(auto area : areaAtlas)
+		{
+			if(area.second.visited)
+			{
+				o[area.first] = area.second.to_json();
+			}
+		}
+		JsonBox::Value v(o);
+		v.writeToFile(player.name + "_areas.json");
+
 		// If the player has died then inform them as such and close
 		// the program
 		if(player.health <= 0)
@@ -113,7 +122,7 @@ int main(void)
         }
 
 		// Activate the current area's dialogue
-		result = currentArea->dialogue.activate();
+		int result = currentArea->dialogue.activate();
 
 		// These could be moved inside of the area code using an event
 		// style system, but that allows for much less flexibility with
@@ -126,13 +135,13 @@ int main(void)
 			dialogue_menu(player);
 			continue;
 		}
-		if(currentArea == &(areaAtlas[0]))
+		if(currentArea == &(areaAtlas["area_01"]))
 		{
 			switch(result)
 			{
 				case 1:
 				// Move to area 1
-					currentArea = &(areaAtlas[1]);
+					currentArea = &(areaAtlas["area_02"]);
 					break;
 				case 2:
 				// Search the area
@@ -142,13 +151,13 @@ int main(void)
 					break;
 			}
 		}
-		else if(currentArea == &(areaAtlas[1]))
+		else if(currentArea == &(areaAtlas["area_02"]))
 		{
 			switch(result)
 			{
 				// Move to area 0
 				case 1:
-					currentArea = &(areaAtlas[0]);
+					currentArea = &(areaAtlas["area_01"]);
 					break;
 				// Search the area
 				case 2:
@@ -163,37 +172,60 @@ int main(void)
 	return 0;
 }
 
-// Create a new character
-Creature dialogue_newchar()
+// Create a new character or load an existing one
+Creature start_game()
 {
 	// Ask for a name and class
 	// Name does not use a dialogue since dialogues only request options,
 	// not string input. Could be generalised into its own TextInput
 	// class, but not really necessary
-	std::cout << "Choose your name" << std::endl;
+	std::cout << "What's your name?" << std::endl;
 	std::string name;
 	std::cin >> name;
 
-	int result = Dialogue(
-		"Choose your class",
-		{"Fighter", "Rogue"}).activate();
-
-	switch(result)
+	// Check for existence then open using JsonBox if it exists
+	std::ifstream f((name + ".json").c_str());
+	if(f.good())
 	{
-		// Fighter class favours health and strength
-		case 1:
-			return Creature(name, 35, 20, 10, 5, 10.0, 1, "Fighter");
-			break;
+		f.close();
+		// Load the player
+		JsonBox::Value v;
+		v.loadFromFile(name + ".json");
+		Creature player = Creature("player", v, itemAtlas, weaponAtlas, armourAtlas);
 
-		// Rogue class favours dexterity and hit rate
-		case 2:
-			return Creature(name, 30, 5, 10, 20, 15.0, 1, "Fighter");
-			break;
+		// Load the area
+		v.loadFromFile(name + "_areas.json");
+		JsonBox::Object o = v.getObject();
+		for(auto area : o)
+		{
+			std::string key = area.first;
+			areaAtlas[key].load(key, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+		}
 
-		// Default case that should never happen, but it's good to be safe
-		default:
-			return Creature(name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
-		break;
+		// Return the player
+		return player;
+	}
+	else
+	{
+		f.close();
+		int result = Dialogue(
+			"Choose your class",
+			{"Fighter", "Rogue"}).activate();
+
+		switch(result)
+		{
+			// Fighter class favours health and strength
+			case 1:
+				return Creature("player", name, 35, 20, 10, 5, 10.0, 1, "Fighter");
+
+			// Rogue class favours dexterity and hit rate
+			case 2:
+				return Creature("player", name, 30, 5, 10, 20, 15.0, 1, "Fighter");
+
+			// Default case that should never happen, but it's good to be safe
+			default:
+				return Creature("player", name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
+		}
 	}
 }
 

@@ -22,80 +22,82 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "atlas.hpp"
+#include "JsonBox.h"
 
-void buildatlas_creature(std::vector<Creature>& atlas)
+void buildatlas_creature(std::map<std::string, Creature>& atlas)
 {
 	// Fill the atlas
-	// Creature(Name, Health, Str, End, Dex, Hit Rate, Level)
-	atlas.push_back(Creature("Rat", 8, 8, 8, 12, 2.0, 1));
+	JsonBox::Value v;
+	v.loadFromFile("creatures.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto creature : o)
+	{
+		std::string key = creature.first;
+		atlas[key] = Creature(key, creature.second);
+	}
 
 	return;
 }
 
-void buildatlas_item(std::vector<Item>& atlas)
+void buildatlas_item(std::map<std::string, Item>& atlas)
 {
-	// Item(Name, Description)
-	atlas.push_back(Item("Gold Coin", "A small disc made of lustrous metal"));
-	atlas.push_back(Item("Iron Key", "A heavy iron key with a simple cut"));
+	JsonBox::Value v;
+	v.loadFromFile("items.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto item : o)
+	{
+		std::string key = item.first;
+		atlas[key] = Item(key, item.second);
+	}
 
 	return;
 }
 
-void buildatlas_weapon(std::vector<Weapon>& atlas)
+void buildatlas_weapon(std::map<std::string, Weapon>& atlas)
 {
-	// Weapon(Name, Description, Damage, Hit Rate)
-	atlas.push_back(Weapon("Iron Dagger", "A short blade made of iron with a leather-bound hilt", 5, 10.0));
-	atlas.push_back(Weapon("Excalibur", "The legendary blade, bestowed upon you by the Lady of the Lake", 35, 35.0));
+	JsonBox::Value v;
+	v.loadFromFile("weapons.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto weapon : o)
+	{
+		std::string key = weapon.first;
+		atlas[key] = Weapon(key, weapon.second);
+	}
 
 	return;
 }
 
-void buildatlas_armour(std::vector<Armour>& atlas)
+void buildatlas_armour(std::map<std::string, Armour>& atlas)
 {
-	// Armour(Name, Description, Defense, Slot)
-	atlas.push_back(Armour("Leather Cuirass", "Torso armour made of tanned hide", 4, Armour::Slot::TORSO));
+	JsonBox::Value v;
+	v.loadFromFile("armour.json");
+
+	JsonBox::Object o = v.getObject();
+	for(auto armour : o)
+	{
+		std::string key = armour.first;
+		atlas[key] = Armour(key, armour.second);
+	}
 
 	return;
 }
 
-void buildatlas_area(std::vector<Area>& atlas,
-	std::vector<Item>& items, std::vector<Weapon>& weapons,
-	std::vector<Armour>& armour, std::vector<Creature>& creatures)
+void buildatlas_area(std::map<std::string, Area>& atlas,
+	std::map<std::string, Item>& items, std::map<std::string, Weapon>& weapons,
+	std::map<std::string, Armour>& armour, std::map<std::string, Creature>& creatures)
 {
-	// Area definitions are somewhat more complicated:
-	atlas.push_back(Area(Dialogue(			// Standard dialogue definiton
-		"You are in room 1",				// Description
-		{"Go to room 2", "Search"}),		// Choices
-		Inventory(							// Area inventory
-		{
-			std::make_pair(&items[0], 5)	// Pair of item and quantity
+	JsonBox::Value v;
+	v.loadFromFile("areas.json");
 
-		},
-		{
-			std::make_pair(&weapons[0], 1)	// Pair of weapon and quantity
-		},
-		{
-			std::make_pair(&armour[0], 1)	// Pair of armour and quantity
-		}),
-		{									// Creatures
-		}));
-
-	atlas.push_back(Area(Dialogue(
-		"You are in room 2",
-		{"Go to room 1", "Search"}),
-		Inventory(
-		{
-			std::make_pair(&items[0], 10),
-			std::make_pair(&items[1], 1)
-		},
-		{
-		},
-		{
-		}),
-		{
-			&creatures[0],
-			&creatures[0]
-		}));
+	JsonBox::Object o = v.getObject();
+	for(auto area : o)
+	{
+		std::string key = area.first;
+		atlas[key] = Area(key, area.second, items, weapons, armour, creatures);
+	}
 
 	return;
 }

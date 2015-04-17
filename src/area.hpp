@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef AREA_HPP
 #define AREA_HPP
 
+#include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "dialogue.hpp"
@@ -33,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Movement is achieved through the use of areas, which are contained
 // units of space consisting of an inventory, a list of creatures and
 // a dialogue
-class Area
+class Area : public Entity
 {
 	public:
 
@@ -50,16 +51,30 @@ class Area
 	// things later
 	std::vector<Creature*> creatures;
 
-	Area(Dialogue dialogue, Inventory items,
-		std::vector<Creature*> creatures)
+	// true if the player has visited the area, and hence it needs saving
+	bool visited;
+
+	Area(std::string id, Dialogue dialogue, Inventory items,
+		std::vector<Creature*> creatures) : Entity(id)
 	{
 		this->dialogue = dialogue;
 		this->items = items;
 		this->creatures = creatures;
+		this->visited = false;
 	}
 
-	Area()
+	Area() : Entity("nullid")
 	{
+	}
+
+	Area(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas,
+		std::map<std::string, Creature>& creatureAtlas) : Entity(id)
+	{
+		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+		this->visited = false;
 	}
 
 	// Search the area for items and give them to the searcher, notifying
@@ -73,6 +88,61 @@ class Area
 		this->items.clear();
 
 		return;
+	}
+
+	void load(std::string id, JsonBox::Value v,
+		std::map<std::string, Item>& itemAtlas,
+		std::map<std::string, Weapon>& weaponAtlas,
+		std::map<std::string, Armour>& armourAtlas,
+		std::map<std::string, Creature>& creatureAtlas)
+	{
+		JsonBox::Object o = v.getObject();
+
+		// Build the dialogue
+		// This is an optional parameter because it will not be saved
+		// when the area is modified
+		if(o.find("dialogue") != o.end())
+		{
+			JsonBox::Object dialogue = o["dialogue"].getObject();
+			std::string dialogue_description = dialogue["description"].getString();
+			std::vector<std::string> dialogue_choices;
+			for(auto choice : dialogue["choices"].getArray())
+			{
+				dialogue_choices.push_back(choice.getString());
+			}
+			this->dialogue = Dialogue(dialogue_description, dialogue_choices);
+		}
+		// Build the inventory
+		this->items = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+
+		// Build the creature list
+		for(auto creature : o["creatures"].getArray())
+		{
+			this->creatures.push_back(&creatureAtlas[creature.getString()]);
+		}
+
+		Entity::load(id, v);
+
+		return;
+	}
+
+	JsonBox::Object to_json()
+	{
+		JsonBox::Object o;
+		// We don't need to save the dialogue because it doesn't change
+
+		// Save the inventory
+		o["inventory"] = this->items.to_json();
+
+		// Save the creatures
+		JsonBox::Array a;
+		for(auto creature : this->creatures)
+		{
+			a.push_back(JsonBox::Value(creature->id));
+		}
+		o["creatures"] = a;
+
+		return o;
 	}
 };
 
