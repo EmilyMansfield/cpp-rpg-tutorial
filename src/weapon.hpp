@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef WEAPON_HPP
 #define WEAPON_HPP
 
+#include "entity_manager.hpp"
 #include "item.hpp"
 
 #include <string>
@@ -54,7 +55,7 @@ class Weapon : public Item
 	{
 	}
 
-	Weapon(std::string id, JsonBox::Value v) : Item()
+	Weapon(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
 	{
 		this->load(id, v);
 	}

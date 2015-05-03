@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ARMOUR_HPP
 #define ARMOUR_HPP
 
+#include "entity_manager.hpp"
 #include "item.hpp"
 
 #include <string>
@@ -55,7 +56,7 @@ class Armour : public Item
 	{
 	}
 
-	Armour(std::string id, JsonBox::Value v) : Item()
+	Armour(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
 	{
 		this->load(id, v);
 	}

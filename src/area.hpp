@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef AREA_HPP
 #define AREA_HPP
 
+#include "entity_manager.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
@@ -67,13 +68,9 @@ class Area : public Entity
 	{
 	}
 
-	Area(std::string id, JsonBox::Value v,
-		std::map<std::string, Item>& itemAtlas,
-		std::map<std::string, Weapon>& weaponAtlas,
-		std::map<std::string, Armour>& armourAtlas,
-		std::map<std::string, Creature>& creatureAtlas) : Entity(id)
+	Area(std::string id, JsonBox::Value v, EntityManager* mgr) : Entity(id)
 	{
-		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+		this->load(id, v, mgr);
 		this->visited = false;
 	}
 
@@ -90,11 +87,7 @@ class Area : public Entity
 		return;
 	}
 
-	void load(std::string id, JsonBox::Value v,
-		std::map<std::string, Item>& itemAtlas,
-		std::map<std::string, Weapon>& weaponAtlas,
-		std::map<std::string, Armour>& armourAtlas,
-		std::map<std::string, Creature>& creatureAtlas)
+	void load(std::string id, JsonBox::Value v, EntityManager* mgr)
 	{
 		JsonBox::Object o = v.getObject();
 
@@ -113,12 +106,12 @@ class Area : public Entity
 			this->dialogue = Dialogue(dialogue_description, dialogue_choices);
 		}
 		// Build the inventory
-		this->items = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+		this->items = Inventory(o["inventory"], mgr);
 
 		// Build the creature list
 		for(auto creature : o["creatures"].getArray())
 		{
-			this->creatures.push_back(&creatureAtlas[creature.getString()]);
+			this->creatures.push_back(mgr->getEntity<Creature>(creature.getString()));
 		}
 
 		Entity::load(id, v);

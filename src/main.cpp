@@ -29,9 +29,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_set>
 #include "JsonBox.h"
 
-#include "atlas.hpp"
+#include "entity_manager.hpp"
 #include "item.hpp"
 #include "weapon.hpp"
 #include "armour.hpp"
@@ -44,26 +45,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // New character menu
 Creature start_game();
 
-std::map<std::string, Creature> creatureAtlas;
-std::map<std::string, Item> itemAtlas;
-std::map<std::string, Weapon> weaponAtlas;
-std::map<std::string, Armour> armourAtlas;
-std::map<std::string, Area> areaAtlas;
-
 // Character information menu, displays the items the player has, their
 // current stats etc.
 void dialogue_menu(Creature& player);
+
+// Keeps track of items, weapons, creatures etc.
+EntityManager entityManager;
 
 int main(void)
 {
 	Creature player;
 
-	// Build the atlases
-	buildatlas_creature(creatureAtlas);
-	buildatlas_item(itemAtlas);
-	buildatlas_weapon(weaponAtlas);
-	buildatlas_armour(armourAtlas);
-	buildatlas_area(areaAtlas, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+	// Load the entities
+	entityManager.loadJson<Item>("items.json");
+	entityManager.loadJson<Weapon>("weapons.json");
+	entityManager.loadJson<Armour>("armour.json");
+	entityManager.loadJson<Creature>("creatures.json");
+	entityManager.loadJson<Area>("areas.json");
 
 	// Seed the random number generator with the system time, so the
 	// random numbers produced by rand() will be different each time
@@ -73,23 +71,21 @@ int main(void)
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
-	Area* currentArea = &(areaAtlas["area_01"]);
+	Area* currentArea = entityManager.getEntity<Area>("area_01");
+	std::unordered_set<std::string> visitedAreas;
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
 	{
 		// Mark the current player as visited
-		currentArea->visited = true;
+		visitedAreas.insert(currentArea->id);
 
 		// Autosave the game
 		player.save();
 		JsonBox::Object o;
-		for(auto area : areaAtlas)
+		for(auto area : visitedAreas)
 		{
-			if(area.second.visited)
-			{
-				o[area.first] = area.second.to_json();
-			}
+			o[area] = entityManager.getEntity<Area>(area)->to_json();
 		}
 		JsonBox::Value v(o);
 		v.writeToFile(player.name + "_areas.json");
@@ -135,29 +131,29 @@ int main(void)
 			dialogue_menu(player);
 			continue;
 		}
-		if(currentArea == &(areaAtlas["area_01"]))
+		if(currentArea->id == "area_01")
 		{
 			switch(result)
 			{
-				case 1:
 				// Move to area 1
-					currentArea = &(areaAtlas["area_02"]);
+				case 1:
+					currentArea = entityManager.getEntity<Area>("area_02");
 					break;
-				case 2:
 				// Search the area
+				case 2:
 					currentArea->search(player);
 					break;
 				default:
 					break;
 			}
 		}
-		else if(currentArea == &(areaAtlas["area_02"]))
+		else if(currentArea->id == "area_02")
 		{
 			switch(result)
 			{
 				// Move to area 0
 				case 1:
-					currentArea = &(areaAtlas["area_01"]);
+					currentArea = entityManager.getEntity<Area>("area_01");
 					break;
 				// Search the area
 				case 2:
@@ -191,7 +187,7 @@ Creature start_game()
 		// Load the player
 		JsonBox::Value v;
 		v.loadFromFile(name + ".json");
-		Creature player = Creature("player", v, itemAtlas, weaponAtlas, armourAtlas);
+		Creature player = Creature("player", v, &entityManager);
 
 		// Load the area
 		v.loadFromFile(name + "_areas.json");
@@ -199,7 +195,7 @@ Creature start_game()
 		for(auto area : o)
 		{
 			std::string key = area.first;
-			areaAtlas[key].load(key, v, itemAtlas, weaponAtlas, armourAtlas, creatureAtlas);
+			entityManager.getEntity<Area>(key)->load(key, v, &entityManager);
 		}
 
 		// Return the player

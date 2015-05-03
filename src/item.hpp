@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+#include "entity_manager.hpp"
 #include "entity.hpp"
 
 #include <string>
@@ -48,7 +49,7 @@ class Item : public Entity
 	{
 	}
 
-	Item(std::string id, JsonBox::Value v) : Item()
+	Item(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
 	{
 		this->load(id, v);
 	}

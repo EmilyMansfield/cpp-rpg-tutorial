@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef CREATURE_HPP
 #define CREATURE_HPP
 
+#include "entity_manager.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "weapon.hpp"
@@ -100,17 +101,9 @@ class Creature : public Entity
 		this->exp = 0;
 	}
 
-	Creature(std::string id, JsonBox::Value v) : Creature()
+	Creature(std::string id, JsonBox::Value v, EntityManager* mgr) : Creature()
 	{
-		this->load(id, v);
-	}
-
-	Creature(std::string id, JsonBox::Value v,
-		std::map<std::string, Item>& itemAtlas,
-		std::map<std::string, Weapon>& weaponAtlas,
-		std::map<std::string, Armour>& armourAtlas) : Creature()
-	{
-		this->load(id, v, itemAtlas, weaponAtlas, armourAtlas);
+		this->load(id, v, mgr);
 	}
 
 	// Equip a weapon by setting the equipped weapon pointer. Currently
@@ -259,10 +252,7 @@ class Creature : public Entity
 	}
 
 	// Attempt to load all data from the JSON value
-	void load(std::string id, JsonBox::Value v,
-		std::map<std::string, Item>& itemAtlas,
-		std::map<std::string, Weapon>& weaponAtlas,
-		std::map<std::string, Armour>& armourAtlas)
+	void load(std::string id, JsonBox::Value v, EntityManager* mgr)
 	{
 		// Load compulsory variables
 		this->load(id, v);
@@ -295,12 +285,12 @@ class Creature : public Entity
 		}
 		if(o.find("inventory") != o.end())
 		{
-			this->inventory = Inventory(o["inventory"], itemAtlas, weaponAtlas, armourAtlas);
+			this->inventory = Inventory(o["inventory"], mgr);
 		}
 		if(o.find("equipped_weapon") != o.end())
 		{
 			std::string equippedWeaponName = o["equipped_weapon"].getString();
-			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : &weaponAtlas[equippedWeaponName];
+			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : mgr->getEntity<Weapon>(equippedWeaponName);
 		}
 		if(o.find("equipped_armour") != o.end())
 		{
@@ -308,7 +298,7 @@ class Creature : public Entity
 			for(int i = 0; i < a.size(); ++i)
 			{
 				std::string equippedArmourName = a[i].getString();
-				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : &armourAtlas[equippedArmourName];
+				this->equippedArmour[i] = equippedArmourName == "nullptr" ? nullptr : mgr->getEntity<Armour>(equippedArmourName);
 			}
 		}
 
