@@ -33,8 +33,6 @@ class Armour;
 class Creature;
 class Area;
 
-enum class RESOURCE_TYPE { ITEM, WEAPON, ARMOUR, CREATURE, AREA };
-
 class EntityManager
 {
 	private:
@@ -87,21 +85,7 @@ class EntityManager
 		else										return nullptr;
 	}
 
-	// template void loadJson<Item>(std::string);
-	// template void loadJson<Weapon>(std::string);
-	// template void loadJson<Armour>(std::string);
-	// template void loadJson<Creature>(std::string);
-	// template void loadJson<Area>(std::string);
-
-	// template Item* getEntity<Item>(std::string);
-	// template Weapon* getEntity<Weapon>(std::string);
-	// template Armour* getEntity<Armour>(std::string);
-	// template Creature* getEntity<Creature>(std::string);
-	// template Àrea* getEntity<Area>(std::string);
-
-	EntityManager() {
-
-	}
+	EntityManager() {}
 
 };
 #endif /* ENTITY_MANAGER_HPP */
