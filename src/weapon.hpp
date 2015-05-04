@@ -14,7 +14,7 @@ class Weapon : public Item
 
 	// Weapon damage. See the Battle class for formula, but values
 	// between 1-50 are reasonable
-	unsigned damage;
+	int damage;
 
 	// Modifier to hit chance. Small values are encouraged, e.g.
 	// 5-30%
