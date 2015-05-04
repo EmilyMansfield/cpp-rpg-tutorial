@@ -36,6 +36,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class Inventory
 {
+	private:
+
+	// Given the Json value v which contains a list of items, weapons, or armour of type T
+	// load the Ts into the storage list (either items, weapons, or armour)
+	template <typename T>
+	void loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
+	{
+		for(auto item : v.getArray())
+		{
+			std::string itemId = item.getArray()[0].getString();
+			int quantity = item.getArray()[1].getInteger();
+			storage.push_back(std::make_pair(mgr->getEntity<T>(itemId), quantity));
+		}
+	}
+
 	public:
 
 	// Whilst weapons and armour are also items, they have their own
@@ -57,24 +72,9 @@ class Inventory
 	Inventory(JsonBox::Value v, EntityManager* mgr)
 	{
 		JsonBox::Object o = v.getObject();
-		for(auto item : o["items"].getArray())
-		{
-			std::string itemName = item.getArray()[0].getString();
-			int itemQuantity = item.getArray()[1].getInteger();
-			this->items.push_back(std::make_pair(mgr->getEntity<Item>(itemName), itemQuantity));
-		}
-		for(auto weapon : o["weapons"].getArray())
-		{
-			std::string weaponName = weapon.getArray()[0].getString();
-			int weaponQuantity = weapon.getArray()[1].getInteger();
-			this->weapons.push_back(std::make_pair(mgr->getEntity<Weapon>(weaponName), weaponQuantity));
-		}
-		for(auto armour : o["armour"].getArray())
-		{
-			std::string armourName = armour.getArray()[0].getString();
-			int armourQuantity = armour.getArray()[1].getInteger();
-			this->armour.push_back(std::make_pair(mgr->getEntity<Armour>(armourName), armourQuantity));
-		}
+		loadItems<Item>(o["items"], this->items, mgr);
+		loadItems<Weapon>(o["weapons"], this->weapons, mgr);
+		loadItems<Armour>(o["armour"], this->armour, mgr);
 	}
 
 	Inventory(std::list<std::pair<Item*, int>> items,
@@ -87,7 +87,7 @@ class Inventory
 	}
 
 	// Remove all items from the inventory, destroying them in the process
-	// (They remain in the atlas though)
+	// (They remain in the entity manager though)
 	void clear()
 	{
 		this->items.clear();
@@ -96,12 +96,12 @@ class Inventory
 	}
 
 	// Add an item to the inventory, specified by a pointer to it
-	// from the item atlas (technically does not need to point there,
-	// but it should anyway)
-	void add_item(Item* item, int count)
+	// Should be from the entity manager
+	template <typename T>
+	void add_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
 	{
 		// Perform the same operation as merging, but for a single item
-		for(auto& it : this->items)
+		for(auto& it : storage)
 		{
 			if(it.first == item)
 			{
@@ -111,43 +111,19 @@ class Inventory
 		}
 		// If the item doesn't already exist in the inventory, then a
 		// pair must be created too
-		this->items.push_back(std::make_pair(item, count));
+		storage.push_back(std::make_pair(item, count));
 	}
-
-	// Same as for items
-	void add_weapon(Weapon* weapon, int count)
-	{
-		for(auto& it : this->weapons)
-		{
-			if(it.first == weapon)
-			{
-				it.second += count;
-				return;
-			}
-		}
-		this->weapons.push_back(std::make_pair(weapon, count));
-	}
-
-	// Same as for items
-	void add_armour(Armour* armour, int count)
-	{
-		for(auto& it : this->armour)
-		{
-			if(it.first == armour)
-			{
-				it.second += count;
-				return;
-			}
-		}
-		this->armour.push_back(std::make_pair(armour, count));
-	}
+	void add_item(Item* item, int count) { add_item<Item>(item, count, this->items); }
+	void add_item(Weapon* weapon, int count) { add_item<Weapon>(weapon, count, this->weapons); }
+	void add_item(Armour* armour, int count) { add_item<Armour>(armour, count, this->armour); }
 
 	// Remove the specified number of items from the inventory
-	void remove_item(Item* item, int count)
+	template <typename T>
+	void remove_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
 	{
 		// Iterate through the items, and if they are found then decrease
 		// the quantity by the quantity removed
-		for(auto& it : this->items)
+		for(auto& it : storage)
 		{
 			if(it.first == item)
 			{
@@ -160,78 +136,29 @@ class Inventory
 		// We do this in two passes because removing an element from
 		// a list during a for loop invalidates the iterators, and the
 		// loop stops working
-		this->items.remove_if([](std::pair<Item*, int>& element)
+		storage.remove_if([](std::pair<T*, int>& element)
 		{
 			return element.second < 1;
 		});
 	}
-
-	// Same as for items
-	void remove_weapon(Weapon* weapon, int count)
-	{
-		for(auto& it : this->weapons)
-		{
-			if(it.first == weapon)
-			{
-				it.second -= count;
-				break;
-			}
-		}
-		this->weapons.remove_if([](std::pair<Weapon*, int>& element)
-		{
-			return element.second < 1;
-		});
-	}
-
-	// Same as for items
-	void remove_armour(Armour* armour, int count)
-	{
-		for(auto& it : this->armour)
-		{
-			if(it.first == armour)
-			{
-				it.second -= count;
-				break;
-			}
-		}
-		this->armour.remove_if([](std::pair<Armour*, int>& element)
-		{
-			return element.second < 1;
-		});
-	}
+	void remove_item(Item* item, int count) { remove_item<Item>(item, count, this->items); }
+	void remove_item(Weapon* weapon, int count) { remove_item<Weapon>(weapon, count, this->weapons); }
+	void remove_item(Armour* armour, int count) { remove_item<Armour>(armour, count, this->armour); }
 
 	// Returns the count of the specified item
-	unsigned int has_item(Item* item)
+	template <typename T>
+	unsigned int has_item(T* item, std::list<std::pair<T*, int>>& storage)
 	{
 		unsigned int count = 0;
-		for(auto it : this->items)
+		for(auto it : storage)
 		{
 			if(it.first == item) ++count;
 		}
 		return count;
 	}
-
-	// Same for weapon
-	unsigned int has_weapon(Weapon* weapon)
-	{
-		unsigned int count = 0;
-		for(auto it : this->weapons)
-		{
-			if(it.first == weapon) ++count;
-		}
-		return count;
-	}
-
-	// Same for armour
-	unsigned int has_armour(Armour* armour)
-	{
-		unsigned int count = 0;
-		for(auto it : this->armour)
-		{
-			if(it.first == armour) ++count;
-		}
-		return count;
-	}
+	unsigned int has_item(Item* item) { return has_item<Item>(item, this->items); }
+	unsigned int has_item(Weapon* weapon) { return has_item<Weapon>(weapon, this->weapons); }
+	unsigned int has_item(Armour* armour) { return has_item<Armour>(armour, this->armour); }
 
 	// Merge the specified inventory with the current one, adding
 	// item quantities together if they already exist and adding the item
@@ -250,12 +177,12 @@ class Inventory
 		// Do the same for the weapons
 		for(auto it : inventory->weapons)
 		{
-			this->add_weapon(it.first, it.second);
+			this->add_item(it.first, it.second);
 		}
 		// Do the same for the armour
 		for(auto it : inventory->armour)
 		{
-			this->add_armour(it.first, it.second);
+			this->add_item(it.first, it.second);
 		}
 
 		return;
@@ -263,11 +190,12 @@ class Inventory
 
 	// Output a list of the items onto stdout, formatted nicely and
 	// numbered if required
-	int print_items(bool label = false)
+	template <typename T>
+	int print_items(std::list<std::pair<T*, int>>& storage, bool label = false)
 	{
 		unsigned int i = 1;
 
-		for(auto it : this->items)
+		for(auto it : storage)
 		{
 			// Number the items if asked
 			if(label) std::cout << i++ << ": ";
@@ -278,38 +206,11 @@ class Inventory
 		}
 
 		// Return the number of items outputted, for convenience
-		return this->items.size();
+		return storage.size();
 	}
-
-	// Same as for items
-	int print_weapons(bool label = false)
-	{
-		unsigned int i = 1;
-
-		for(auto it : this->weapons)
-		{
-			if(label) std::cout << i++ << ": ";
-			std::cout << it.first->name << " (" << it.second << ") - ";
-			std::cout << it.first->description << std::endl;
-		}
-
-		return this->weapons.size();
-	}
-
-	// Same as for items
-	int print_armour(bool label = false)
-	{
-		unsigned int i = 1;
-
-		for(auto it : this->armour)
-		{
-			if(label) std::cout << i++ << ": ";
-			std::cout << it.first->name << " (" << it.second << ") - ";
-			std::cout << it.first->description << std::endl;
-		}
-
-		return this->armour.size();
-	}
+	int print_items(bool label = false) { return print_items<Item>(this->items, label); }
+	int print_weapons(bool label = false) { return print_items<Weapon>(this->weapons, label); }
+	int print_armour(bool label = false) { return print_items<Armour>(this->armour, label); }
 
 	// Print the entire inventory; items, then weapons, then armour,
 	// but if the inventory is empty then output "Nothing"
