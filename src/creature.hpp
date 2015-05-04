@@ -70,6 +70,13 @@ class Creature : public Entity
 
 	Creature() : Entity("nullid")
 	{
+		this->name = "noname";
+		this->health = 0;
+		this->maxHealth = 0;
+		this->str = 0;
+		this->dex = 0;
+		this->end = 0;
+		this->hitRate = 0;
 		this->equippedArmour[Armour::Slot::HEAD] = nullptr;
 		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
 		this->equippedArmour[Armour::Slot::LEGS] = nullptr;
