@@ -31,6 +31,8 @@ class Armour : public Item
 
 	Armour() : Item()
 	{
+		this->defense = 0;
+		this->slot = Slot::TORSO;
 	}
 
 	Armour(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
