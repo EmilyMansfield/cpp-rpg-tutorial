@@ -109,6 +109,7 @@ class Area : public Entity
 		this->items = Inventory(o["inventory"], mgr);
 
 		// Build the creature list
+		this->creatures.clear();
 		for(auto creature : o["creatures"].getArray())
 		{
 			this->creatures.push_back(mgr->getEntity<Creature>(creature.getString()));

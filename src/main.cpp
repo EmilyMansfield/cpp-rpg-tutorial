@@ -52,6 +52,9 @@ void dialogue_menu(Creature& player);
 // Keeps track of items, weapons, creatures etc.
 EntityManager entityManager;
 
+// Areas that the player has been to
+std::unordered_set<std::string> visitedAreas;
+
 int main(void)
 {
 	Creature player;
@@ -72,7 +75,6 @@ int main(void)
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
 	Area* currentArea = entityManager.getEntity<Area>("area_01");
-	std::unordered_set<std::string> visitedAreas;
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
@@ -195,7 +197,8 @@ Creature start_game()
 		for(auto area : o)
 		{
 			std::string key = area.first;
-			entityManager.getEntity<Area>(key)->load(key, v, &entityManager);
+			entityManager.getEntity<Area>(key)->load(key, area.second, &entityManager);
+			visitedAreas.insert(key);
 		}
 
 		// Return the player
