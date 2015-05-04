@@ -68,21 +68,8 @@ class Creature : public Entity
 		this->exp = 0;
 	}
 
-	Creature() : Entity("nullid")
+	Creature() : Creature("nullid", "", 0, 0, 0, 0, 0)
 	{
-		this->name = "noname";
-		this->health = 0;
-		this->maxHealth = 0;
-		this->str = 0;
-		this->dex = 0;
-		this->end = 0;
-		this->hitRate = 0;
-		this->equippedArmour[Armour::Slot::HEAD] = nullptr;
-		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
-		this->equippedArmour[Armour::Slot::LEGS] = nullptr;
-		this->equippedWeapon = nullptr;
-		this->level = 1;
-		this->exp = 0;
 	}
 
 	Creature(std::string id, JsonBox::Value v, EntityManager* mgr) : Creature()

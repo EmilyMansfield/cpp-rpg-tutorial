@@ -28,10 +28,8 @@ class Weapon : public Item
 		this->hitRate = hitRate;
 	}
 
-	Weapon() : Item()
+	Weapon() : Weapon("nullid", "", "", 0, 0)
 	{
-		this->damage = 0;
-		this->hitRate = 0;
 	}
 
 	Weapon(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
