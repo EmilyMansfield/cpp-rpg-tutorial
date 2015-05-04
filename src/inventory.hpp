@@ -169,15 +169,6 @@ class Inventory
 		loadItems<Armour>(o["armour"], this->armour, mgr);
 	}
 
-	Inventory(std::list<std::pair<Item*, int>> items,
-		std::list<std::pair<Weapon*, int>> weapons,
-		std::list<std::pair<Armour*, int>> armour)
-	{
-		this->items = items;
-		this->weapons = weapons;
-		this->armour = armour;
-	}
-
 	// Remove all items from the inventory, destroying them in the process
 	// (They remain in the entity manager though)
 	void clear()
@@ -214,20 +205,9 @@ class Inventory
 
 		// Loop through the items to be added, and add them. Our addition
 		// function will take care of everything else for us
-		for(auto it : inventory->items)
-		{
-			this->add_item(it.first, it.second);
-		}
-		// Do the same for the weapons
-		for(auto it : inventory->weapons)
-		{
-			this->add_item(it.first, it.second);
-		}
-		// Do the same for the armour
-		for(auto it : inventory->armour)
-		{
-			this->add_item(it.first, it.second);
-		}
+		for(auto it : inventory->items)		this->add_item(it.first, it.second);
+		for(auto it : inventory->weapons)	this->add_item(it.first, it.second);
+		for(auto it : inventory->armour)	this->add_item(it.first, it.second);
 
 		return;
 	}
