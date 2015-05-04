@@ -77,11 +77,11 @@ class EntityManager
 	template<typename T>
 	T* getEntity(std::string id)
 	{
-		if(std::is_same<T, Item>::value)			return dynamic_cast<T*>(&dataItem[id]);
-		else if(std::is_same<T, Weapon>::value)		return dynamic_cast<T*>(&dataWeapon[id]);
-		else if(std::is_same<T, Armour>::value)		return dynamic_cast<T*>(&dataArmour[id]);
-		else if(std::is_same<T, Creature>::value)	return dynamic_cast<T*>(&dataCreature[id]);
-		else if(std::is_same<T, Area>::value)		return dynamic_cast<T*>(&dataArea[id]);
+		if(std::is_same<T, Item>::value)			return dynamic_cast<T*>(&dataItem.at(id));
+		else if(std::is_same<T, Weapon>::value)		return dynamic_cast<T*>(&dataWeapon.at(id));
+		else if(std::is_same<T, Armour>::value)		return dynamic_cast<T*>(&dataArmour.at(id));
+		else if(std::is_same<T, Creature>::value)	return dynamic_cast<T*>(&dataCreature.at(id));
+		else if(std::is_same<T, Area>::value)		return dynamic_cast<T*>(&dataArea.at(id));
 		else										return nullptr;
 	}
 
