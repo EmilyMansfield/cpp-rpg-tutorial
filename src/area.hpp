@@ -29,16 +29,12 @@ class Area : public Entity
 	// things later
 	std::vector<Creature*> creatures;
 
-	// true if the player has visited the area, and hence it needs saving
-	bool visited;
-
 	Area(std::string id, Dialogue dialogue, Inventory items,
 		std::vector<Creature*> creatures) : Entity(id)
 	{
 		this->dialogue = dialogue;
 		this->items = items;
 		this->creatures = creatures;
-		this->visited = false;
 	}
 
 	Area() : Entity("nullid")
@@ -48,7 +44,6 @@ class Area : public Entity
 	Area(std::string id, JsonBox::Value v, EntityManager* mgr) : Entity(id)
 	{
 		this->load(id, v, mgr);
-		this->visited = false;
 	}
 
 	// Search the area for items and give them to the searcher, notifying
