@@ -43,11 +43,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "battle.hpp"
 
 // New character menu
-Creature start_game();
+Creature startGame();
 
 // Character information menu, displays the items the player has, their
 // current stats etc.
-void dialogue_menu(Creature& player);
+void dialogueMenu(Creature& player);
 
 // Keeps track of items, weapons, creatures etc.
 EntityManager entityManager;
@@ -70,7 +70,7 @@ int main(void)
 	// random numbers produced by rand() will be different each time
 	srand(time(NULL));
 
-	player = start_game();
+	player = startGame();
 
 	// Set the current area to be the first area in the atlas, essentially
 	// placing the player there upon game start
@@ -87,7 +87,7 @@ int main(void)
 		JsonBox::Object o;
 		for(auto area : visitedAreas)
 		{
-			o[area] = entityManager.getEntity<Area>(area)->to_json();
+			o[area] = entityManager.getEntity<Area>(area)->getJson();
 		}
 		JsonBox::Value v(o);
 		v.writeToFile(player.name + "_areas.json");
@@ -130,7 +130,7 @@ int main(void)
 		if(result == 0)
 		{
 			// Open the menu
-			dialogue_menu(player);
+			dialogueMenu(player);
 			continue;
 		}
 		if(currentArea->id == "area_01")
@@ -171,7 +171,7 @@ int main(void)
 }
 
 // Create a new character or load an existing one
-Creature start_game()
+Creature startGame()
 {
 	// Ask for a name and class
 	// Name does not use a dialogue since dialogues only request options,
@@ -228,7 +228,7 @@ Creature start_game()
 	}
 }
 
-void dialogue_menu(Creature& player)
+void dialogueMenu(Creature& player)
 {
 	// Output the menu
 	int result = Dialogue(
@@ -278,7 +278,7 @@ void dialogue_menu(Creature& player)
 				// Cannot equip armour if they do not have any
 				// Print a list of the armour and retrieve the amount
 				// of armour in one go
-				int numItems = player.inventory.print_armour(true);
+				int numItems = player.inventory.printArmour(true);
 				if(numItems == 0) break;
 
 				while(!userInput)
@@ -308,7 +308,7 @@ void dialogue_menu(Creature& player)
 			else if(result2 == 2)
 			{
 				int userInput = 0;
-				int numItems = player.inventory.print_weapons(true);
+				int numItems = player.inventory.printWeapons(true);
 
 				if(numItems == 0) break;
 

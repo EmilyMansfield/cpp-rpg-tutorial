@@ -54,7 +54,7 @@ class Inventory
 	// Add an item to the inventory, specified by a pointer to it
 	// Should be from the entity manager
 	template <typename T>
-	void add_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
+	void addItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
 	{
 		// Perform the same operation as merging, but for a single item
 		for(auto& it : storage)
@@ -72,7 +72,7 @@ class Inventory
 
 	// Remove the specified number of items from the inventory
 	template <typename T>
-	void remove_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
+	void removeItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
 	{
 		// Iterate through the items, and if they are found then decrease
 		// the quantity by the quantity removed
@@ -97,7 +97,7 @@ class Inventory
 
 	// Returns the count of the specified item
 	template <typename T>
-	unsigned int has_item(T* item, std::list<std::pair<T*, int>>& storage)
+	unsigned int hasItem(T* item, std::list<std::pair<T*, int>>& storage)
 	{
 		unsigned int count = 0;
 		for(auto it : storage)
@@ -110,7 +110,7 @@ class Inventory
 	// Output a list of the items onto stdout, formatted nicely and
 	// numbered if required
 	template <typename T>
-	int print_items(std::list<std::pair<T*, int>>& storage, bool label = false)
+	int printItems(std::list<std::pair<T*, int>>& storage, bool label = false)
 	{
 		unsigned int i = 1;
 
@@ -129,7 +129,7 @@ class Inventory
 	}
 
 	template <typename T>
-	JsonBox::Array to_json(std::list<std::pair<T*, int>>& storage)
+	JsonBox::Array getJson(std::list<std::pair<T*, int>>& storage)
 	{
 		JsonBox::Array a;
 		for(auto item : storage)
@@ -179,21 +179,21 @@ class Inventory
 	}
 
 	// Template specialisations
-	void add_item(Item* item, int count) { add_item<Item>(item, count, this->items); }
-	void add_item(Weapon* weapon, int count) { add_item<Weapon>(weapon, count, this->weapons); }
-	void add_item(Armour* armour, int count) { add_item<Armour>(armour, count, this->armour); }
+	void addItem(Item* item, int count) { addItem<Item>(item, count, this->items); }
+	void addItem(Weapon* weapon, int count) { addItem<Weapon>(weapon, count, this->weapons); }
+	void addItem(Armour* armour, int count) { addItem<Armour>(armour, count, this->armour); }
 
-	void remove_item(Item* item, int count) { remove_item<Item>(item, count, this->items); }
-	void remove_item(Weapon* weapon, int count) { remove_item<Weapon>(weapon, count, this->weapons); }
-	void remove_item(Armour* armour, int count) { remove_item<Armour>(armour, count, this->armour); }
+	void removeItem(Item* item, int count) { removeItem<Item>(item, count, this->items); }
+	void removeItem(Weapon* weapon, int count) { removeItem<Weapon>(weapon, count, this->weapons); }
+	void removeItem(Armour* armour, int count) { removeItem<Armour>(armour, count, this->armour); }
 
-	unsigned int has_item(Item* item) { return has_item<Item>(item, this->items); }
-	unsigned int has_item(Weapon* weapon) { return has_item<Weapon>(weapon, this->weapons); }
-	unsigned int has_item(Armour* armour) { return has_item<Armour>(armour, this->armour); }
+	unsigned int hasItem(Item* item) { return hasItem<Item>(item, this->items); }
+	unsigned int hasItem(Weapon* weapon) { return hasItem<Weapon>(weapon, this->weapons); }
+	unsigned int hasItem(Armour* armour) { return hasItem<Armour>(armour, this->armour); }
 
-	int print_items(bool label = false) { return print_items<Item>(this->items, label); }
-	int print_weapons(bool label = false) { return print_items<Weapon>(this->weapons, label); }
-	int print_armour(bool label = false) { return print_items<Armour>(this->armour, label); }
+	int printItems(bool label = false) { return printItems<Item>(this->items, label); }
+	int printWeapons(bool label = false) { return printItems<Weapon>(this->weapons, label); }
+	int printArmour(bool label = false) { return printItems<Armour>(this->armour, label); }
 
 	// Merge the specified inventory with the current one, adding
 	// item quantities together if they already exist and adding the item
@@ -205,9 +205,9 @@ class Inventory
 
 		// Loop through the items to be added, and add them. Our addition
 		// function will take care of everything else for us
-		for(auto it : inventory->items)		this->add_item(it.first, it.second);
-		for(auto it : inventory->weapons)	this->add_item(it.first, it.second);
-		for(auto it : inventory->armour)	this->add_item(it.first, it.second);
+		for(auto it : inventory->items)		this->addItem(it.first, it.second);
+		for(auto it : inventory->weapons)	this->addItem(it.first, it.second);
+		for(auto it : inventory->armour)	this->addItem(it.first, it.second);
 
 		return;
 	}
@@ -224,21 +224,21 @@ class Inventory
 		}
 		else
 		{
-			this->print_items(label);
-			this->print_weapons(label);
-			this->print_armour(label);
+			this->printItems(label);
+			this->printWeapons(label);
+			this->printArmour(label);
 		}
 
 		return;
 	}
 
-	JsonBox::Object to_json()
+	JsonBox::Object getJson()
 	{
 		JsonBox::Object o;
 
-		o["items"] = JsonBox::Value(to_json<Item>(this->items));
-		o["weapons"] = JsonBox::Value(to_json<Weapon>(this->weapons));
-		o["armour"] = JsonBox::Value(to_json<Armour>(this->armour));
+		o["items"] = JsonBox::Value(getJson<Item>(this->items));
+		o["weapons"] = JsonBox::Value(getJson<Weapon>(this->weapons));
+		o["armour"] = JsonBox::Value(getJson<Armour>(this->armour));
 
 		return o;
 	}

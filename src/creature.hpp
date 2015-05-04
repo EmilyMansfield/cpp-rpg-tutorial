@@ -220,7 +220,7 @@ class Creature : public Entity
 		o["hitRate"] = JsonBox::Value(this->hitRate);
 		o["level"] = JsonBox::Value(int(this->level));
 		o["exp"] = JsonBox::Value(int(this->exp));
-		o["inventory"] = JsonBox::Value(this->inventory.to_json());
+		o["inventory"] = JsonBox::Value(this->inventory.getJson());
 		o["equipped_weapon"] = JsonBox::Value(this->equippedWeapon == nullptr ? "nullptr" : this->equippedWeapon->id);
 		JsonBox::Array a;
 		for(auto armour : this->equippedArmour)

@@ -97,13 +97,13 @@ class Area : public Entity
 		if(o.find("dialogue") != o.end())
 		{
 			JsonBox::Object dialogue = o["dialogue"].getObject();
-			std::string dialogue_description = dialogue["description"].getString();
-			std::vector<std::string> dialogue_choices;
+			std::string dialogueDescription = dialogue["description"].getString();
+			std::vector<std::string> dialogueChoices;
 			for(auto choice : dialogue["choices"].getArray())
 			{
-				dialogue_choices.push_back(choice.getString());
+				dialogueChoices.push_back(choice.getString());
 			}
-			this->dialogue = Dialogue(dialogue_description, dialogue_choices);
+			this->dialogue = Dialogue(dialogueDescription, dialogueChoices);
 		}
 		// Build the inventory
 		this->items = Inventory(o["inventory"], mgr);
@@ -120,13 +120,13 @@ class Area : public Entity
 		return;
 	}
 
-	JsonBox::Object to_json()
+	JsonBox::Object getJson()
 	{
 		JsonBox::Object o;
 		// We don't need to save the dialogue because it doesn't change
 
 		// Save the inventory
-		o["inventory"] = this->items.to_json();
+		o["inventory"] = this->items.getJson();
 
 		// Save the creatures
 		JsonBox::Array a;
