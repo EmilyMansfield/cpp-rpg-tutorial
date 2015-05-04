@@ -51,6 +51,98 @@ class Inventory
 		}
 	}
 
+	// Add an item to the inventory, specified by a pointer to it
+	// Should be from the entity manager
+	template <typename T>
+	void add_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
+	{
+		// Perform the same operation as merging, but for a single item
+		for(auto& it : storage)
+		{
+			if(it.first == item)
+			{
+				it.second += count;
+				return;
+			}
+		}
+		// If the item doesn't already exist in the inventory, then a
+		// pair must be created too
+		storage.push_back(std::make_pair(item, count));
+	}
+
+	// Remove the specified number of items from the inventory
+	template <typename T>
+	void remove_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
+	{
+		// Iterate through the items, and if they are found then decrease
+		// the quantity by the quantity removed
+		for(auto& it : storage)
+		{
+			if(it.first == item)
+			{
+				it.second -= count;
+				break;
+			}
+		}
+		// Iterate through the list again, and remove any elements from
+		// the list that have zero or less for their quantity
+		// We do this in two passes because removing an element from
+		// a list during a for loop invalidates the iterators, and the
+		// loop stops working
+		storage.remove_if([](std::pair<T*, int>& element)
+		{
+			return element.second < 1;
+		});
+	}
+
+	// Returns the count of the specified item
+	template <typename T>
+	unsigned int has_item(T* item, std::list<std::pair<T*, int>>& storage)
+	{
+		unsigned int count = 0;
+		for(auto it : storage)
+		{
+			if(it.first == item) ++count;
+		}
+		return count;
+	}
+
+	// Output a list of the items onto stdout, formatted nicely and
+	// numbered if required
+	template <typename T>
+	int print_items(std::list<std::pair<T*, int>>& storage, bool label = false)
+	{
+		unsigned int i = 1;
+
+		for(auto it : storage)
+		{
+			// Number the items if asked
+			if(label) std::cout << i++ << ": ";
+			// Output the item name, quantity and description, e.g.
+			// Gold Piece (29) - Glimmering discs of wealth
+			std::cout << it.first->name << " (" << it.second << ") - ";
+			std::cout << it.first->description << std::endl;
+		}
+
+		// Return the number of items outputted, for convenience
+		return storage.size();
+	}
+
+	template <typename T>
+	JsonBox::Array to_json(std::list<std::pair<T*, int>>& storage)
+	{
+		JsonBox::Array a;
+		for(auto item : storage)
+		{
+			JsonBox::Array pair;
+			pair.push_back(JsonBox::Value(item.first->id));
+			pair.push_back(JsonBox::Value(item.second));
+			a.push_back(JsonBox::Value(pair));
+		}
+
+		return a;
+	}
+
 	public:
 
 	// Whilst weapons and armour are also items, they have their own
@@ -95,70 +187,22 @@ class Inventory
 		this->armour.clear();
 	}
 
-	// Add an item to the inventory, specified by a pointer to it
-	// Should be from the entity manager
-	template <typename T>
-	void add_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
-	{
-		// Perform the same operation as merging, but for a single item
-		for(auto& it : storage)
-		{
-			if(it.first == item)
-			{
-				it.second += count;
-				return;
-			}
-		}
-		// If the item doesn't already exist in the inventory, then a
-		// pair must be created too
-		storage.push_back(std::make_pair(item, count));
-	}
+	// Template specialisations
 	void add_item(Item* item, int count) { add_item<Item>(item, count, this->items); }
 	void add_item(Weapon* weapon, int count) { add_item<Weapon>(weapon, count, this->weapons); }
 	void add_item(Armour* armour, int count) { add_item<Armour>(armour, count, this->armour); }
 
-	// Remove the specified number of items from the inventory
-	template <typename T>
-	void remove_item(T* item, int count, std::list<std::pair<T*, int>>& storage)
-	{
-		// Iterate through the items, and if they are found then decrease
-		// the quantity by the quantity removed
-		for(auto& it : storage)
-		{
-			if(it.first == item)
-			{
-				it.second -= count;
-				break;
-			}
-		}
-		// Iterate through the list again, and remove any elements from
-		// the list that have zero or less for their quantity
-		// We do this in two passes because removing an element from
-		// a list during a for loop invalidates the iterators, and the
-		// loop stops working
-		storage.remove_if([](std::pair<T*, int>& element)
-		{
-			return element.second < 1;
-		});
-	}
 	void remove_item(Item* item, int count) { remove_item<Item>(item, count, this->items); }
 	void remove_item(Weapon* weapon, int count) { remove_item<Weapon>(weapon, count, this->weapons); }
 	void remove_item(Armour* armour, int count) { remove_item<Armour>(armour, count, this->armour); }
 
-	// Returns the count of the specified item
-	template <typename T>
-	unsigned int has_item(T* item, std::list<std::pair<T*, int>>& storage)
-	{
-		unsigned int count = 0;
-		for(auto it : storage)
-		{
-			if(it.first == item) ++count;
-		}
-		return count;
-	}
 	unsigned int has_item(Item* item) { return has_item<Item>(item, this->items); }
 	unsigned int has_item(Weapon* weapon) { return has_item<Weapon>(weapon, this->weapons); }
 	unsigned int has_item(Armour* armour) { return has_item<Armour>(armour, this->armour); }
+
+	int print_items(bool label = false) { return print_items<Item>(this->items, label); }
+	int print_weapons(bool label = false) { return print_items<Weapon>(this->weapons, label); }
+	int print_armour(bool label = false) { return print_items<Armour>(this->armour, label); }
 
 	// Merge the specified inventory with the current one, adding
 	// item quantities together if they already exist and adding the item
@@ -188,30 +232,6 @@ class Inventory
 		return;
 	}
 
-	// Output a list of the items onto stdout, formatted nicely and
-	// numbered if required
-	template <typename T>
-	int print_items(std::list<std::pair<T*, int>>& storage, bool label = false)
-	{
-		unsigned int i = 1;
-
-		for(auto it : storage)
-		{
-			// Number the items if asked
-			if(label) std::cout << i++ << ": ";
-			// Output the item name, quantity and description, e.g.
-			// Gold Piece (29) - Glimmering discs of wealth
-			std::cout << it.first->name << " (" << it.second << ") - ";
-			std::cout << it.first->description << std::endl;
-		}
-
-		// Return the number of items outputted, for convenience
-		return storage.size();
-	}
-	int print_items(bool label = false) { return print_items<Item>(this->items, label); }
-	int print_weapons(bool label = false) { return print_items<Weapon>(this->weapons, label); }
-	int print_armour(bool label = false) { return print_items<Armour>(this->armour, label); }
-
 	// Print the entire inventory; items, then weapons, then armour,
 	// but if the inventory is empty then output "Nothing"
 	void print(bool label = false)
@@ -236,35 +256,9 @@ class Inventory
 	{
 		JsonBox::Object o;
 
-		JsonBox::Array a;
-		for(auto item : this->items)
-		{
-			JsonBox::Array pair;
-			pair.push_back(JsonBox::Value(item.first->id));
-			pair.push_back(JsonBox::Value(item.second));
-			a.push_back(JsonBox::Value(pair));
-		}
-		o["items"] = JsonBox::Value(a);
-
-		a.clear();
-		for(auto weapon : this->weapons)
-		{
-			JsonBox::Array pair;
-			pair.push_back(JsonBox::Value(weapon.first->id));
-			pair.push_back(JsonBox::Value(weapon.second));
-			a.push_back(JsonBox::Value(pair));
-		}
-		o["weapons"] = a;
-
-		a.clear();
-		for(auto armour : this->armour)
-		{
-			JsonBox::Array pair;
-			pair.push_back(JsonBox::Value(armour.first->id));
-			pair.push_back(JsonBox::Value(armour.second));
-			a.push_back(JsonBox::Value(pair));
-		}
-		o["armour"] = a;
+		o["items"] = JsonBox::Value(to_json<Item>(this->items));
+		o["weapons"] = JsonBox::Value(to_json<Weapon>(this->weapons));
+		o["armour"] = JsonBox::Value(to_json<Armour>(this->armour));
 
 		return o;
 	}
