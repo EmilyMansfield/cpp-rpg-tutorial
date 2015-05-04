@@ -9,6 +9,7 @@ class Weapon;
 class Armour;
 class Creature;
 class Area;
+class Door;
 
 class EntityManager
 {
@@ -19,6 +20,7 @@ class EntityManager
 	std::map<std::string, Armour> dataArmour;
 	std::map<std::string, Creature> dataCreature;
 	std::map<std::string, Area> dataArea;
+	std::map<std::string, Door> dataDoor;
 
 	template<typename T>
 	void loadJson(std::string filename, std::map<std::string, T>& data)
@@ -47,6 +49,7 @@ class EntityManager
 		else if(std::is_same<T, Armour>::value)		loadJson(filename, dataArmour);
 		else if(std::is_same<T, Creature>::value)	loadJson(filename, dataCreature);
 		else if(std::is_same<T, Area>::value)		loadJson(filename, dataArea);
+		else if(std::is_same<T, Door>::value)		loadJson(filename, dataDoor);
 
 		return;
 	}
@@ -59,6 +62,7 @@ class EntityManager
 		else if(std::is_same<T, Armour>::value)		return dynamic_cast<T*>(&dataArmour.at(id));
 		else if(std::is_same<T, Creature>::value)	return dynamic_cast<T*>(&dataCreature.at(id));
 		else if(std::is_same<T, Area>::value)		return dynamic_cast<T*>(&dataArea.at(id));
+		else if(std::is_same<T, Door>::value)		return dynamic_cast<T*>(&dataDoor.at(id));
 		else										return nullptr;
 	}
 

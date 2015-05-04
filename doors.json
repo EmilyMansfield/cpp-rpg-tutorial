@@ -1,0 +1,8 @@
+{
+	"door_01_02": {
+		"description": "sturdy wooden door",
+		"areas": ["area_01", "area_02"],
+		"locked": 1,
+		"key": "item_iron_key"
+	}
+}

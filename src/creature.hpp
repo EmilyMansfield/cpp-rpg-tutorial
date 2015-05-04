@@ -6,10 +6,13 @@
 #include "inventory.hpp"
 #include "weapon.hpp"
 #include "armour.hpp"
+#include "door.hpp"
 
 #include <string>
 #include <fstream>
 #include "JsonBox.h"
+
+class Area;
 
 class Creature : public Entity
 {
@@ -48,6 +51,10 @@ class Creature : public Entity
 
 	// Armour currently equipped into each slot
 	Armour* equippedArmour[Armour::Slot::N];
+
+	// Area the creature resides in. Used for player motion but also could
+	// be used for enemy AI
+	std::string currentArea;
 
 	Creature(std::string id, std::string name, int health, int str, int end, int dex, double hitRate,
 		unsigned int level = 1, std::string className = "") : Entity(id)
@@ -174,6 +181,50 @@ class Creature : public Entity
 			return true;
 		}
 		return false;
+	}
+
+	Area* getAreaPtr(EntityManager* mgr)
+	{
+		return mgr->getEntity<Area>(this->currentArea);
+	}
+
+	// Go through a door
+	// 0 = Door is locked
+	// 1 = Door unlocked using key
+	// 2 = Door is open
+	int traverse(Door* door)
+	{
+		int flag = 2;
+		// Open the door if it is shut
+		if(door->locked == 0)
+		{
+			door->locked = -1;
+			flag = 2;
+		}
+		else if(door->locked > 0)
+		{
+			// Unlock and open the door if the creature has the key
+			if(this->inventory.hasItem(door->key))
+			{
+				door->locked = -1;
+				flag = 1;
+			}
+			// Creature does not have key so door remains locked
+			else
+			{
+				return 0;
+			}
+		}
+		if(door->areas.first == this->currentArea)
+		{
+			this->currentArea = door->areas.second;
+		}
+		else if(door->areas.second == this->currentArea)
+		{
+			this->currentArea = door->areas.first;
+		}
+
+		return flag;
 	}
 
 	// Save the creature's data to a JSON file named according to the name

@@ -34,30 +34,29 @@ std::unordered_set<std::string> visitedAreas;
 
 int main(void)
 {
-	Creature player;
-
 	// Load the entities
 	entityManager.loadJson<Item>("items.json");
 	entityManager.loadJson<Weapon>("weapons.json");
 	entityManager.loadJson<Armour>("armour.json");
 	entityManager.loadJson<Creature>("creatures.json");
+	entityManager.loadJson<Door>("doors.json");
 	entityManager.loadJson<Area>("areas.json");
 
 	// Seed the random number generator with the system time, so the
 	// random numbers produced by rand() will be different each time
 	srand(time(NULL));
 
-	player = startGame();
+	Creature player = startGame();
 
-	// Set the current area to be the first area in the atlas, essentially
+	// Set the current area to be the first area in the atlas,
 	// placing the player there upon game start
-	Area* currentArea = entityManager.getEntity<Area>("area_01");
+	player.currentArea = "area_01";
 
 	// Play the game until a function breaks the loop and closes it
 	while(1)
 	{
 		// Mark the current player as visited
-		visitedAreas.insert(currentArea->id);
+		visitedAreas.insert(player.currentArea);
 
 		// Autosave the game
 		player.save();
@@ -81,66 +80,61 @@ int main(void)
 		// then begin a battle with the last creature in the list
 		// before moving on the next one. This makes the creature
 		// list act like a stack
-		if(currentArea->creatures.size() > 0)
+		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
 		{
-		    for(int i = currentArea->creatures.size() - 1; i >= 0; --i)
-		    {
-			    Battle(&player, currentArea->creatures[i]).run();
-			    // Remove the creature from the area. This is fine to do
-			    // because if the player wins the creature will not respawn,
-			    // and if the creature wins the player isn't around to see it
-			    // (This does break the 'non-mutable' feature of the atlases,
-			    // but doing so saves a lot of memory, as we don't need to keep
-			    // two versions of each area)
-			    currentArea->creatures.pop_back();
-		    }
-        }
+			for(int i = player.getAreaPtr(&entityManager)->creatures.size() - 1; i >= 0; --i)
+			{
+				Battle(&player, player.getAreaPtr(&entityManager)->creatures[i]).run();
+				// Remove the creature from the area. This is fine to do
+				// because if the player wins the creature will not respawn,
+				// and if the creature wins the player isn't around to see it
+				// (This does break the 'non-mutable' feature of the atlases,
+				// but doing so saves a lot of memory, as we don't need to keep
+				// two versions of each area)
+				player.getAreaPtr(&entityManager)->creatures.pop_back();
+			}
+		}
 
+		// Add the search and movement options to the dialogue
+		Dialogue roomOptions = player.getAreaPtr(&entityManager)->dialogue;
+		for(auto door : player.getAreaPtr(&entityManager)->doors)
+		{
+			roomOptions.addChoice("Go through the " + door->description);
+		}
+		roomOptions.addChoice("Search");
 		// Activate the current area's dialogue
-		int result = currentArea->dialogue.activate();
+		int result = roomOptions.activate();
 
-		// These could be moved inside of the area code using an event
-		// style system, but that allows for much less flexibility with
-		// what happens in each area. Since we're defining the areas in
-		// code anyway, sticking with this isn't too much of a problem,
-		// and it keeps things easy to understand
 		if(result == 0)
 		{
-			// Open the menu
 			dialogueMenu(player);
-			continue;
 		}
-		if(currentArea->id == "area_01")
+		else if(result <= player.getAreaPtr(&entityManager)->dialogue.size())
 		{
-			switch(result)
+			// Add more events here
+		}
+		else if(result < roomOptions.size())
+		{
+			Door* door = player.getAreaPtr(&entityManager)->doors.at(result-player.getAreaPtr(&entityManager)->dialogue.size()-1);
+			int flag = player.traverse(door);
+
+			switch(flag)
 			{
-				// Move to area 1
-				case 1:
-					currentArea = entityManager.getEntity<Area>("area_02");
-					break;
-				// Search the area
-				case 2:
-					currentArea->search(player);
-					break;
 				default:
+				case 0:
+					std::cout << "The " << door->description << " is locked." << std::endl;
+					break;
+				case 1:
+					std::cout << "You unlock the " << door->description << " and go through it." << std::endl;
+					break;
+				case 2:
+					std::cout << "You go through the " << door->description << "." << std::endl;
 					break;
 			}
 		}
-		else if(currentArea->id == "area_02")
+		else
 		{
-			switch(result)
-			{
-				// Move to area 0
-				case 1:
-					currentArea = entityManager.getEntity<Area>("area_01");
-					break;
-				// Search the area
-				case 2:
-					currentArea->search(player);
-					break;
-				default:
-					break;
-			}
+			player.getAreaPtr(&entityManager)->search(player);
 		}
 	}
 
