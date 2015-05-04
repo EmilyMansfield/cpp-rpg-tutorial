@@ -193,9 +193,9 @@ class Inventory
 	// but if the inventory is empty then output "Nothing"
 	void print(bool label = false)
 	{
-		if(this->items.size() == 0 &&
-			this->weapons.size() == 0 &&
-			this->armour.size() == 0)
+		if(this->items.empty() &&
+			this->weapons.empty() &&
+			this->armour.empty())
 		{
 			std::cout << "Nothing" << std::endl;
 		}
