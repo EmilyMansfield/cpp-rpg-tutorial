@@ -15,16 +15,16 @@
 #include "armour.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
+#include "player.hpp"
 #include "dialogue.hpp"
 #include "area.hpp"
-#include "battle.hpp"
 
 // New character menu
-Creature startGame();
+Player startGame();
 
 // Character information menu, displays the items the player has, their
 // current stats etc.
-void dialogueMenu(Creature& player);
+void dialogueMenu(Player& player);
 
 // Keeps track of items, weapons, creatures etc.
 EntityManager entityManager;
@@ -46,7 +46,7 @@ int main(void)
 	// random numbers produced by rand() will be different each time
 	srand(time(NULL));
 
-	Creature player = startGame();
+	Player player = startGame();
 
 	// Set the current area to be the first area in the atlas,
 	// placing the player there upon game start
@@ -80,20 +80,20 @@ int main(void)
 		// then begin a battle with the last creature in the list
 		// before moving on the next one. This makes the creature
 		// list act like a stack
-		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
-		{
-			for(int i = player.getAreaPtr(&entityManager)->creatures.size() - 1; i >= 0; --i)
-			{
-				Battle(&player, player.getAreaPtr(&entityManager)->creatures[i]).run();
-				// Remove the creature from the area. This is fine to do
-				// because if the player wins the creature will not respawn,
-				// and if the creature wins the player isn't around to see it
-				// (This does break the 'non-mutable' feature of the atlases,
-				// but doing so saves a lot of memory, as we don't need to keep
-				// two versions of each area)
-				player.getAreaPtr(&entityManager)->creatures.pop_back();
-			}
-		}
+		// if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
+		// {
+		// 	for(int i = player.getAreaPtr(&entityManager)->creatures.size() - 1; i >= 0; --i)
+		// 	{
+		// 		Battle(&player, player.getAreaPtr(&entityManager)->creatures[i]).run();
+		// 		// Remove the creature from the area. This is fine to do
+		// 		// because if the player wins the creature will not respawn,
+		// 		// and if the creature wins the player isn't around to see it
+		// 		// (This does break the 'non-mutable' feature of the atlases,
+		// 		// but doing so saves a lot of memory, as we don't need to keep
+		// 		// two versions of each area)
+		// 		player.getAreaPtr(&entityManager)->creatures.pop_back();
+		// 	}
+		// }
 
 		// Add the search and movement options to the dialogue
 		Dialogue roomOptions = player.getAreaPtr(&entityManager)->dialogue;
@@ -142,7 +142,7 @@ int main(void)
 }
 
 // Create a new character or load an existing one
-Creature startGame()
+Player startGame()
 {
 	// Ask for a name and class
 	// Name does not use a dialogue since dialogues only request options,
@@ -160,7 +160,7 @@ Creature startGame()
 		// Load the player
 		JsonBox::Value v;
 		v.loadFromFile(name + ".json");
-		Creature player = Creature("player", v, &entityManager);
+		Player player = Player(v, &entityManager);
 
 		// Load the area
 		v.loadFromFile(name + "_areas.json");
@@ -186,20 +186,20 @@ Creature startGame()
 		{
 			// Fighter class favours health and strength
 			case 1:
-				return Creature("player", name, 35, 20, 10, 5, 10.0, 1, "Fighter");
+				return Player(name, 35, 20, 10, 5, 10.0, 1, "Fighter");
 
 			// Rogue class favours dexterity and hit rate
 			case 2:
-				return Creature("player", name, 30, 5, 10, 20, 15.0, 1, "Fighter");
+				return Player(name, 30, 5, 10, 20, 15.0, 1, "Rogue");
 
 			// Default case that should never happen, but it's good to be safe
 			default:
-				return Creature("player", name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
+				return Player(name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
 		}
 	}
 }
 
-void dialogueMenu(Creature& player)
+void dialogueMenu(Player& player)
 {
 	// Output the menu
 	int result = Dialogue(
