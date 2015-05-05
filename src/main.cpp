@@ -70,7 +70,7 @@ int main(void)
 
 		// If the player has died then inform them as such and close
 		// the program
-		if(player.health <= 0)
+		if(player.hp <= 0)
 		{
 			std::cout << "\t----YOU DIED----\n    Game Over\n";
 			return 0;
@@ -184,17 +184,17 @@ Player startGame()
 
 		switch(result)
 		{
-			// Fighter class favours health and strength
+			// Fighter class favours strength
 			case 1:
-				return Player(name, 35, 20, 10, 5, 10.0, 1, "Fighter");
+				return Player(name, 15, 5, 4, 1.0/64.0, 1, "Fighter");
 
-			// Rogue class favours dexterity and hit rate
+			// Rogue class favours agility
 			case 2:
-				return Player(name, 30, 5, 10, 20, 15.0, 1, "Rogue");
+				return Player(name, 15, 4, 5, 1.0/64.0, 1, "Rogue");
 
 			// Default case that should never happen, but it's good to be safe
 			default:
-				return Player(name, 30, 10, 10, 10, 10.0, 1, "Adventurer");
+				return Player(name, 15, 4, 4, 1.0/64.0, 1, "Adventurer");
 		}
 	}
 }
@@ -313,12 +313,11 @@ void dialogueMenu(Player& player)
 			if(player.className != "") std::cout << " the " << player.className;
 			std::cout << std::endl;
 
-			std::cout << "HP: " << player.health << " / " << player.maxHealth << std::endl;
-			std::cout << "Str: " << player.str << std::endl;
-			std::cout << "End: " << player.end << std::endl;
-			std::cout << "Dex: " << player.dex << std::endl;
-			std::cout << "Lvl: " << player.level << " (" << player.exp;
-			std::cout <<  " / " << player.expToLevel(player.level+1) << ")" << std::endl;
+			std::cout << "Health:   " << player.hp << " / " << player.maxHp << std::endl;
+			std::cout << "Strength: " << player.strength << std::endl;
+			std::cout << "Agility:  " << player.agility << std::endl;
+			std::cout << "Level:    " << player.level << " (" << player.xp;
+			std::cout <<  " / " << player.xpToLevel(player.level+1) << ")" << std::endl;
 			std::cout << "----------------\n";
 			break;
 		default:

@@ -21,13 +21,12 @@ class Creature : public Entity
 	// Name of the creature
 	std::string name;
 
-	// Creature stats. Reasonable values are in parentheses
-	int health;		// Current hit points (10-1000+)
-	int maxHealth;	// Maximum hit points (10-1000+)
-	int str;		// Strength. Determines damage in battle (1-100)
-	int end;		// Endurance. Determines maximum health (1-100)
-	int dex;		// Dexterity. Determines speed in battle (1-100)
-	double hitRate;	// Modifier to hit chance. (1-150)
+	// Creature stats
+	int hp;
+	int maxHp;
+	int strength;
+	int agility;
+	double evasion;	// Modifier to hit chance. (1-150)
 
 	// Current level of the creature. Determines the amount of experience
 	// that it gives to the victor when defeated (see Battle class for more)
@@ -50,16 +49,15 @@ class Creature : public Entity
 	// be used for enemy AI
 	std::string currentArea;
 
-	Creature(std::string id, std::string name, int health, int str, int end, int dex, double hitRate,
+	Creature(std::string id, std::string name, int hp, int strength, int agility, double evasion,
 		unsigned int level) : Entity(id)
 	{
 		this->name = name;
-		this->health = health;
-		this->maxHealth = health;
-		this->str = str;
-		this->end = end;
-		this->dex = dex;
-		this->hitRate = hitRate;
+		this->hp = hp;
+		this->maxHp = hp;
+		this->strength = strength;
+		this->agility = agility;
+		this->evasion = evasion;
 		this->equippedArmour[Armour::Slot::HEAD] = nullptr;
 		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
 		this->equippedArmour[Armour::Slot::LEGS] = nullptr;
@@ -67,7 +65,7 @@ class Creature : public Entity
 		this->level = level;
 	}
 
-	Creature() : Creature("nullid", "", 0, 0, 0, 0, 0, 0)
+	Creature() : Creature("nullid", "", 0, 0, 0, 0.0, 1)
 	{
 	}
 
@@ -144,12 +142,11 @@ class Creature : public Entity
 	{
 		JsonBox::Object o;
 		o["name"] = JsonBox::Value(this->name);
-		o["health"] = JsonBox::Value(this->health);
-		o["maxHealth"] = JsonBox::Value(this->maxHealth);
-		o["str"] = JsonBox::Value(this->str);
-		o["end"] = JsonBox::Value(this->end);
-		o["dex"] = JsonBox::Value(this->dex);
-		o["hitRate"] = JsonBox::Value(this->hitRate);
+		o["hp"] = JsonBox::Value(this->hp);
+		o["hp_max"] = JsonBox::Value(this->maxHp);
+		o["strength"] = JsonBox::Value(this->strength);
+		o["agility"] = JsonBox::Value(this->agility);
+		o["evasion"] = JsonBox::Value(this->evasion);
 		o["level"] = JsonBox::Value(int(this->level));
 		o["inventory"] = JsonBox::Value(this->inventory.getJson());
 		o["equipped_weapon"] = JsonBox::Value(this->equippedWeapon == nullptr ? "nullptr" : this->equippedWeapon->id);
@@ -169,19 +166,18 @@ class Creature : public Entity
 	{
 		JsonBox::Object o = v.getObject();
 		this->name = o["name"].getString();
-		this->health = o["health"].getInteger();
-		if(o.find("maxHealth") != o.end())
+		this->hp = o["hp"].getInteger();
+		if(o.find("hp_max") != o.end())
 		{
-			this->maxHealth = o["maxHealth"].getInteger();
+			this->maxHp = o["hp_max"].getInteger();
 		}
 		else
 		{
-			this->maxHealth = health;
+			this->maxHp = hp;
 		}
-		this->str = o["str"].getInteger();
-		this->end = o["end"].getInteger();
-		this->dex = o["dex"].getInteger();
-		this->hitRate = o["hitRate"].getDouble();
+		this->strength = o["strength"].getInteger();
+		this->agility = o["agility"].getInteger();
+		this->evasion = o["evasion"].getDouble();
 		this->level = o["level"].getInteger();
 
 		Entity::load(id, v);

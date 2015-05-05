@@ -1,11 +1,11 @@
 {
 	"creature_rat": {
 		"name": "Rat",
-		"health": 8,
-		"str": 8,
-		"end": 8,
-		"dex": 12,
-		"hitRate": 2.0,
-		"level": 1
+		"hp": 3,
+		"strength": 5,
+		"agility": 3,
+		"evasion": 0.015625,
+		"xp": 1,
+		"weapon": "weapon_rat_claw"
 	}
 }
