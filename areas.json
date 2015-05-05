@@ -13,7 +13,7 @@
 			"weapons": [
 				["weapon_dagger", 1]
 			],
-			"armour": [
+			"armor": [
 				["armor_leather", 1]
 			]
 		},
@@ -31,7 +31,7 @@
 				["item_gold_coin", 100]
 			],
 			"weapons": [],
-			"armour": []
+			"armor": []
 		},
 		"creatures":
 		[

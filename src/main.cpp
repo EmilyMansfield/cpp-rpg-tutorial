@@ -12,7 +12,7 @@
 #include "entity_manager.hpp"
 #include "item.hpp"
 #include "weapon.hpp"
-#include "armour.hpp"
+#include "armor.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "player.hpp"
@@ -37,7 +37,7 @@ int main(void)
 	// Load the entities
 	entityManager.loadJson<Item>("items.json");
 	entityManager.loadJson<Weapon>("weapons.json");
-	entityManager.loadJson<Armour>("armour.json");
+	entityManager.loadJson<Armor>("armor.json");
 	entityManager.loadJson<Creature>("creatures.json");
 	entityManager.loadJson<Door>("doors.json");
 	entityManager.loadJson<Area>("areas.json");
@@ -216,13 +216,13 @@ void dialogueMenu(Player& player)
 			break;
 		// Print the equipment that the player is wearing (if they are
 		// wearing anything) and then ask if they want to equip a weapon
-		// or some armour
+		// or some armor
 		case 2:
 		{
 			std::cout << "Equipment\n=========\n";
-			std::cout << "Armour: "
-				<< (player.equippedArmour != nullptr ?
-					player.equippedArmour->name : "Nothing")
+			std::cout << "Armor: "
+				<< (player.equippedArmor != nullptr ?
+					player.equippedArmor->name : "Nothing")
 				<< std::endl;
 			std::cout << "Weapon: "
 				<< (player.equippedWeapon != nullptr ?
@@ -231,22 +231,22 @@ void dialogueMenu(Player& player)
 
 			int result2 = Dialogue(
 				"",
-				{"Equip Armour", "Equip Weapon", "Close"}).activate();
+				{"Equip Armor", "Equip Weapon", "Close"}).activate();
 
-			// Equipping armour
+			// Equipping armor
 			if(result2 == 1)
 			{
 				int userInput = 0;
 
-				// Cannot equip armour if they do not have any
-				// Print a list of the armour and retrieve the amount
-				// of armour in one go
-				int numItems = player.inventory.printArmour(true);
+				// Cannot equip armor if they do not have any
+				// Print a list of the armor and retrieve the amount
+				// of armor in one go
+				int numItems = player.inventory.printArmor(true);
 				if(numItems == 0) break;
 
 				while(!userInput)
 				{
-					// Choose a piece of armour to equip
+					// Choose a piece of armor to equip
 					std::cout << "Equip which item?" << std::endl;
 					std::cin >> userInput;
 					// Equipment is numbered but is stored in a list,
@@ -255,19 +255,19 @@ void dialogueMenu(Player& player)
 					{
 						int i = 1;
 
-						for(auto it : player.inventory.armour)
+						for(auto it : player.inventory.armor)
 						{
 							if(i++ == userInput)
 							{
-								// Equip the armour if it is found
-								player.equipArmour(it.first);
+								// Equip the armor if it is found
+								player.equipArmor(it.first);
 								break;
 							}
 						}
 					}
 				}
 			}
-			// Equip a weapon, using the same algorithms as for armour
+			// Equip a weapon, using the same algorithms as for armor
 			else if(result2 == 2)
 			{
 				int userInput = 0;

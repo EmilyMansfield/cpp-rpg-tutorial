@@ -5,7 +5,7 @@
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "weapon.hpp"
-#include "armour.hpp"
+#include "armor.hpp"
 #include "door.hpp"
 
 #include <string>
@@ -36,8 +36,8 @@ class Creature : public Entity
 	// but not necessary. nullptr denotes that no weapon is equipped
 	Weapon* equippedWeapon;
 
-	// Currently equipped armour
-	Armour* equippedArmour;
+	// Currently equipped armor
+	Armor* equippedArmor;
 
 	// Area the creature resides in. Used for player motion but also could
 	// be used for enemy AI
@@ -52,7 +52,7 @@ class Creature : public Entity
 		this->strength = strength;
 		this->agility = agility;
 		this->evasion = evasion;
-		this->equippedArmour = nullptr;
+		this->equippedArmor = nullptr;
 		this->equippedWeapon = nullptr;
 		this->xp = xp;
 	}
@@ -76,11 +76,11 @@ class Creature : public Entity
 		return;
 	}
 
-	// Equip the armour into it's correct slot. A slightly more useful
+	// Equip the armor into it's correct slot. A slightly more useful
 	// function!
-	void equipArmour(Armour* armour)
+	void equipArmor(Armor* armor)
 	{
-		this->equippedArmour = armour;
+		this->equippedArmor = armor;
 
 		return;
 	}
@@ -142,7 +142,7 @@ class Creature : public Entity
 		o["xp"] = JsonBox::Value(int(this->xp));
 		o["inventory"] = JsonBox::Value(this->inventory.getJson());
 		o["equipped_weapon"] = JsonBox::Value(this->equippedWeapon == nullptr ? "nullptr" : this->equippedWeapon->id);
-		o["equipped_armour"] = JsonBox::Value(this->equippedArmour == nullptr ? "nullptr" : this->equippedArmour->id);
+		o["equipped_armor"] = JsonBox::Value(this->equippedArmor == nullptr ? "nullptr" : this->equippedArmor->id);
 
 		return o;
 	}
@@ -189,10 +189,10 @@ class Creature : public Entity
 			std::string equippedWeaponName = o["equipped_weapon"].getString();
 			this->equippedWeapon = equippedWeaponName == "nullptr" ? nullptr : mgr->getEntity<Weapon>(equippedWeaponName);
 		}
-		if(o.find("equipped_armour") != o.end())
+		if(o.find("equipped_armor") != o.end())
 		{
-			std::string equippedArmourName = o["equipped_armour"].getString();
-			this->equippedArmour = equippedArmourName == "nullptr" ? nullptr : mgr->getEntity<Armour>(equippedArmourName);
+			std::string equippedArmorName = o["equipped_armor"].getString();
+			this->equippedArmor = equippedArmorName == "nullptr" ? nullptr : mgr->getEntity<Armor>(equippedArmorName);
 		}
 
 		return;

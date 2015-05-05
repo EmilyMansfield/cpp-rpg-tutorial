@@ -4,7 +4,7 @@
 #include "entity_manager.hpp"
 #include "item.hpp"
 #include "weapon.hpp"
-#include "armour.hpp"
+#include "armor.hpp"
 
 #include <list>
 #include <utility>
@@ -15,8 +15,8 @@ class Inventory
 {
 	private:
 
-	// Given the Json value v which contains a list of items, weapons, or armour of type T
-	// load the Ts into the storage list (either items, weapons, or armour)
+	// Given the Json value v which contains a list of items, weapons, or armor of type T
+	// load the Ts into the storage list (either items, weapons, or armor)
 	template <typename T>
 	void loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
 	{
@@ -122,16 +122,16 @@ class Inventory
 
 	public:
 
-	// Whilst weapons and armour are also items, they have their own
+	// Whilst weapons and armor are also items, they have their own
 	// specific properties and so cannot be stored inside the same
 	// list as the items. We use a list and not a vector as inventories
 	// are highly mutable. This way they can also be efficiently sorted
 	// The first element of the pair stores a pointer to the item in
-	// the item/weapon/armour atlas, defined in main(), and the second
+	// the item/weapon/armor atlas, defined in main(), and the second
 	// element stores the quantity of the item
 	std::list<std::pair<Item*, int>> items;
 	std::list<std::pair<Weapon*, int>> weapons;
-	std::list<std::pair<Armour*, int>> armour;
+	std::list<std::pair<Armor*, int>> armor;
 
 	Inventory()
 	{
@@ -143,7 +143,7 @@ class Inventory
 		JsonBox::Object o = v.getObject();
 		loadItems<Item>(o["items"], this->items, mgr);
 		loadItems<Weapon>(o["weapons"], this->weapons, mgr);
-		loadItems<Armour>(o["armour"], this->armour, mgr);
+		loadItems<Armor>(o["armor"], this->armor, mgr);
 	}
 
 	// Remove all items from the inventory, destroying them in the process
@@ -152,25 +152,25 @@ class Inventory
 	{
 		this->items.clear();
 		this->weapons.clear();
-		this->armour.clear();
+		this->armor.clear();
 	}
 
 	// Template specialisations
 	void addItem(Item* item, int count) { addItem<Item>(item, count, this->items); }
 	void addItem(Weapon* weapon, int count) { addItem<Weapon>(weapon, count, this->weapons); }
-	void addItem(Armour* armour, int count) { addItem<Armour>(armour, count, this->armour); }
+	void addItem(Armor* armor, int count) { addItem<Armor>(armor, count, this->armor); }
 
 	void removeItem(Item* item, int count) { removeItem<Item>(item, count, this->items); }
 	void removeItem(Weapon* weapon, int count) { removeItem<Weapon>(weapon, count, this->weapons); }
-	void removeItem(Armour* armour, int count) { removeItem<Armour>(armour, count, this->armour); }
+	void removeItem(Armor* armor, int count) { removeItem<Armor>(armor, count, this->armor); }
 
 	unsigned int hasItem(Item* item) { return hasItem<Item>(item, this->items); }
 	unsigned int hasItem(Weapon* weapon) { return hasItem<Weapon>(weapon, this->weapons); }
-	unsigned int hasItem(Armour* armour) { return hasItem<Armour>(armour, this->armour); }
+	unsigned int hasItem(Armor* armor) { return hasItem<Armor>(armor, this->armor); }
 
 	int printItems(bool label = false) { return printItems<Item>(this->items, label); }
 	int printWeapons(bool label = false) { return printItems<Weapon>(this->weapons, label); }
-	int printArmour(bool label = false) { return printItems<Armour>(this->armour, label); }
+	int printArmor(bool label = false) { return printItems<Armor>(this->armor, label); }
 
 	// Merge the specified inventory with the current one, adding
 	// item quantities together if they already exist and adding the item
@@ -184,18 +184,18 @@ class Inventory
 		// function will take care of everything else for us
 		for(auto it : inventory->items)		this->addItem(it.first, it.second);
 		for(auto it : inventory->weapons)	this->addItem(it.first, it.second);
-		for(auto it : inventory->armour)	this->addItem(it.first, it.second);
+		for(auto it : inventory->armor)	this->addItem(it.first, it.second);
 
 		return;
 	}
 
-	// Print the entire inventory; items, then weapons, then armour,
+	// Print the entire inventory; items, then weapons, then armor,
 	// but if the inventory is empty then output "Nothing"
 	void print(bool label = false)
 	{
 		if(this->items.empty() &&
 			this->weapons.empty() &&
-			this->armour.empty())
+			this->armor.empty())
 		{
 			std::cout << "Nothing" << std::endl;
 		}
@@ -203,7 +203,7 @@ class Inventory
 		{
 			this->printItems(label);
 			this->printWeapons(label);
-			this->printArmour(label);
+			this->printArmor(label);
 		}
 
 		return;
@@ -215,7 +215,7 @@ class Inventory
 
 		o["items"] = JsonBox::Value(getJson<Item>(this->items));
 		o["weapons"] = JsonBox::Value(getJson<Weapon>(this->weapons));
-		o["armour"] = JsonBox::Value(getJson<Armour>(this->armour));
+		o["armor"] = JsonBox::Value(getJson<Armor>(this->armor));
 
 		return o;
 	}
