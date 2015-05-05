@@ -10,6 +10,7 @@
 
 #include <string>
 #include <fstream>
+#include <cstdlib>
 #include "JsonBox.h"
 
 class Area;
@@ -88,6 +89,42 @@ class Creature : public Entity
 	Area* getAreaPtr(EntityManager* mgr)
 	{
 		return mgr->getEntity<Area>(this->currentArea);
+	}
+
+	int attack(Creature* target)
+	{
+		// Damage done
+		int damage = 0;
+
+		if(double(std::rand()) / RAND_MAX  > target->evasion)
+		{
+			// Calculate attack based on strength and weapon damage
+			int attack = this->strength + (this->equippedWeapon == nullptr ? 0 : this->equippedWeapon->damage);
+			// Calculate defense based on agility and armor defense
+			int defense = target->agility + (target->equippedArmor == nullptr ? 0 : target->equippedArmor->defense);
+			// 1/32 chance of a critical hit
+			if(std::rand() % 32 == 0)
+			{
+				// Ignore defense and do damage in range [attack/2, attack]
+				damage = attack / 2 + std::rand() % (attack / 2);
+			}
+			else
+			{
+				// Normal hit so factor in defense
+				int baseDamage = (attack - defense) / 2;
+				// Do damage in range [baseDamage/4, baseDamage/2]
+				damage = baseDamage / 4 + std::rand() % (baseDamage / 4);
+				// If the damage is zero then have a 50% chance to do 1 damage
+				if(damage < 1)
+				{
+					damage = std::rand() % 2;
+				}
+			}
+			// Damage the target
+			target->hp -= damage;
+		}
+
+		return damage;
 	}
 
 	// Go through a door
