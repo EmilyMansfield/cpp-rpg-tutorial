@@ -54,6 +54,23 @@ class Battle
 
 	Dialogue battleOptions;
 
+	void kill(Creature* creature)
+	{
+		// Find the creature's position in the combatants vector
+		auto pos = std::find(this->combatants.begin(), this->combatants.end(), creature);
+
+		// Don't try and delete the creature if it doesn't exist
+		if(pos != this->combatants.end())
+		{
+			std::cout << creature->name << " is slain!\n";
+
+			// Remove the creature
+			this->combatants.erase(pos);
+		}
+
+		return;
+	}
+
 	public:
 
 	Battle(std::vector<Creature*>& combatants)
@@ -98,7 +115,10 @@ class Battle
 
 	void run()
 	{
-		this->next_turn();
+		while(this->combatants.size() > 1)
+		{
+			this->next_turn();
+		}
 
 		return;
 	}
@@ -174,13 +194,29 @@ class Battle
 			switch(event.type)
 			{
 				case BattleEventType::ATTACK:
+				{
+					// The event can't be run if either the source or the
+					// target were slain previously in this turn, so we
+					// must check that they're valid first
+					auto a = this->combatants.begin();
+					auto b = this->combatants.end();
+					if(std::find(a, b, event.source) == b || std::find(a, b, event.target) == b)
+					{
+						break;
+					}
 					std::cout << event.source->name
 						<< " attacks "
 						<< event.target->name
 						<< " for "
 						<< event.run()
 						<< " damage!\n";
+					// Delete slain enemies
+					if(event.target->hp <= 0)
+					{
+						this->kill(event.target);
+					}
 					break;
+				}
 				case BattleEventType::DEFEND:
 					std::cout << event.source->name
 						<< " defends!\n";

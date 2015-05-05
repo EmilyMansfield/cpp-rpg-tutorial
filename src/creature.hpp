@@ -106,14 +106,14 @@ class Creature : public Entity
 			if(std::rand() % 32 == 0)
 			{
 				// Ignore defense and do damage in range [attack/2, attack]
-				damage = attack / 2 + std::rand() % (attack / 2);
+				damage = attack / 2 + std::rand() % (attack / 2 + 1);
 			}
 			else
 			{
 				// Normal hit so factor in defense
-				int baseDamage = (attack - defense) / 2;
+				int baseDamage = attack - defense / 2;
 				// Do damage in range [baseDamage/4, baseDamage/2]
-				damage = baseDamage / 4 + std::rand() % (baseDamage / 4);
+				damage = baseDamage / 4 + std::rand() % (baseDamage / 4 + 1);
 				// If the damage is zero then have a 50% chance to do 1 damage
 				if(damage < 1)
 				{
