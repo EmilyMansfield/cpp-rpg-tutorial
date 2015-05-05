@@ -11,10 +11,10 @@
 				["item_iron_key", 1]
 			],
 			"weapons": [
-				["weapon_iron_dagger", 1]
+				["weapon_dagger", 1]
 			],
 			"armour": [
-				["armour_leather_cuirass", 1]
+				["armor_leather", 1]
 			]
 		},
 		"creatures": []
@@ -28,7 +28,7 @@
 		"doors": ["door_01_02"],
 		"inventory": {
 			"items": [
-				["item_gold_coin", 100],
+				["item_gold_coin", 100]
 			],
 			"weapons": [],
 			"armour": []

@@ -220,17 +220,9 @@ void dialogueMenu(Player& player)
 		case 2:
 		{
 			std::cout << "Equipment\n=========\n";
-			std::cout << "Head: "
-				<< (player.equippedArmour[Armour::Slot::HEAD] != nullptr ?
-					player.equippedArmour[Armour::Slot::HEAD]->name : "Nothing")
-				<< std::endl;
-			std::cout << "Torso: "
-				<< (player.equippedArmour[Armour::Slot::TORSO] != nullptr ?
-					player.equippedArmour[Armour::Slot::TORSO]->name : "Nothing")
-				<< std::endl;
-			std::cout << "Legs: "
-				<< (player.equippedArmour[Armour::Slot::LEGS] != nullptr ?
-					player.equippedArmour[Armour::Slot::LEGS]->name : "Nothing")
+			std::cout << "Armour: "
+				<< (player.equippedArmour != nullptr ?
+					player.equippedArmour->name : "Nothing")
 				<< std::endl;
 			std::cout << "Weapon: "
 				<< (player.equippedWeapon != nullptr ?

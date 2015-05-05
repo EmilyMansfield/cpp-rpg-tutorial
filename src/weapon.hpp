@@ -12,23 +12,16 @@ class Weapon : public Item
 {
 	public:
 
-	// Weapon damage. See the Battle class for formula, but values
-	// between 1-50 are reasonable
 	int damage;
 
-	// Modifier to hit chance. Small values are encouraged, e.g.
-	// 5-30%
-	double hitRate;
-
 	// Pass inherited qualities to the normal item constructor
-	Weapon(std::string id, std::string name, std::string description, int damage, double hitRate) :
+	Weapon(std::string id, std::string name, std::string description, int damage) :
 		Item(id, name, description)
 	{
 		this->damage = damage;
-		this->hitRate = hitRate;
 	}
 
-	Weapon() : Weapon("nullid", "", "", 0, 0)
+	Weapon() : Weapon("nullid", "", "", 0)
 	{
 	}
 
@@ -42,7 +35,6 @@ class Weapon : public Item
 		Item::load(id, v);
 		JsonBox::Object o = v.getObject();
 		this->damage = o["damage"].getInteger();
-		this->hitRate = o["hitRate"].getDouble();
 
 		return;
 	}

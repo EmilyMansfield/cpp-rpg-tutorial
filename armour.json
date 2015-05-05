@@ -1,8 +1,7 @@
 {
-	"armour_leather_cuirass": {
-		"name": "Leather Cuirass",
-		"description": "Torso armour made of tanned hide",
-		"defense": 4,
-		"slot": 0
+	"armor_leather": {
+		"name": "Leather Armor",
+		"defense": 1,
+		"description": "Armor made from tanned animal hide. It smells a bit funny, but it'd do the job."
 	}
 }
