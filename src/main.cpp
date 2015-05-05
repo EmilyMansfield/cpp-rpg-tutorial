@@ -18,6 +18,7 @@
 #include "player.hpp"
 #include "dialogue.hpp"
 #include "area.hpp"
+#include "battle.hpp"
 
 // New character menu
 Player startGame();
@@ -76,24 +77,14 @@ int main(void)
 			return 0;
 		}
 
-		// If the area the player is in has any creatures inside it,
-		// then begin a battle with the last creature in the list
-		// before moving on the next one. This makes the creature
-		// list act like a stack
-		// if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
-		// {
-		// 	for(int i = player.getAreaPtr(&entityManager)->creatures.size() - 1; i >= 0; --i)
-		// 	{
-		// 		Battle(&player, player.getAreaPtr(&entityManager)->creatures[i]).run();
-		// 		// Remove the creature from the area. This is fine to do
-		// 		// because if the player wins the creature will not respawn,
-		// 		// and if the creature wins the player isn't around to see it
-		// 		// (This does break the 'non-mutable' feature of the atlases,
-		// 		// but doing so saves a lot of memory, as we don't need to keep
-		// 		// two versions of each area)
-		// 		player.getAreaPtr(&entityManager)->creatures.pop_back();
-		// 	}
-		// }
+		// If the area has any creatures in it, start a battle with them
+		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
+		{
+			std::vector<Creature*> combatants = player.getAreaPtr(&entityManager)->creatures;
+			combatants.push_back(dynamic_cast<Creature*>(&player));
+			Battle battle(combatants);
+			battle.run();
+		}
 
 		// Add the search and movement options to the dialogue
 		Dialogue roomOptions = player.getAreaPtr(&entityManager)->dialogue;
