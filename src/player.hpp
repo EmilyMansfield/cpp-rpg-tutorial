@@ -13,19 +13,17 @@ class Player : public Creature
 	// Class may be Fighter, Rogue etc
 	std::string className;
 
-	// Current experience. 0-1M is reasonable, see the levelup() function
-	// for a decent scale
-	unsigned int xp;
+	unsigned int level;
 
 	Player(std::string name, int hp, int strength, int agility, double evasion,
-		unsigned int level, std::string className) :
-		Creature("player", name, hp, strength, agility, evasion, level)
+		unsigned int xp, unsigned int level, std::string className) :
+		Creature("player", name, hp, strength, agility, evasion, xp)
 	{
+		this->level = level;
 		this->className = className;
-		this->xp = 0;
 	}
 
-	Player() : Player("", 0, 0, 0, 0.0, 0, "nullid")
+	Player() : Player("", 0, 0, 0, 0.0, 0, 1, "nullid")
 	{
 	}
 
@@ -93,7 +91,7 @@ class Player : public Creature
 		JsonBox::Object o = Creature::toJson();
 
 		o["className"] = JsonBox::Value(this->className);
-		o["xp"] = JsonBox::Value(int(this->xp));
+		o["level"] = JsonBox::Value(int(this->level));
 
 		return o;
 	}
@@ -115,15 +113,7 @@ class Player : public Creature
 		JsonBox::Object o = v.getObject();
 
 		this->className = o["className"].getString();
-
-		if(o.find("xp") != o.end())
-		{
-			this->xp = o["xp"].getInteger();
-		}
-		else
-		{
-			this->xp = 0;
-		}
+		this->level = o["level"].getInteger();
 
 		return;
 	}

@@ -26,14 +26,8 @@ class Creature : public Entity
 	int maxHp;
 	int strength;
 	int agility;
-	double evasion;	// Modifier to hit chance. (1-150)
-
-	// Current level of the creature. Determines the amount of experience
-	// that it gives to the victor when defeated (see Battle class for more)
-	// and the amount of experience required to level up again. Upon
-	// levelling up the creature will gain stat improvements.
-	// 1-50 is reasonable
-	unsigned int level;
+	double evasion;
+	unsigned int xp;
 
 	// Items that the creature possesses
 	Inventory inventory;
@@ -50,7 +44,7 @@ class Creature : public Entity
 	std::string currentArea;
 
 	Creature(std::string id, std::string name, int hp, int strength, int agility, double evasion,
-		unsigned int level) : Entity(id)
+		unsigned int xp) : Entity(id)
 	{
 		this->name = name;
 		this->hp = hp;
@@ -62,7 +56,7 @@ class Creature : public Entity
 		this->equippedArmour[Armour::Slot::TORSO] = nullptr;
 		this->equippedArmour[Armour::Slot::LEGS] = nullptr;
 		this->equippedWeapon = nullptr;
-		this->level = level;
+		this->xp = xp;
 	}
 
 	Creature() : Creature("nullid", "", 0, 0, 0, 0.0, 1)
@@ -147,7 +141,7 @@ class Creature : public Entity
 		o["strength"] = JsonBox::Value(this->strength);
 		o["agility"] = JsonBox::Value(this->agility);
 		o["evasion"] = JsonBox::Value(this->evasion);
-		o["level"] = JsonBox::Value(int(this->level));
+		o["xp"] = JsonBox::Value(int(this->xp));
 		o["inventory"] = JsonBox::Value(this->inventory.getJson());
 		o["equipped_weapon"] = JsonBox::Value(this->equippedWeapon == nullptr ? "nullptr" : this->equippedWeapon->id);
 		JsonBox::Array a;
@@ -178,7 +172,6 @@ class Creature : public Entity
 		this->strength = o["strength"].getInteger();
 		this->agility = o["agility"].getInteger();
 		this->evasion = o["evasion"].getDouble();
-		this->level = o["level"].getInteger();
 
 		Entity::load(id, v);
 

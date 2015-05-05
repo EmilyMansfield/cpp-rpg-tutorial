@@ -186,15 +186,15 @@ Player startGame()
 		{
 			// Fighter class favours strength
 			case 1:
-				return Player(name, 15, 5, 4, 1.0/64.0, 1, "Fighter");
+				return Player(name, 15, 5, 4, 1.0/64.0, 0, 1, "Fighter");
 
 			// Rogue class favours agility
 			case 2:
-				return Player(name, 15, 4, 5, 1.0/64.0, 1, "Rogue");
+				return Player(name, 15, 4, 5, 1.0/64.0, 0, 1, "Rogue");
 
 			// Default case that should never happen, but it's good to be safe
 			default:
-				return Player(name, 15, 4, 4, 1.0/64.0, 1, "Adventurer");
+				return Player(name, 15, 4, 4, 1.0/64.0, 0, 1, "Adventurer");
 		}
 	}
 }
