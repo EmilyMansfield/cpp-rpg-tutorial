@@ -29,18 +29,19 @@ class Area : public Entity
 	// pointers
 	std::vector<Door*> doors;
 
-	// Creatures contained within the area. Currently this is limited
-	// to just one creature due to how the battle system works, but it
-	// made sense to set it up as a vector from the start to simplify
-	// things later
-	std::vector<Creature*> creatures;
+	// Creatures contained within the area. Not pointers because we want unique
+	// instances of the creatures
+	std::vector<Creature> creatures;
 
 	Area(std::string id, Dialogue dialogue, Inventory items,
 		std::vector<Creature*> creatures) : Entity(id)
 	{
 		this->dialogue = dialogue;
 		this->items = items;
-		this->creatures = creatures;
+		for(auto creature : creatures)
+		{
+			this->creatures.push_back(*creature);
+		}
 	}
 
 	Area() : Entity("nullid")
@@ -90,9 +91,11 @@ class Area : public Entity
 		this->creatures.clear();
 		for(auto creature : o["creatures"].getArray())
 		{
-			this->creatures.push_back(mgr->getEntity<Creature>(creature.getString()));
+			// Create a new creature instance indentical to the version
+			// in the entity manager
+			Creature c(*mgr->getEntity<Creature>(creature.getString()));
+			this->creatures.push_back(c);
 		}
-
 		// Attach doors
 		if(o.find("doors") != o.end())
 		{
@@ -120,7 +123,7 @@ class Area : public Entity
 		JsonBox::Array a;
 		for(auto creature : this->creatures)
 		{
-			a.push_back(JsonBox::Value(creature->id));
+			a.push_back(JsonBox::Value(creature.id));
 		}
 		o["creatures"] = a;
 

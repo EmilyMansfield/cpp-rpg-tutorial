@@ -84,32 +84,31 @@ class Battle
 			"Defend"
 		});
 
-		// Store the unique creature names and the quantity of each
+		// Store the unique creature names and whether there is
+		// only one or more of them
 		std::map<std::string, int> names;
 		for(auto com : this->combatants)
 		{
-			if(!names.count(com->name))
+			if(names.count(com->name) < 2 && com->id != "player")
 			{
-				names[com->name] = 0;
+				names[com->name] = names.count(com->name);
 			}
-			++names[com->name];
 		}
 
 		// Create a unique name based on the number of times
 		// that name is present in the battle
 		for(auto& com : this->combatants)
 		{
-			std::string name = com->name;
-			if(names.count(name) && names[name] > 1)
+			std::string newName = com->name;
+			if(names.count(com->name) > 0)
 			{
-				// Append the number of times that name is used tp the end
-				// and then reduce the number by 1. If there are two "Rat"s,
-				// then they will be named "Rat (2)" and "Rat (1)".
-				name += " (" + std::to_string(names[name]) + ")";
-				names[name] -= 1;
+				// Append (1) to the end of the name, and then increase the
+				// number for the next creature.
+				newName += " (" + std::to_string(names[com->name]) + ")";
+				names[com->name] += 1;
 			}
 			// Change the creature name to the new one
-			com->name = name;
+			com->name = newName;
 		}
 	}
 

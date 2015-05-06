@@ -80,7 +80,11 @@ int main(void)
 		// If the area has any creatures in it, start a battle with them
 		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
 		{
-			std::vector<Creature*> combatants = player.getAreaPtr(&entityManager)->creatures;
+			std::vector<Creature*> combatants;
+			for(int i = 0; i < player.getAreaPtr(&entityManager)->creatures.size(); ++i)
+			{
+				combatants.push_back(&player.getAreaPtr(&entityManager)->creatures[i]);
+			}
 			combatants.push_back(dynamic_cast<Creature*>(&player));
 			Battle battle(combatants);
 			battle.run();
