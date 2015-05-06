@@ -1,13 +1,15 @@
 #ifndef AREA_HPP
 #define AREA_HPP
 
+#include <vector>
+#include <string>
+#include "JsonBox.h"
+
 #include "entity_manager.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "dialogue.hpp"
-
-#include <vector>
 
 class Door;
 
@@ -55,80 +57,13 @@ class Area : public Entity
 
 	// Search the area for items and give them to the searcher, notifying
 	// them of their rewards
-	void search(Creature& player)
-	{
-		std::cout << "You find:" << std::endl;
+	void search(Creature& player);
 
-		this->items.print();
-		player.inventory.merge(&(this->items));
-		this->items.clear();
+	// Load the area from the given Json value
+	void load(std::string id, JsonBox::Value v, EntityManager* mgr);
 
-		return;
-	}
-
-	void load(std::string id, JsonBox::Value v, EntityManager* mgr)
-	{
-		JsonBox::Object o = v.getObject();
-
-		// Build the dialogue
-		// This is an optional parameter because it will not be saved
-		// when the area is modified
-		if(o.find("dialogue") != o.end())
-		{
-			JsonBox::Object dialogue = o["dialogue"].getObject();
-			std::string dialogueDescription = dialogue["description"].getString();
-			std::vector<std::string> dialogueChoices;
-			for(auto choice : dialogue["choices"].getArray())
-			{
-				dialogueChoices.push_back(choice.getString());
-			}
-			this->dialogue = Dialogue(dialogueDescription, dialogueChoices);
-		}
-		// Build the inventory
-		this->items = Inventory(o["inventory"], mgr);
-
-		// Build the creature list
-		this->creatures.clear();
-		for(auto creature : o["creatures"].getArray())
-		{
-			// Create a new creature instance indentical to the version
-			// in the entity manager
-			Creature c(*mgr->getEntity<Creature>(creature.getString()));
-			this->creatures.push_back(c);
-		}
-		// Attach doors
-		if(o.find("doors") != o.end())
-		{
-			this->doors.clear();
-			for(auto door : o["doors"].getArray())
-			{
-				this->doors.push_back(mgr->getEntity<Door>(door.getString()));
-			}
-		}
-
-		Entity::load(id, v);
-
-		return;
-	}
-
-	JsonBox::Object getJson()
-	{
-		JsonBox::Object o;
-		// We don't need to save the dialogue because it doesn't change
-
-		// Save the inventory
-		o["inventory"] = this->items.getJson();
-
-		// Save the creatures
-		JsonBox::Array a;
-		for(auto creature : this->creatures)
-		{
-			a.push_back(JsonBox::Value(creature.id));
-		}
-		o["creatures"] = a;
-
-		return o;
-	}
+	// Return a Json object representing the area
+	JsonBox::Object getJson();
 };
 
 #endif /* AREA_HPP */

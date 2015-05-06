@@ -1,0 +1,85 @@
+#include <vector>
+#include <string>
+#include "JsonBox.h"
+
+#include "area.hpp"
+#include "entity.hpp"
+#include "entity_manager.hpp"
+#include "inventory.hpp"
+#include "creature.hpp"
+#include "dialogue.hpp"
+
+void Area::search(Creature& player)
+{
+	std::cout << "You find:" << std::endl;
+
+	this->items.print();
+	player.inventory.merge(&(this->items));
+	this->items.clear();
+
+	return;
+}
+
+void Area::load(std::string id, JsonBox::Value v, EntityManager* mgr)
+{
+	JsonBox::Object o = v.getObject();
+
+	// Build the dialogue
+	// This is an optional parameter because it will not be saved
+	// when the area is modified
+	if(o.find("dialogue") != o.end())
+	{
+		JsonBox::Object dialogue = o["dialogue"].getObject();
+		std::string dialogueDescription = dialogue["description"].getString();
+		std::vector<std::string> dialogueChoices;
+		for(auto choice : dialogue["choices"].getArray())
+		{
+			dialogueChoices.push_back(choice.getString());
+		}
+		this->dialogue = Dialogue(dialogueDescription, dialogueChoices);
+	}
+	// Build the inventory
+	this->items = Inventory(o["inventory"], mgr);
+
+	// Build the creature list
+	this->creatures.clear();
+	for(auto creature : o["creatures"].getArray())
+	{
+		// Create a new creature instance indentical to the version
+		// in the entity manager
+		Creature c(*mgr->getEntity<Creature>(creature.getString()));
+		this->creatures.push_back(c);
+	}
+	// Attach doors
+	if(o.find("doors") != o.end())
+	{
+		this->doors.clear();
+		for(auto door : o["doors"].getArray())
+		{
+			this->doors.push_back(mgr->getEntity<Door>(door.getString()));
+		}
+	}
+
+	Area::Entity::load(id, v);
+
+	return;
+}
+
+JsonBox::Object Area::getJson()
+{
+	JsonBox::Object o;
+	// We don't need to save the dialogue because it doesn't change
+
+	// Save the inventory
+	o["inventory"] = this->items.getJson();
+
+	// Save the creatures
+	JsonBox::Array a;
+	for(auto creature : this->creatures)
+	{
+		a.push_back(JsonBox::Value(creature.id));
+	}
+	o["creatures"] = a;
+
+	return o;
+}
