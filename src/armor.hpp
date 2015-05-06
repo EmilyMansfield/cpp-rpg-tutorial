@@ -1,42 +1,26 @@
 #ifndef ARMOR_HPP
 #define ARMOR_HPP
 
-#include "entity_manager.hpp"
+#include <string>
+#include "JsonBox.h"
+
 #include "item.hpp"
 
-#include <string>
+class EntityManager;
 
-// Armor should also inherit item properties
 class Armor : public Item
 {
 	public:
 
 	int defense;
 
-	// Usual constructor
-	Armor(std::string id, std::string name, std::string description, int defense) :
-		Item(id, name, description)
-	{
-		this->defense = defense;
-	}
+	// Constructors
+	Armor(std::string id, std::string name, std::string description, int defense);
+	Armor(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Armor();
 
-	Armor() : Armor("nullid", "", "", 0)
-	{
-	}
-
-	Armor(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
-	{
-		this->load(id, v);
-	}
-
-	void load(std::string id, JsonBox::Value v)
-	{
-		Item::load(id, v);
-		JsonBox::Object o = v.getObject();
-		this->defense = o["defense"].getInteger();
-
-		return;
-	}
+	// Load the armor from the Json value
+	void load(std::string id, JsonBox::Value v);
 };
 
 #endif /* ARMOR_HPP */

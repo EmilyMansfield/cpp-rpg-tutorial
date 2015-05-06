@@ -1,11 +1,12 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
-#include "entity_manager.hpp"
-#include "entity.hpp"
-
 #include <string>
 #include "JsonBox.h"
+
+#include "entity.hpp"
+
+class EntityManager;
 
 class Item : public Entity
 {
@@ -15,33 +16,13 @@ class Item : public Entity
 	std::string name;
 	std::string description;
 
-	// Standard constructors, nothing special
-	Item(std::string id, std::string name, std::string description) : Entity(id)
-	{
-		this->name = name;
-		this->description = description;
-	}
-
-	Item() : Entity("nullid")
-	{
-	}
-
-	Item(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
-	{
-		this->load(id, v);
-	}
+	// Constructors
+	Item(std::string id, std::string name, std::string description);
+	Item(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Item();
 
 	// Load the item information from the JSON value
-	virtual void load(std::string id, JsonBox::Value v)
-	{
-		JsonBox::Object o = v.getObject();
-		this->name = o["name"].getString();
-		this->description = o["description"].getString();
-
-		Entity::load(id, v);
-
-		return;
-	}
+	virtual void load(std::string id, JsonBox::Value v);
 };
 
 #endif /* ITEM_HPP */

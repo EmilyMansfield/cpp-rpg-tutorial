@@ -5,14 +5,14 @@
 #include <cstdlib>
 #include "JsonBox.h"
 
-#include "entity_manager.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
-#include "weapon.hpp"
-#include "armor.hpp"
-#include "door.hpp"
 
 class Area;
+class EntityManager;
+class Weapon;
+class Armor;
+class Door;
 
 class Creature : public Entity
 {
