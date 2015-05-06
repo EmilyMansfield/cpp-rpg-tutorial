@@ -9,6 +9,26 @@
 #include "creature.hpp"
 #include "dialogue.hpp"
 
+Area::Area(std::string id, Dialogue dialogue, Inventory items,
+		std::vector<Creature*> creatures) : Entity(id)
+{
+	this->dialogue = dialogue;
+	this->items = items;
+	for(auto creature : creatures)
+	{
+		this->creatures.push_back(*creature);
+	}
+}
+
+Area::Area() : Entity("nullid")
+{
+}
+
+Area::Area(std::string id, JsonBox::Value v, EntityManager* mgr) : Entity(id)
+{
+	this->load(id, v, mgr);
+}
+
 void Area::search(Creature& player)
 {
 	std::cout << "You find:" << std::endl;

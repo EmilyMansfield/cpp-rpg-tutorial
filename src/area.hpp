@@ -35,25 +35,11 @@ class Area : public Entity
 	// instances of the creatures
 	std::vector<Creature> creatures;
 
+	// Constructors
 	Area(std::string id, Dialogue dialogue, Inventory items,
-		std::vector<Creature*> creatures) : Entity(id)
-	{
-		this->dialogue = dialogue;
-		this->items = items;
-		for(auto creature : creatures)
-		{
-			this->creatures.push_back(*creature);
-		}
-	}
-
-	Area() : Entity("nullid")
-	{
-	}
-
-	Area(std::string id, JsonBox::Value v, EntityManager* mgr) : Entity(id)
-	{
-		this->load(id, v, mgr);
-	}
+		std::vector<Creature*> creatures);
+	Area(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Area();
 
 	// Search the area for items and give them to the searcher, notifying
 	// them of their rewards
