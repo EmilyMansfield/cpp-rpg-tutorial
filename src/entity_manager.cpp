@@ -52,3 +52,18 @@ T* EntityManager::getEntity(std::string id)
 }
 
 EntityManager::EntityManager() {}
+
+// Template specialisations
+template void EntityManager::loadJson<Item>(std::string);
+template void EntityManager::loadJson<Weapon>(std::string);
+template void EntityManager::loadJson<Armor>(std::string);
+template void EntityManager::loadJson<Creature>(std::string);
+template void EntityManager::loadJson<Area>(std::string);
+template void EntityManager::loadJson<Door>(std::string);
+
+template Item* EntityManager::getEntity(std::string);
+template Weapon* EntityManager::getEntity(std::string);
+template Armor* EntityManager::getEntity(std::string);
+template Creature* EntityManager::getEntity(std::string);
+template Area* EntityManager::getEntity(std::string);
+template Door* EntityManager::getEntity(std::string);
