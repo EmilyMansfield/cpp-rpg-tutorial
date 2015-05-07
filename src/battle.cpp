@@ -57,29 +57,45 @@ Battle::Battle(std::vector<Creature*>& combatants)
 	});
 
 	// Store the unique creature names and whether there is
-	// only one or more of them
+	// only one or more of them. This code assumes that the
+	// creatures have not already been assigned unique names,
+	// which should be the case as a battle cannot be left
+	// and then resumed again
 	std::map<std::string, int> names;
 	for(auto com : this->combatants)
 	{
-		if(names.count(com->name) < 2 && com->id != "player")
+		// Skip the player, who shouldn't be renamed
+		if(com->id == "player") continue;
+		// If the name hasn't been recorded and the creature
+		// isn't the player, record the name
+		if(names.count(com->name) == 0)
 		{
-			names[com->name] = names.count(com->name);
+			names[com->name] = 0;
+		}
+		// If there is already one creature, record there are being
+		// more than one. We don't want the actual number, simply
+		// that there's more and so we should label them.
+		else if(names[com->name] == 0)
+		{
+			names[com->name] = 1;
 		}
 	}
 
-	// Create a unique name based on the number of times
-	// that name is present in the battle
+	// Creature unique names for the combatants
 	for(auto& com : this->combatants)
 	{
 		std::string newName = com->name;
-		if(names.count(com->name) > 0)
+		// If the name is marked as being shared by more than
+		// one creature
+		if(names.count(com->name) > 0 && names[com->name] > 0)
 		{
 			// Append (1) to the end of the name, and then increase the
-			// number for the next creature.
+			// number for the next creature
 			newName += " (" + std::to_string(names[com->name]) + ")";
 			names[com->name] += 1;
 		}
-		// Change the creature name to the new one
+		// Change the creature name to the new one, which might just be
+		// the same as the original
 		com->name = newName;
 	}
 }
