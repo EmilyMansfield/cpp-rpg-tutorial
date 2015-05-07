@@ -4,10 +4,10 @@
 #include "JsonBox.h"
 
 #include "inventory.hpp"
-#include "entity_manager.hpp"
 #include "item.hpp"
 #include "weapon.hpp"
 #include "armor.hpp"
+#include "entity_manager.hpp"
 
 // Given the Json value v which contains a list of items, weapons, or armor of type T
 // load the Ts into the storage list (either items, weapons, or armor)
@@ -81,7 +81,7 @@ unsigned int Inventory::hasItem(T* item, std::list<std::pair<T*, int>>& storage)
 // Output a list of the items onto stdout, formatted nicely and
 // numbered if required
 template <typename T>
-int Inventory::printItems(std::list<std::pair<T*, int>>& storage, bool label = false)
+int Inventory::printItems(std::list<std::pair<T*, int>>& storage, bool label)
 {
 	unsigned int i = 1;
 
@@ -149,9 +149,9 @@ unsigned int Inventory::hasItem(Item* item) { return hasItem<Item>(item, this->i
 unsigned int Inventory::hasItem(Weapon* weapon) { return hasItem<Weapon>(weapon, this->weapons); }
 unsigned int Inventory::hasItem(Armor* armor) { return hasItem<Armor>(armor, this->armor); }
 
-int Inventory::printItems(bool label = false) { return printItems<Item>(this->items, label); }
-int Inventory::printWeapons(bool label = false) { return printItems<Weapon>(this->weapons, label); }
-int Inventory::printArmor(bool label = false) { return printItems<Armor>(this->armor, label); }
+int Inventory::printItems(bool label) { return printItems<Item>(this->items, label); }
+int Inventory::printWeapons(bool label) { return printItems<Weapon>(this->weapons, label); }
+int Inventory::printArmor(bool label) { return printItems<Armor>(this->armor, label); }
 
 // Merge the specified inventory with the current one, adding
 // item quantities together if they already exist and adding the item
@@ -172,7 +172,7 @@ void Inventory::merge(Inventory* inventory)
 
 // Print the entire inventory; items, then weapons, then armor,
 // but if the inventory is empty then output "Nothing"
-void Inventory::print(bool label = false)
+void Inventory::print(bool label)
 {
 	if(this->items.empty() &&
 		this->weapons.empty() &&

@@ -5,12 +5,12 @@
 #include <string>
 #include "JsonBox.h"
 
-#include "entity_manager.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "dialogue.hpp"
 
+class EntityManager;
 class Door;
 
 // Movement is achieved through the use of areas, which are contained

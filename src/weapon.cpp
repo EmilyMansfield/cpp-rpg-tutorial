@@ -2,8 +2,8 @@
 #include "JsonBox.h"
 
 #include "weapon.hpp"
-#include "entity_manager.hpp"
 #include "item.hpp"
+#include "entity_manager.hpp"
 
 Weapon::Weapon(std::string id, std::string name, std::string description, int damage) :
 	Item(id, name, description)

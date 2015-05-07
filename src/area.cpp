@@ -4,10 +4,10 @@
 
 #include "area.hpp"
 #include "entity.hpp"
-#include "entity_manager.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
 #include "dialogue.hpp"
+#include "entity_manager.hpp"
 
 Area::Area(std::string id, Dialogue dialogue, Inventory items,
 		std::vector<Creature*> creatures) : Entity(id)

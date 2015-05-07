@@ -2,14 +2,14 @@
 #include <cstdlib>
 #include "JsonBox.h"
 
-#include "entity_manager.hpp"
+#include "creature.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "weapon.hpp"
 #include "armor.hpp"
 #include "door.hpp"
 #include "area.hpp"
-#include "creature.hpp"
+#include "entity_manager.hpp"
 
 Creature::Creature(std::string id, std::string name, int hp, int strength, int agility, double evasion,
 	unsigned int xp) : Entity(id)

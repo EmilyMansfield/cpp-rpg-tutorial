@@ -2,14 +2,12 @@
 #include <utility>
 
 #include "door.hpp"
-#include "entity_manager.hpp"
+#include "item.hpp"
 #include "entity.hpp"
-
-class Area;
-class Item;
+#include "entity_manager.hpp"
 
 Door::Door(std::string id, std::string description, std::pair<std::string, std::string> areas,
-	int locked, Item* key = nullptr) : Entity(id)
+	int locked, Item* key) : Entity(id)
 {
 	this->description = description;
 	this->areas = areas;

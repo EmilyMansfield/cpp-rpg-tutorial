@@ -3,7 +3,6 @@
 
 #include <list>
 #include <utility>
-#include <iostream>
 #include "JsonBox.h"
 
 class EntityManager;

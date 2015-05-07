@@ -1,8 +1,9 @@
 #include <string>
+#include "JsonBox.h"
 
 #include "armor.hpp"
-#include "entity_manager.hpp"
 #include "item.hpp"
+#include "entity_manager.hpp"
 
 Armor::Armor(std::string id, std::string name, std::string description, int defense) :
 	Item(id, name, description)

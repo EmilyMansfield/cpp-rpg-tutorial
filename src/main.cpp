@@ -10,7 +10,6 @@
 #include <unordered_set>
 #include "JsonBox.h"
 
-#include "entity_manager.hpp"
 #include "item.hpp"
 #include "weapon.hpp"
 #include "armor.hpp"
@@ -20,6 +19,7 @@
 #include "dialogue.hpp"
 #include "area.hpp"
 #include "battle.hpp"
+#include "entity_manager.hpp"
 
 // New character menu
 Player startGame();

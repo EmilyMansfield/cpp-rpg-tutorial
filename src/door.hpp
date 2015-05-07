@@ -1,12 +1,11 @@
 #ifndef DOOR_HPP
 #define DOOR_HPP
 
-#include "entity.hpp"
-
 #include <string>
 #include <utility>
 
-class Area;
+#include "entity.hpp"
+
 class Item;
 class EntityManager;
 
@@ -28,7 +27,7 @@ class Door : Entity
 	std::pair<std::string, std::string> areas;
 
 	Door(std::string id, std::string description, std::pair<std::string, std::string> areas,
-		int locked, Item* key = nullptr;
+		int locked, Item* key = nullptr);
 	Door();
 	Door(std::string id, JsonBox::Value v, EntityManager* mgr);
 

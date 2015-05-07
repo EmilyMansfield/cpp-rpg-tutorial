@@ -1,11 +1,9 @@
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
-
 #include <cmath>
 #include "JsonBox.h"
 
 #include "player.hpp"
 #include "creature.hpp"
+#include "entity_manager.hpp"
 
 Player::Player(std::string name, int hp, int strength, int agility, double evasion,
 	unsigned int xp, unsigned int level, std::string className) :
