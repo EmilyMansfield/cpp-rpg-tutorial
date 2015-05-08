@@ -38,6 +38,11 @@ void Battle::kill(Creature* creature)
 	{
 		std::cout << creature->name << " is slain!\n";
 
+		// Health == 0 is used in main as a condition to check if the creature is
+		// dead, but this function could be called when the creature is not killed
+		// by reducing their health to zero (by a death spell, for example), so we
+		// ensure the creature's health is 0 and is marked as dead
+		creature->hp = 0;
 		// Remove the creature
 		this->combatants.erase(pos);
 	}
@@ -102,10 +107,19 @@ Battle::Battle(std::vector<Creature*>& combatants)
 
 void Battle::run()
 {
-	while(this->combatants.size() > 1)
+	std::vector<Creature*>::iterator player;
+	std::vector<Creature*>::iterator end;
+	do
 	{
+		// Continue the battle until either the player dies,
+		// or there is only the player left
+		player = std::find_if(this->combatants.begin(), this->combatants.end(),
+			[](Creature* a) { return a->id == "player"; });
+		end = this->combatants.end();
+
 		this->next_turn();
 	}
+	while(player != end && this->combatants.size() > 1);
 
 	return;
 }

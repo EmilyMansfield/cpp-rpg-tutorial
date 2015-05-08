@@ -1,13 +1,14 @@
+#include <unordered_set>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
-#include <map>
-#include <list>
 #include <utility>
 #include <cstdlib>
+#include <string>
+#include <vector>
 #include <ctime>
-#include <unordered_set>
+#include <list>
+#include <map>
 #include "JsonBox.h"
 
 #include "item.hpp"
@@ -70,25 +71,32 @@ int main(void)
 		JsonBox::Value v(o);
 		v.writeToFile(player.name + "_areas.json");
 
+		// auto areaCreatures = &player.getAreaPtr(&entityManager)->creatures;
+		// If the area has any creatures in it, start a battle with them
+		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
+		{
+			// Create a vector of pointers to the creatures in the area
+			std::vector<Creature*> combatants;
+			for(int i = 0; i < player.getAreaPtr(&entityManager)->creatures.size(); ++i)
+			{
+				Creature* c = &(player.getAreaPtr(&entityManager)->creatures[i]);
+				combatants.push_back(c);
+			}
+			// Add the player to the combatant vector
+			combatants.push_back(dynamic_cast<Creature*>(&player));
+			// Run the battle
+			Battle battle(combatants);
+			battle.run();
+			// Assume all creatures were killed and remove them from the area
+			player.getAreaPtr(&entityManager)->creatures.clear();
+		}
+
 		// If the player has died then inform them as such and close
 		// the program
 		if(player.hp <= 0)
 		{
 			std::cout << "\t----YOU DIED----\n    Game Over\n";
 			return 0;
-		}
-
-		// If the area has any creatures in it, start a battle with them
-		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
-		{
-			std::vector<Creature*> combatants;
-			for(int i = 0; i < player.getAreaPtr(&entityManager)->creatures.size(); ++i)
-			{
-				combatants.push_back(&player.getAreaPtr(&entityManager)->creatures[i]);
-			}
-			combatants.push_back(dynamic_cast<Creature*>(&player));
-			Battle battle(combatants);
-			battle.run();
 		}
 
 		// Add the search and movement options to the dialogue
