@@ -60,7 +60,6 @@ int main(void)
 		// Autosave the game
 		player.save(&entityManager);
 
-		// auto areaCreatures = &player.getAreaPtr(&entityManager)->creatures;
 		// If the area has any creatures in it, start a battle with them
 		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
 		{
@@ -95,6 +94,7 @@ int main(void)
 			roomOptions.addChoice("Go through the " + door->description);
 		}
 		roomOptions.addChoice("Search");
+
 		// Activate the current area's dialogue
 		int result = roomOptions.activate();
 
@@ -238,16 +238,11 @@ void dialogueMenu(Player& player)
 					// so the number must be converted into a list element
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						int i = 1;
-
-						for(auto it : player.inventory.armor)
+						auto it = player.inventory.armor.begin();
+						for(int i = 1; i < userInput; ++i) { ++it; }
+						if(it != player.inventory.armor.end())
 						{
-							if(i++ == userInput)
-							{
-								// Equip the armor if it is found
-								player.equipArmor(it.first);
-								break;
-							}
+							player.equipArmor(it->first);
 						}
 					}
 				}
@@ -266,15 +261,11 @@ void dialogueMenu(Player& player)
 					std::cin >> userInput;
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						int i = 1;
-
-						for(auto it : player.inventory.weapons)
+						auto it = player.inventory.weapons.begin();
+						for(int i = 1; i < userInput; ++i) { ++it; }
+						if(it != player.inventory.weapons.end())
 						{
-							if(i++ == userInput)
-							{
-								player.equipWeapon(it.first);
-								break;
-							}
+							player.equipWeapon(it->first);
 						}
 					}
 				}
