@@ -1,6 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include <unordered_set>
 #include <string>
 #include "JsonBox.h"
 
@@ -16,7 +17,11 @@ class Player : public Creature
 	// Class may be Fighter, Rogue etc
 	std::string className;
 
+	// Level of the player
 	unsigned int level;
+
+	// Ids of areas visited by the player
+	std::unordered_set<std::string> visitedAreas;
 
 	// Constructors
 	Player(std::string name, int hp, int strength, int agility, double evasion,
@@ -35,7 +40,7 @@ class Player : public Creature
 	JsonBox::Object toJson();
 
 	// Save the player to a file named after them
-	void save();
+	void save(EntityManager* mgr);
 
 	// Attempt to load all data from the JSON value
 	void load(std::string id, JsonBox::Value v, EntityManager* mgr);

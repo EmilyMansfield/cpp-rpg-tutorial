@@ -1,4 +1,3 @@
-#include <unordered_set>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -32,9 +31,6 @@ void dialogueMenu(Player& player);
 // Keeps track of items, weapons, creatures etc.
 EntityManager entityManager;
 
-// Areas that the player has been to
-std::unordered_set<std::string> visitedAreas;
-
 int main(void)
 {
 	// Load the entities
@@ -59,17 +55,10 @@ int main(void)
 	while(1)
 	{
 		// Mark the current player as visited
-		visitedAreas.insert(player.currentArea);
+		player.visitedAreas.insert(player.currentArea);
 
 		// Autosave the game
-		player.save();
-		JsonBox::Object o;
-		for(auto area : visitedAreas)
-		{
-			o[area] = entityManager.getEntity<Area>(area)->getJson();
-		}
-		JsonBox::Value v(o);
-		v.writeToFile(player.name + "_areas.json");
+		player.save(&entityManager);
 
 		// auto areaCreatures = &player.getAreaPtr(&entityManager)->creatures;
 		// If the area has any creatures in it, start a battle with them
@@ -173,7 +162,7 @@ Player startGame()
 		{
 			std::string key = area.first;
 			entityManager.getEntity<Area>(key)->load(key, area.second, &entityManager);
-			visitedAreas.insert(key);
+			player.visitedAreas.insert(key);
 		}
 
 		// Return the player

@@ -1,6 +1,8 @@
+#include <unordered_set>
 #include <cmath>
 #include "JsonBox.h"
 
+#include "area.hpp"
 #include "player.hpp"
 #include "creature.hpp"
 #include "entity_manager.hpp"
@@ -86,11 +88,25 @@ JsonBox::Object Player::toJson()
 	return o;
 }
 
-void Player::save()
+void Player::save(EntityManager* mgr)
 {
+	// Construct JSON representation of the player
+	// and save it to a file
 	JsonBox::Value v(this->toJson());
 	v.writeToFile(this->name + ".json");
 
+	// Construct a JSON object containing the areas
+	// the player has visited 
+	JsonBox::Object o;
+	for(auto area : this->visitedAreas)
+	{
+		o[area] = mgr->getEntity<Area>(area)->getJson();
+	}
+	JsonBox::Value v2(o);
+	// Write the object to a file similar to the player data
+	v2.writeToFile(this->name + "_areas.json");
+
+	return;
 }
 
 // Attempt to load all data from the JSON value
