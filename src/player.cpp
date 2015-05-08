@@ -19,9 +19,10 @@ Player::Player() : Player::Player("", 0, 0, 0, 0.0, 0, 1, "nullid")
 {
 }
 
-Player::Player(JsonBox::Value v, EntityManager* mgr) : Player::Player()
+Player::Player(JsonBox::Value saveData, JsonBox::Value areaData, EntityManager* mgr) : Player::Player()
 {
-	this->load("player", v, mgr);
+	this->loadSave("player", saveData, mgr);
+	this->loadArea(areaData, mgr);
 }
 
 // Calculates the total experience required to reach a certain level
@@ -110,16 +111,30 @@ void Player::save(EntityManager* mgr)
 }
 
 // Attempt to load all data from the JSON value
-void Player::load(std::string id, JsonBox::Value v, EntityManager* mgr)
+void Player::loadSave(std::string id, JsonBox::Value saveData, EntityManager* mgr)
 {
 	// Load data shared with Creature
-	Creature::load(id, v, mgr);
+	Creature::load(id, saveData, mgr);
 
 	// Load optional variables
-	JsonBox::Object o = v.getObject();
+	JsonBox::Object o = saveData.getObject();
 
 	this->className = o["className"].getString();
 	this->level = o["level"].getInteger();
+
+	return;
+}
+
+void Player::loadArea(JsonBox::Value areaData, EntityManager* mgr)
+{
+	// Load the area
+	JsonBox::Object o = areaData.getObject();
+	for(auto area : o)
+	{
+		std::string key = area.first;
+		mgr->getEntity<Area>(key)->load(key, area.second, mgr);
+		this->visitedAreas.insert(key);
+	}
 
 	return;
 }

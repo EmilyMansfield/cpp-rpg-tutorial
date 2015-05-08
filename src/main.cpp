@@ -151,19 +151,11 @@ Player startGame()
 	{
 		f.close();
 		// Load the player
-		JsonBox::Value v;
-		v.loadFromFile(name + ".json");
-		Player player = Player(v, &entityManager);
-
-		// Load the area
-		v.loadFromFile(name + "_areas.json");
-		JsonBox::Object o = v.getObject();
-		for(auto area : o)
-		{
-			std::string key = area.first;
-			entityManager.getEntity<Area>(key)->load(key, area.second, &entityManager);
-			player.visitedAreas.insert(key);
-		}
+		JsonBox::Value saveData;
+		JsonBox::Value areaData;
+		saveData.loadFromFile(name + ".json");
+		areaData.loadFromFile(name + "_areas.json");
+		Player player = Player(saveData, areaData, &entityManager);
 
 		// Return the player
 		return player;
