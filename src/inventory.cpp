@@ -78,6 +78,21 @@ unsigned int Inventory::hasItem(T* item, std::list<std::pair<T*, int>>& storage)
 	return count;
 }
 
+template <typename T>
+std::pair<T*, int>* Inventory::getItem(unsigned int n, std::list<std::pair<T*, int>>& storage)
+{
+	auto it = storage.begin();
+	for(int i = 0; i < n; ++i) { ++it; }
+	if(it != storage.end())
+	{
+		return &(*it);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 // Output a list of the items onto stdout, formatted nicely and
 // numbered if required
 template <typename T>
@@ -144,6 +159,10 @@ void Inventory::addItem(Armor* armor, int count) { addItem<Armor>(armor, count, 
 void Inventory::removeItem(Item* item, int count) { removeItem<Item>(item, count, this->items); }
 void Inventory::removeItem(Weapon* weapon, int count) { removeItem<Weapon>(weapon, count, this->weapons); }
 void Inventory::removeItem(Armor* armor, int count) { removeItem<Armor>(armor, count, this->armor); }
+
+std::pair<Item*, int>* Inventory::getItem(int n) { return getItem<Item>(n, this->items); }
+std::pair<Weapon*, int>* Inventory::getWeapon(int n) { return getItem<Weapon>(n, this->weapons); }
+std::pair<Armor*, int>* Inventory::getArmor(int n) { return getItem<Armor>(n, this->armor); }
 
 unsigned int Inventory::hasItem(Item* item) { return hasItem<Item>(item, this->items); }
 unsigned int Inventory::hasItem(Weapon* weapon) { return hasItem<Weapon>(weapon, this->weapons); }

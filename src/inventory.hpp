@@ -32,11 +32,17 @@ class Inventory
 	template <typename T>
 	unsigned int hasItem(T* item, std::list<std::pair<T*, int>>& storage);
 
+	// Return the nth item in the storage list
+	template <typename T>
+	std::pair<T*, int>* getItem(unsigned int n, std::list<std::pair<T*, int>>& storage);
+
 	// Output a list of the items onto stdout, formatted nicely and
 	// numbered if required
 	template <typename T>
 	int printItems(std::list<std::pair<T*, int>>& storage, bool label = false);
 
+	// Return a JSON representation of the specified storage, i.e. of
+	// the items, weapons, or armor
 	template <typename T>
 	JsonBox::Array getJson(std::list<std::pair<T*, int>>& storage);
 
@@ -74,6 +80,10 @@ class Inventory
 	unsigned int hasItem(Item* item);
 	unsigned int hasItem(Weapon* weapon);
 	unsigned int hasItem(Armor* armor);
+
+	std::pair<Item*, int>* getItem(int n);
+	std::pair<Weapon*, int>* getWeapon(int n);
+	std::pair<Armor*, int>* getArmor(int n);
 
 	int printItems(bool label = false);
 	int printWeapons(bool label = false);

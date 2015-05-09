@@ -238,12 +238,7 @@ void dialogueMenu(Player& player)
 					// so the number must be converted into a list element
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						auto it = player.inventory.armor.begin();
-						for(int i = 1; i < userInput; ++i) { ++it; }
-						if(it != player.inventory.armor.end())
-						{
-							player.equipArmor(it->first);
-						}
+						player.equipArmor(player.inventory.getArmor(userInput-1)->first);
 					}
 				}
 			}
@@ -261,12 +256,7 @@ void dialogueMenu(Player& player)
 					std::cin >> userInput;
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						auto it = player.inventory.weapons.begin();
-						for(int i = 1; i < userInput; ++i) { ++it; }
-						if(it != player.inventory.weapons.end())
-						{
-							player.equipWeapon(it->first);
-						}
+						player.equipWeapon(player.inventory.getWeapon(userInput-1)->first);
 					}
 				}
 			}
