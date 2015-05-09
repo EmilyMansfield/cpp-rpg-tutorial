@@ -16,10 +16,10 @@ class Weapon : public Item
 
 	// Constructors
 	Weapon(std::string id, std::string name, std::string description, int damage);
-	Weapon(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Weapon(std::string id, JsonBox::Value& v, EntityManager* mgr);
 	Weapon();
 
-	void load(std::string id, JsonBox::Value v);
+	void load(std::string id, JsonBox::Value& v);
 };
 
 #endif /* WEAPON_HPP */

@@ -10,7 +10,7 @@
 #include "entity_manager.hpp"
 
 template <typename T>
-void Inventory::loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
+void Inventory::loadItems(JsonBox::Value& v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
 {
 	for(auto item : v.getArray())
 	{
@@ -125,7 +125,7 @@ Inventory::Inventory()
 {
 }
 
-Inventory::Inventory(JsonBox::Value v, EntityManager* mgr)
+Inventory::Inventory(JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	loadItems<Item>(o["items"], this->items, mgr);

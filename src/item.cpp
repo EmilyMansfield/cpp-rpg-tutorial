@@ -15,12 +15,12 @@ Item::Item() : Entity("nullid")
 {
 }
 
-Item::Item(std::string id, JsonBox::Value v, EntityManager* mgr) : Item::Item()
+Item::Item(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item::Item()
 {
 	this->load(id, v);
 }
 
-void Item::load(std::string id, JsonBox::Value v)
+void Item::load(std::string id, JsonBox::Value& v)
 {
 	JsonBox::Object o = v.getObject();
 	this->name = o["name"].getString();

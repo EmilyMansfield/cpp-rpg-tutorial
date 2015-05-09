@@ -29,7 +29,7 @@ Creature::Creature() : Creature::Creature("nullid", "", 0, 0, 0, 0.0, 1)
 {
 }
 
-Creature::Creature(std::string id, JsonBox::Value v, EntityManager* mgr) : Creature::Creature()
+Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : Creature::Creature()
 {
 	this->load(id, v, mgr);
 }
@@ -142,7 +142,7 @@ JsonBox::Object Creature::toJson()
 	return o;
 }
 
-void Creature::load(std::string id, JsonBox::Value v)
+void Creature::load(std::string id, JsonBox::Value& v)
 {
 	JsonBox::Object o = v.getObject();
 	this->name = o["name"].getString();
@@ -164,7 +164,7 @@ void Creature::load(std::string id, JsonBox::Value v)
 	return;
 }
 
-void Creature::load(std::string id, JsonBox::Value v, EntityManager* mgr)
+void Creature::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	// Load variables
 	this->load(id, v);

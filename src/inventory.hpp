@@ -17,7 +17,7 @@ class Inventory
 	// Given the Json value v which contains a list of items, weapons, or armor of type T
 	// load the Ts into the storage list (either items, weapons, or armor)
 	template <typename T>
-	void loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr);
+	void loadItems(JsonBox::Value& v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr);
 
 	// Add an item to the inventory, specified by a pointer to it
 	// Should be from the entity manager
@@ -62,7 +62,7 @@ class Inventory
 	Inventory();
 
 	// Load the inventory from a JSON value
-	Inventory(JsonBox::Value v, EntityManager* mgr);
+	Inventory(JsonBox::Value& v, EntityManager* mgr);
 
 	// Remove all items from the inventory, destroying them in the process
 	// (They remain in the entity manager though)

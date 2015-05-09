@@ -38,7 +38,7 @@ class Area : public Entity
 	// Constructors
 	Area(std::string id, Dialogue dialogue, Inventory items,
 		std::vector<Creature*> creatures);
-	Area(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Area(std::string id, JsonBox::Value& v, EntityManager* mgr);
 	Area();
 
 	// Search the area for items and give them to the searcher, notifying
@@ -46,7 +46,7 @@ class Area : public Entity
 	void search(Creature& player);
 
 	// Load the area from the given Json value
-	void load(std::string id, JsonBox::Value v, EntityManager* mgr);
+	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
 	// Return a Json object representing the area
 	JsonBox::Object getJson();

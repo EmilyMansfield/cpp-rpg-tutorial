@@ -46,7 +46,7 @@ class Creature : public Entity
 	// Constructors
 	Creature(std::string id, std::string name, int hp, int strength, int agility, double evasion,
 		unsigned int xp);
-	Creature(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Creature(std::string id, JsonBox::Value& v, EntityManager* mgr);
 	Creature();
 
 	// Equip a weapon by setting the equipped weapon pointer. Currently
@@ -75,10 +75,10 @@ class Creature : public Entity
 
 	// Load the creature's variables from the JSON value, excluding those
 	// requiring an EntityManager (Items etc.)
-	void load(std::string id, JsonBox::Value v);
+	void load(std::string id, JsonBox::Value& v);
 
 	// Attempt to load all data from the JSON value
-	virtual void load(std::string id, JsonBox::Value v, EntityManager* mgr);
+	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* CREATURE_HPP */

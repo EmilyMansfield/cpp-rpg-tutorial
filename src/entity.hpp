@@ -15,7 +15,7 @@ class Entity
 		this->id = id;
 	}
 
-	virtual void load(std::string id, JsonBox::Value v)
+	virtual void load(std::string id, JsonBox::Value& v)
 	{
 		this->id = id;
 

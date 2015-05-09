@@ -15,12 +15,12 @@ Armor::Armor() : Armor::Armor("nullid", "", "", 0)
 {
 }
 
-Armor::Armor(std::string id, JsonBox::Value v, EntityManager* mgr) : Item()
+Armor::Armor(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item()
 {
 	this->load(id, v);
 }
 
-void Armor::load(std::string id, JsonBox::Value v)
+void Armor::load(std::string id, JsonBox::Value& v)
 {
 	Item::load(id, v);
 	JsonBox::Object o = v.getObject();

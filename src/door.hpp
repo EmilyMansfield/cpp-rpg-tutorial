@@ -29,9 +29,9 @@ class Door : public Entity
 	Door(std::string id, std::string description, std::pair<std::string, std::string> areas,
 		int locked, Item* key = nullptr);
 	Door();
-	Door(std::string id, JsonBox::Value v, EntityManager* mgr);
+	Door(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
-	void load(std::string id, JsonBox::Value v, EntityManager* mgr);
+	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* DOOR_HPP */

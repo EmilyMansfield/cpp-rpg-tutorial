@@ -19,7 +19,7 @@ Player::Player() : Player::Player("", 0, 0, 0, 0.0, 0, 1, "nullid")
 {
 }
 
-Player::Player(JsonBox::Value saveData, JsonBox::Value areaData, EntityManager* mgr) : Player::Player()
+Player::Player(JsonBox::Value& saveData, JsonBox::Value& areaData, EntityManager* mgr) : Player::Player()
 {
 	this->loadSave("player", saveData, mgr);
 	this->loadArea(areaData, mgr);
@@ -111,7 +111,7 @@ void Player::save(EntityManager* mgr)
 }
 
 // Attempt to load all data from the JSON value
-void Player::loadSave(std::string id, JsonBox::Value saveData, EntityManager* mgr)
+void Player::loadSave(std::string id, JsonBox::Value& saveData, EntityManager* mgr)
 {
 	// Load data shared with Creature
 	Creature::load(id, saveData, mgr);
@@ -125,7 +125,7 @@ void Player::loadSave(std::string id, JsonBox::Value saveData, EntityManager* mg
 	return;
 }
 
-void Player::loadArea(JsonBox::Value areaData, EntityManager* mgr)
+void Player::loadArea(JsonBox::Value& areaData, EntityManager* mgr)
 {
 	// Load the area
 	JsonBox::Object o = areaData.getObject();

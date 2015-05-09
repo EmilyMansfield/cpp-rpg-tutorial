@@ -19,12 +19,12 @@ Door::Door() : Door::Door("nullid", "", std::make_pair("", ""), 0)
 {
 }
 
-Door::Door(std::string id, JsonBox::Value v, EntityManager* mgr) : Door::Door()
+Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Door::Door()
 {
 	this->load(id, v, mgr);
 }
 
-void Door::load(std::string id, JsonBox::Value v, EntityManager* mgr)
+void Door::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->description = o["description"].getString();

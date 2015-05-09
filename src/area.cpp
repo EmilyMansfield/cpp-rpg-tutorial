@@ -24,7 +24,7 @@ Area::Area() : Entity("nullid")
 {
 }
 
-Area::Area(std::string id, JsonBox::Value v, EntityManager* mgr) : Entity(id)
+Area::Area(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
 	this->load(id, v, mgr);
 }
@@ -40,7 +40,7 @@ void Area::search(Creature& player)
 	return;
 }
 
-void Area::load(std::string id, JsonBox::Value v, EntityManager* mgr)
+void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 

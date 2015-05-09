@@ -27,7 +27,7 @@ class Player : public Creature
 	Player(std::string name, int hp, int strength, int agility, double evasion,
 		unsigned int xp, unsigned int level, std::string className);
 	Player();
-	Player(JsonBox::Value saveData, JsonBox::Value areaData, EntityManager* mgr);
+	Player(JsonBox::Value& saveData, JsonBox::Value& areaData, EntityManager* mgr);
 
 	// Calculates the total experience required to reach a certain level
 	unsigned int xpToLevel(unsigned int level);
@@ -43,8 +43,8 @@ class Player : public Creature
 	void save(EntityManager* mgr);
 
 	// Attempt to load all data from the JSON value
-	void loadSave(std::string id, JsonBox::Value saveData, EntityManager* mgr);
-	void loadArea(JsonBox::Value areaData, EntityManager* mgr);
+	void loadSave(std::string id, JsonBox::Value& saveData, EntityManager* mgr);
+	void loadArea(JsonBox::Value& areaData, EntityManager* mgr);
 };
 
 #endif /* PLAYER_HPP */
