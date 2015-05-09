@@ -9,8 +9,6 @@
 #include "armor.hpp"
 #include "entity_manager.hpp"
 
-// Given the Json value v which contains a list of items, weapons, or armor of type T
-// load the Ts into the storage list (either items, weapons, or armor)
 template <typename T>
 void Inventory::loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
 {
@@ -22,8 +20,6 @@ void Inventory::loadItems(JsonBox::Value v, std::list<std::pair<T*, int>>& stora
 	}
 }
 
-// Add an item to the inventory, specified by a pointer to it
-// Should be from the entity manager
 template <typename T>
 void Inventory::addItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
 {
@@ -41,7 +37,6 @@ void Inventory::addItem(T* item, int count, std::list<std::pair<T*, int>>& stora
 	storage.push_back(std::make_pair(item, count));
 }
 
-// Remove the specified number of items from the inventory
 template <typename T>
 void Inventory::removeItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
 {
@@ -66,7 +61,6 @@ void Inventory::removeItem(T* item, int count, std::list<std::pair<T*, int>>& st
 	});
 }
 
-// Returns the count of the specified item
 template <typename T>
 unsigned int Inventory::hasItem(T* item, std::list<std::pair<T*, int>>& storage)
 {
@@ -93,8 +87,6 @@ std::pair<T*, int>* Inventory::getItem(unsigned int n, std::list<std::pair<T*, i
 	}
 }
 
-// Output a list of the items onto stdout, formatted nicely and
-// numbered if required
 template <typename T>
 int Inventory::printItems(std::list<std::pair<T*, int>>& storage, bool label)
 {
@@ -133,7 +125,6 @@ Inventory::Inventory()
 {
 }
 
-// Load the inventory from a JSON value
 Inventory::Inventory(JsonBox::Value v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
@@ -142,8 +133,6 @@ Inventory::Inventory(JsonBox::Value v, EntityManager* mgr)
 	loadItems<Armor>(o["armor"], this->armor, mgr);
 }
 
-// Remove all items from the inventory, destroying them in the process
-// (They remain in the entity manager though)
 void Inventory::clear()
 {
 	this->items.clear();
@@ -172,9 +161,6 @@ int Inventory::printItems(bool label) { return printItems<Item>(this->items, lab
 int Inventory::printWeapons(bool label) { return printItems<Weapon>(this->weapons, label); }
 int Inventory::printArmor(bool label) { return printItems<Armor>(this->armor, label); }
 
-// Merge the specified inventory with the current one, adding
-// item quantities together if they already exist and adding the item
-// into a new slot if they do not
 void Inventory::merge(Inventory* inventory)
 {
 	// You can't merge an inventory with itself!
@@ -189,8 +175,6 @@ void Inventory::merge(Inventory* inventory)
 	return;
 }
 
-// Print the entire inventory; items, then weapons, then armor,
-// but if the inventory is empty then output "Nothing"
 void Inventory::print(bool label)
 {
 	if(this->items.empty() &&
