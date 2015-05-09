@@ -9,7 +9,7 @@
 class Item;
 class EntityManager;
 
-class Door : Entity
+class Door : public Entity
 {
 	public:
 
