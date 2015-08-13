@@ -25,11 +25,7 @@ Creature::Creature(std::string id, std::string name, int hp, int strength, int a
 	this->xp = xp;
 }
 
-Creature::Creature() : Creature::Creature("nullid", "", 0, 0, 0, 0.0, 1)
-{
-}
-
-Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : Creature::Creature()
+Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
 	this->load(id, v, mgr);
 }
@@ -145,7 +141,6 @@ JsonBox::Object Creature::toJson()
 void Creature::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
-	this->id = id;
 	this->name = o["name"].getString();
 	this->hp = o["hp"].getInteger();
 	if(o.find("hp_max") != o.end())

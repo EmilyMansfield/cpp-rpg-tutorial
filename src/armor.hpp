@@ -17,7 +17,6 @@ class Armor : public Item
 	// Constructors
 	Armor(std::string id, std::string name, std::string description, int defense);
 	Armor(std::string id, JsonBox::Value& v, EntityManager* mgr);
-	Armor();
 
 	// Load the armor from the Json value
 	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);

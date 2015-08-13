@@ -20,10 +20,6 @@ Area::Area(std::string id, Dialogue dialogue, Inventory items,
 	}
 }
 
-Area::Area() : Entity("nullid")
-{
-}
-
 Area::Area(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
 	this->load(id, v, mgr);
@@ -43,7 +39,6 @@ void Area::search(Creature& player)
 void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
-	this->id = id;
 
 	// Build the dialogue
 	// This is an optional parameter because it will not be saved

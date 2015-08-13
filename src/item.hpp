@@ -19,7 +19,6 @@ class Item : public Entity
 	// Constructors
 	Item(std::string id, std::string name, std::string description);
 	Item(std::string id, JsonBox::Value& v, EntityManager* mgr);
-	Item();
 
 	// Load the item information from the JSON value
 	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);

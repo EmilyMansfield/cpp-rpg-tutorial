@@ -39,7 +39,6 @@ class Area : public Entity
 	Area(std::string id, Dialogue dialogue, Inventory items,
 		std::vector<Creature*> creatures);
 	Area(std::string id, JsonBox::Value& v, EntityManager* mgr);
-	Area();
 
 	// Search the area for items and give them to the searcher, notifying
 	// them of their rewards

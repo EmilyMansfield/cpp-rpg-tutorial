@@ -47,10 +47,10 @@ template void EntityManager::loadJson<Creature>(std::string);
 template void EntityManager::loadJson<Area>(std::string);
 template void EntityManager::loadJson<Door>(std::string);
 
-template Item* EntityManager::getEntity(std::string);
-template Weapon* EntityManager::getEntity(std::string);
-template Armor* EntityManager::getEntity(std::string);
-template Creature* EntityManager::getEntity(std::string);
-template Area* EntityManager::getEntity(std::string);
-template Door* EntityManager::getEntity(std::string);
+template Item* EntityManager::getEntity<Item>(std::string);
+template Weapon* EntityManager::getEntity<Weapon>(std::string);
+template Armor* EntityManager::getEntity<Armor>(std::string);
+template Creature* EntityManager::getEntity<Creature>(std::string);
+template Area* EntityManager::getEntity<Area>(std::string);
+template Door* EntityManager::getEntity<Door>(std::string);
 

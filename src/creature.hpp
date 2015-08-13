@@ -47,7 +47,6 @@ class Creature : public Entity
 	Creature(std::string id, std::string name, int hp, int strength, int agility, double evasion,
 		unsigned int xp);
 	Creature(std::string id, JsonBox::Value& v, EntityManager* mgr);
-	Creature();
 
 	// Equip a weapon by setting the equipped weapon pointer. Currently
 	// a pointless function (simple enough to be rewritten each time)

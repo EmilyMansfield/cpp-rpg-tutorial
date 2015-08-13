@@ -15,11 +15,7 @@ Door::Door(std::string id, std::string description, std::pair<std::string, std::
 	this->key = key;
 }
 
-Door::Door() : Door::Door("nullid", "", std::make_pair("", ""), 0)
-{
-}
-
-Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Door::Door()
+Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
 	this->load(id, v, mgr);
 }
@@ -27,7 +23,6 @@ Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Door::Door()
 void Door::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
-	this->id = id;
 	this->description = o["description"].getString();
 	this->locked = o["locked"].getInteger();
 	if(o.find("key") != o.end())
