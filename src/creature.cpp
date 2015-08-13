@@ -142,7 +142,7 @@ JsonBox::Object Creature::toJson()
 	return o;
 }
 
-void Creature::load(std::string id, JsonBox::Value& v)
+void Creature::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->id = id;
@@ -159,17 +159,6 @@ void Creature::load(std::string id, JsonBox::Value& v)
 	this->strength = o["strength"].getInteger();
 	this->agility = o["agility"].getInteger();
 	this->evasion = o["evasion"].getDouble();
-
-	return;
-}
-
-void Creature::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
-{
-	// Load variables
-	this->load(id, v);
-
-	// Load entity variables
-	JsonBox::Object o = v.getObject();
 
 	if(o.find("inventory") != o.end())
 	{

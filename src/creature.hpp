@@ -73,10 +73,6 @@ class Creature : public Entity
 	// Create a JSON object containing the creature data
 	virtual JsonBox::Object toJson();
 
-	// Load the creature's variables from the JSON value, excluding those
-	// requiring an EntityManager (Items etc.)
-	void load(std::string id, JsonBox::Value& v);
-
 	// Attempt to load all data from the JSON value
 	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 };
