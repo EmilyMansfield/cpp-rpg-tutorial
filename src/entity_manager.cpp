@@ -26,44 +26,28 @@ void EntityManager::loadJson(std::string filename, std::map<std::string, T>& dat
 	return;
 }
 
-template<typename T>
-void EntityManager::loadJson(std::string filename)
-{
-	if(std::is_same<T, Item>::value)			loadJson(filename, dataItem);
-	else if(std::is_same<T, Weapon>::value)		loadJson(filename, dataWeapon);
-	else if(std::is_same<T, Armor>::value)		loadJson(filename, dataArmor);
-	else if(std::is_same<T, Creature>::value)	loadJson(filename, dataCreature);
-	else if(std::is_same<T, Area>::value)		loadJson(filename, dataArea);
-	else if(std::is_same<T, Door>::value)		loadJson(filename, dataDoor);
+// Specialisations of loadJson to convert the template argument to the
+// correct std::map destination
+#define loadJson_specialised(type, member) \
+template <> void EntityManager::loadJson<type>(std::string filename) \
+{ loadJson<type>(filename, member); }
 
-	return;
-}
+loadJson_specialised(Item, dataItem);
+loadJson_specialised(Weapon, dataWeapon);
+loadJson_specialised(Armor, dataArmor);
+loadJson_specialised(Creature, dataCreature);
+loadJson_specialised(Area, dataArea);
+loadJson_specialised(Door, dataDoor);
 
-template<typename T>
-T* EntityManager::getEntity(std::string id)
-{
-	if(std::is_same<T, Item>::value)			return dynamic_cast<T*>(&dataItem.at(id));
-	else if(std::is_same<T, Weapon>::value)		return dynamic_cast<T*>(&dataWeapon.at(id));
-	else if(std::is_same<T, Armor>::value)		return dynamic_cast<T*>(&dataArmor.at(id));
-	else if(std::is_same<T, Creature>::value)	return dynamic_cast<T*>(&dataCreature.at(id));
-	else if(std::is_same<T, Area>::value)		return dynamic_cast<T*>(&dataArea.at(id));
-	else if(std::is_same<T, Door>::value)		return dynamic_cast<T*>(&dataDoor.at(id));
-	else										return nullptr;
-}
+#define getEntity_specialised(type, member) \
+template <> type* EntityManager::getEntity<type>(std::string id) \
+{ return &member.at(id); }
+
+getEntity_specialised(Item, dataItem);
+getEntity_specialised(Weapon, dataWeapon);
+getEntity_specialised(Armor, dataArmor);
+getEntity_specialised(Creature, dataCreature);
+getEntity_specialised(Area, dataArea);
+getEntity_specialised(Door, dataDoor);
 
 EntityManager::EntityManager() {}
-
-// Template specialisations
-template void EntityManager::loadJson<Item>(std::string);
-template void EntityManager::loadJson<Weapon>(std::string);
-template void EntityManager::loadJson<Armor>(std::string);
-template void EntityManager::loadJson<Creature>(std::string);
-template void EntityManager::loadJson<Area>(std::string);
-template void EntityManager::loadJson<Door>(std::string);
-
-template Item* EntityManager::getEntity(std::string);
-template Weapon* EntityManager::getEntity(std::string);
-template Armor* EntityManager::getEntity(std::string);
-template Creature* EntityManager::getEntity(std::string);
-template Area* EntityManager::getEntity(std::string);
-template Door* EntityManager::getEntity(std::string);
