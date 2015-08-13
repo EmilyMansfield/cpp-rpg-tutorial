@@ -18,6 +18,7 @@
 #include "player.hpp"
 #include "dialogue.hpp"
 #include "area.hpp"
+#include "door.hpp"
 #include "battle.hpp"
 #include "entity_manager.hpp"
 

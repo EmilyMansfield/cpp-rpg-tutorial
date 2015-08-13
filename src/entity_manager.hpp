@@ -4,12 +4,6 @@
 #include <string>
 #include <map>
 
-#include "item.hpp"
-#include "weapon.hpp"
-#include "armor.hpp"
-#include "creature.hpp"
-#include "area.hpp"
-#include "door.hpp"
 #include "entity.hpp"
 
 class EntityManager
