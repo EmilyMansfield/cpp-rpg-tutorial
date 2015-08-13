@@ -26,7 +26,17 @@ void EntityManager::loadJson(std::string filename)
 template <class T>
 T* EntityManager::getEntity(std::string id)
 {
-	return dynamic_cast<T*>(this->data.at(id));
+	// The id prefix should match to the type T, so take the
+	// first characters of the id up to the length of the
+	// prefix and compare the two
+	if(id.substr(0, entityToString<T>().size()) == entityToString<T>())
+	{
+		return dynamic_cast<T*>(this->data.at(id));
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 EntityManager::EntityManager() {}
@@ -40,6 +50,14 @@ EntityManager::~EntityManager()
 }
 
 // Template specialisations
+template <> std::string entityToString<Item>() { return "item"; }
+template <> std::string entityToString<Weapon>() { return "weapon"; }
+template <> std::string entityToString<Armor>() { return "armor"; }
+template <> std::string entityToString<Creature>() { return "creature"; }
+template <> std::string entityToString<Area>() { return "area"; }
+template <> std::string entityToString<Door>() { return "door"; }
+
+// Template instantiations
 template void EntityManager::loadJson<Item>(std::string);
 template void EntityManager::loadJson<Weapon>(std::string);
 template void EntityManager::loadJson<Armor>(std::string);

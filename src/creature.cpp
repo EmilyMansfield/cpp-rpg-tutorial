@@ -98,7 +98,7 @@ int Creature::traverse(Door* door)
 	else if(door->locked > 0)
 	{
 		// Unlock and open the door if the creature has the key
-		if(this->inventory.hasItem(door->key))
+		if(this->inventory.count(door->key))
 		{
 			door->locked = -1;
 			flag = 1;

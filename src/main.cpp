@@ -227,7 +227,7 @@ void dialogueMenu(Player& player)
 				// Cannot equip armor if they do not have any
 				// Print a list of the armor and retrieve the amount
 				// of armor in one go
-				int numItems = player.inventory.printArmor(true);
+				int numItems = player.inventory.print<Armor>(true);
 				if(numItems == 0) break;
 
 				while(!userInput)
@@ -239,7 +239,7 @@ void dialogueMenu(Player& player)
 					// so the number must be converted into a list element
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						player.equipArmor(player.inventory.getArmor(userInput-1)->first);
+						player.equipArmor(player.inventory.get<Armor>(userInput-1));
 					}
 				}
 			}
@@ -247,7 +247,7 @@ void dialogueMenu(Player& player)
 			else if(result2 == 2)
 			{
 				int userInput = 0;
-				int numItems = player.inventory.printWeapons(true);
+				int numItems = player.inventory.print<Weapon>(true);
 
 				if(numItems == 0) break;
 
@@ -257,7 +257,7 @@ void dialogueMenu(Player& player)
 					std::cin >> userInput;
 					if(userInput >= 1 && userInput <= numItems)
 					{
-						player.equipWeapon(player.inventory.getWeapon(userInput-1)->first);
+						player.equipWeapon(player.inventory.get<Weapon>(userInput-1));
 					}
 				}
 			}

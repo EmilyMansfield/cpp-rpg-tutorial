@@ -30,4 +30,8 @@ class EntityManager
 	~EntityManager();
 };
 
+// Convert a derived entity type to its id prefix. e.g. Item -> "item"
+template <typename T>
+std::string entityToString();
+
 #endif /* ENTITY_MANAGER_HPP */

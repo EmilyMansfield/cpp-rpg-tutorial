@@ -1,4 +1,5 @@
 #include <list>
+#include <string>
 #include <utility>
 #include <iostream>
 #include "JsonBox.h"
@@ -10,23 +11,42 @@
 #include "entity_manager.hpp"
 
 template <typename T>
-void Inventory::loadItems(JsonBox::Value& v, std::list<std::pair<T*, int>>& storage, EntityManager* mgr)
+void Inventory::load(JsonBox::Value& v, EntityManager* mgr)
 {
 	for(auto item : v.getArray())
 	{
 		std::string itemId = item.getArray()[0].getString();
 		int quantity = item.getArray()[1].getInteger();
-		storage.push_back(std::make_pair(mgr->getEntity<T>(itemId), quantity));
+		this->items.push_back(std::make_pair(dynamic_cast<Item*>(mgr->getEntity<T>(itemId)), quantity));
 	}
 }
 
 template <typename T>
-void Inventory::addItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
+JsonBox::Array Inventory::jsonArray()
+{
+	JsonBox::Array a;
+	for(auto item : this->items)
+	{
+		// Skip if the id does not match to the type T
+		if(item.first->id.substr(0, entityToString<T>().size()) != entityToString<T>())
+			continue;
+		// Otherwise add the item to the array
+		JsonBox::Array pair;
+		pair.push_back(JsonBox::Value(item.first->id));
+		pair.push_back(JsonBox::Value(item.second));
+		a.push_back(JsonBox::Value(pair));
+	}
+
+	return a;
+}
+
+template <typename T>
+void Inventory::add(T* item, int count)
 {
 	// Perform the same operation as merging, but for a single item
-	for(auto& it : storage)
+	for(auto& it : this->items)
 	{
-		if(it.first == item)
+		if(it.first->id == item->id)
 		{
 			it.second += count;
 			return;
@@ -34,17 +54,17 @@ void Inventory::addItem(T* item, int count, std::list<std::pair<T*, int>>& stora
 	}
 	// If the item doesn't already exist in the inventory, then a
 	// pair must be created too
-	storage.push_back(std::make_pair(item, count));
+	this->items.push_back(std::make_pair(dynamic_cast<Item*>(item), count));
 }
 
 template <typename T>
-void Inventory::removeItem(T* item, int count, std::list<std::pair<T*, int>>& storage)
+void Inventory::remove(T* item, int count)
 {
 	// Iterate through the items, and if they are found then decrease
 	// the quantity by the quantity removed
-	for(auto& it : storage)
+	for(auto& it : this->items)
 	{
-		if(it.first == item)
+		if(it.first->id == item->id)
 		{
 			it.second -= count;
 			break;
@@ -55,45 +75,57 @@ void Inventory::removeItem(T* item, int count, std::list<std::pair<T*, int>>& st
 	// We do this in two passes because removing an element from
 	// a list during a for loop invalidates the iterators, and the
 	// loop stops working
-	storage.remove_if([](std::pair<T*, int>& element)
+	this->items.remove_if([](std::pair<Item*, int>& element)
 	{
 		return element.second < 1;
 	});
 }
 
 template <typename T>
-unsigned int Inventory::hasItem(T* item, std::list<std::pair<T*, int>>& storage)
+unsigned int Inventory::count(T* item)
 {
 	unsigned int count = 0;
-	for(auto it : storage)
+	for(auto it : this->items)
 	{
-		if(it.first == item) ++count;
+		if(it.first->id == item->id) ++count;
 	}
 	return count;
 }
 
 template <typename T>
-std::pair<T*, int>* Inventory::getItem(unsigned int n, std::list<std::pair<T*, int>>& storage)
+T* Inventory::get(unsigned int n)
 {
-	auto it = storage.begin();
+	// Using a list so we don't have random access, and must
+	// step through n times from the start instead
+	auto it = this->items.begin();
 	for(int i = 0; i < n; ++i) { ++it; }
-	if(it != storage.end())
-	{
-		return &(*it);
-	}
+	if(it != this->items.end())
+		return dynamic_cast<T*>((*it).first);
 	else
-	{
 		return nullptr;
-	}
 }
 
 template <typename T>
-int Inventory::printItems(std::list<std::pair<T*, int>>& storage, bool label)
+int Inventory::getq(unsigned int n)
+{
+	auto it = this->items.begin();
+	for(int i = 0; i < n; ++i) { ++it; }
+	if(it != this->items.end())
+		return (*it).second;
+	else
+		return 0;
+}
+
+template <typename T>
+int Inventory::print(bool label)
 {
 	unsigned int i = 1;
 
-	for(auto it : storage)
+	for(auto it : this->items)
 	{
+		// Skip if the id does not match to the type T
+		if(it.first->id.substr(0, entityToString<T>().size()) != entityToString<T>())
+			continue;
 		// Number the items if asked
 		if(label) std::cout << i++ << ": ";
 		// Output the item name, quantity and description, e.g.
@@ -103,63 +135,32 @@ int Inventory::printItems(std::list<std::pair<T*, int>>& storage, bool label)
 	}
 
 	// Return the number of items outputted, for convenience
-	return storage.size();
+	return this->items.size();
 }
 
-template <typename T>
-JsonBox::Array Inventory::getJson(std::list<std::pair<T*, int>>& storage)
+// Overload of print to print all items when the template argument is empty
+int Inventory::print(bool label)
 {
-	JsonBox::Array a;
-	for(auto item : storage)
+	unsigned int i = 0;
+
+	if(items.empty())
 	{
-		JsonBox::Array pair;
-		pair.push_back(JsonBox::Value(item.first->id));
-		pair.push_back(JsonBox::Value(item.second));
-		a.push_back(JsonBox::Value(pair));
+		std::cout << "Nothing" << std::endl;
+	}
+	else
+	{
+		i += print<Item>(label);
+		i += print<Weapon>(label);
+		i += print<Armor>(label);
 	}
 
-	return a;
-}
-
-Inventory::Inventory()
-{
-}
-
-Inventory::Inventory(JsonBox::Value& v, EntityManager* mgr)
-{
-	JsonBox::Object o = v.getObject();
-	loadItems<Item>(o["items"], this->items, mgr);
-	loadItems<Weapon>(o["weapons"], this->weapons, mgr);
-	loadItems<Armor>(o["armor"], this->armor, mgr);
+	return i;
 }
 
 void Inventory::clear()
 {
 	this->items.clear();
-	this->weapons.clear();
-	this->armor.clear();
 }
-
-// Template specialisations
-void Inventory::addItem(Item* item, int count) { addItem<Item>(item, count, this->items); }
-void Inventory::addItem(Weapon* weapon, int count) { addItem<Weapon>(weapon, count, this->weapons); }
-void Inventory::addItem(Armor* armor, int count) { addItem<Armor>(armor, count, this->armor); }
-
-void Inventory::removeItem(Item* item, int count) { removeItem<Item>(item, count, this->items); }
-void Inventory::removeItem(Weapon* weapon, int count) { removeItem<Weapon>(weapon, count, this->weapons); }
-void Inventory::removeItem(Armor* armor, int count) { removeItem<Armor>(armor, count, this->armor); }
-
-std::pair<Item*, int>* Inventory::getItem(int n) { return getItem<Item>(n, this->items); }
-std::pair<Weapon*, int>* Inventory::getWeapon(int n) { return getItem<Weapon>(n, this->weapons); }
-std::pair<Armor*, int>* Inventory::getArmor(int n) { return getItem<Armor>(n, this->armor); }
-
-unsigned int Inventory::hasItem(Item* item) { return hasItem<Item>(item, this->items); }
-unsigned int Inventory::hasItem(Weapon* weapon) { return hasItem<Weapon>(weapon, this->weapons); }
-unsigned int Inventory::hasItem(Armor* armor) { return hasItem<Armor>(armor, this->armor); }
-
-int Inventory::printItems(bool label) { return printItems<Item>(this->items, label); }
-int Inventory::printWeapons(bool label) { return printItems<Weapon>(this->weapons, label); }
-int Inventory::printArmor(bool label) { return printItems<Armor>(this->armor, label); }
 
 void Inventory::merge(Inventory* inventory)
 {
@@ -168,38 +169,60 @@ void Inventory::merge(Inventory* inventory)
 
 	// Loop through the items to be added, and add them. Our addition
 	// function will take care of everything else for us
-	for(auto it : inventory->items)		this->addItem(it.first, it.second);
-	for(auto it : inventory->weapons)	this->addItem(it.first, it.second);
-	for(auto it : inventory->armor)	this->addItem(it.first, it.second);
+	for(auto it : inventory->items) this->add<Item>(it.first, it.second);
 
 	return;
 }
 
-void Inventory::print(bool label)
+Inventory::Inventory(JsonBox::Value& v, EntityManager* mgr)
 {
-	if(this->items.empty() &&
-		this->weapons.empty() &&
-		this->armor.empty())
-	{
-		std::cout << "Nothing" << std::endl;
-	}
-	else
-	{
-		this->printItems(label);
-		this->printWeapons(label);
-		this->printArmor(label);
-	}
-
-	return;
+	JsonBox::Object o = v.getObject();
+	load<Item>(o["items"], mgr);
+	load<Weapon>(o["weapons"], mgr);
+	load<Armor>(o["armor"], mgr);
 }
 
 JsonBox::Object Inventory::getJson()
 {
 	JsonBox::Object o;
 
-	o["items"] = JsonBox::Value(getJson<Item>(this->items));
-	o["weapons"] = JsonBox::Value(getJson<Weapon>(this->weapons));
-	o["armor"] = JsonBox::Value(getJson<Armor>(this->armor));
+	o["items"] = JsonBox::Value(jsonArray<Item>());
+	o["weapons"] = JsonBox::Value(jsonArray<Weapon>());
+	o["armor"] = JsonBox::Value(jsonArray<Armor>());
 
 	return o;
 }
+
+// Template instantiations
+template void Inventory::load<Item>(JsonBox::Value&, EntityManager*);
+template void Inventory::load<Weapon>(JsonBox::Value&, EntityManager*);
+template void Inventory::load<Armor>(JsonBox::Value&, EntityManager*);
+
+template JsonBox::Array Inventory::jsonArray<Item>();
+template JsonBox::Array Inventory::jsonArray<Weapon>();
+template JsonBox::Array Inventory::jsonArray<Armor>();
+
+template void Inventory::add<Item>(Item*, int);
+template void Inventory::add<Weapon>(Weapon*, int);
+template void Inventory::add<Armor>(Armor*, int);
+
+template void Inventory::remove<Item>(Item*, int);
+template void Inventory::remove<Weapon>(Weapon*, int);
+template void Inventory::remove<Armor>(Armor*, int);
+
+template unsigned int Inventory::count<Item>(Item*);
+template unsigned int Inventory::count<Weapon>(Weapon*);
+template unsigned int Inventory::count<Armor>(Armor*);
+
+template Item* Inventory::get<Item>(unsigned int);
+template Weapon* Inventory::get<Weapon>(unsigned int);
+template Armor* Inventory::get<Armor>(unsigned int);
+
+template int Inventory::getq<Item>(unsigned int);
+template int Inventory::getq<Weapon>(unsigned int);
+template int Inventory::getq<Armor>(unsigned int);
+
+template int Inventory::print<Item>(bool);
+template int Inventory::print<Weapon>(bool);
+template int Inventory::print<Armor>(bool);
+
