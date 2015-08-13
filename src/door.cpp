@@ -27,6 +27,7 @@ Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Door::Door()
 void Door::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
+	this->id = id;
 	this->description = o["description"].getString();
 	this->locked = o["locked"].getInteger();
 	if(o.find("key") != o.end())
@@ -39,8 +40,6 @@ void Door::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 		this->areas.first = a[0].getString();
 		this->areas.second = a[1].getString();
 	}
-
-	Entity::load(id, v);
 
 	return;
 }

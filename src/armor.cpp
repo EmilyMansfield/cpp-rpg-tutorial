@@ -17,12 +17,12 @@ Armor::Armor() : Armor::Armor("nullid", "", "", 0)
 
 Armor::Armor(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item()
 {
-	this->load(id, v);
+	this->load(id, v, mgr);
 }
 
-void Armor::load(std::string id, JsonBox::Value& v)
+void Armor::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
-	Item::load(id, v);
+	Item::load(id, v, mgr);
 	JsonBox::Object o = v.getObject();
 	this->defense = o["defense"].getInteger();
 

@@ -19,7 +19,7 @@ class Weapon : public Item
 	Weapon(std::string id, JsonBox::Value& v, EntityManager* mgr);
 	Weapon();
 
-	void load(std::string id, JsonBox::Value& v);
+	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* WEAPON_HPP */

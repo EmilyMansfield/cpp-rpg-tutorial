@@ -4,6 +4,8 @@
 #include "JsonBox.h"
 #include <string>
 
+class EntityManager;
+
 class Entity
 {
 	public:
@@ -15,12 +17,8 @@ class Entity
 		this->id = id;
 	}
 
-	virtual void load(std::string id, JsonBox::Value& v)
-	{
-		this->id = id;
-
-		return;
-	}
+	// Pure virtual function stops Entity from being instantiated
+	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr) = 0;
 };
 
 #endif /* ENTITY_HPP */

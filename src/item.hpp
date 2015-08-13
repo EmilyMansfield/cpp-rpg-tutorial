@@ -22,7 +22,7 @@ class Item : public Entity
 	Item();
 
 	// Load the item information from the JSON value
-	virtual void load(std::string id, JsonBox::Value& v);
+	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* ITEM_HPP */

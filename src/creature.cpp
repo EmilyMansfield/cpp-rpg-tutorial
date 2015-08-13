@@ -145,6 +145,7 @@ JsonBox::Object Creature::toJson()
 void Creature::load(std::string id, JsonBox::Value& v)
 {
 	JsonBox::Object o = v.getObject();
+	this->id = id;
 	this->name = o["name"].getString();
 	this->hp = o["hp"].getInteger();
 	if(o.find("hp_max") != o.end())
@@ -158,8 +159,6 @@ void Creature::load(std::string id, JsonBox::Value& v)
 	this->strength = o["strength"].getInteger();
 	this->agility = o["agility"].getInteger();
 	this->evasion = o["evasion"].getDouble();
-
-	Entity::load(id, v);
 
 	return;
 }

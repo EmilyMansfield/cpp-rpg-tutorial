@@ -17,12 +17,12 @@ Weapon::Weapon() : Weapon::Weapon("nullid", "", "", 0)
 
 Weapon::Weapon(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item()
 {
-	this->load(id, v);
+	this->load(id, v, mgr);
 }
 
-void Weapon::load(std::string id, JsonBox::Value& v)
+void Weapon::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
-	Item::load(id, v);
+	Item::load(id, v, mgr);
 	JsonBox::Object o = v.getObject();
 	this->damage = o["damage"].getInteger();
 

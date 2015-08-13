@@ -43,6 +43,7 @@ void Area::search(Creature& player)
 void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
+	this->id = id;
 
 	// Build the dialogue
 	// This is an optional parameter because it will not be saved
@@ -79,8 +80,6 @@ void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 			this->doors.push_back(mgr->getEntity<Door>(door.getString()));
 		}
 	}
-
-	Area::Entity::load(id, v);
 
 	return;
 }
