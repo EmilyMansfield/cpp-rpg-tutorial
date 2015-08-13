@@ -19,7 +19,7 @@ void EntityManager::loadJson(std::string filename)
 	for(auto entity : o)
 	{
 		std::string key = entity.first;
-		this->data[key] = new T(key, entity.second, this);
+		this->data[key] = dynamic_cast<Entity*>(new T(key, entity.second, this));
 	}
 }
 
