@@ -17,7 +17,12 @@ class Entity
 		this->id = id;
 	}
 
-	// Pure virtual function stops Entity from being instantiated
+	// Destructor must be made virtual as all derived classes are
+	// treated as Entity in the EntityManager
+	virtual ~Entity() {}
+
+	// Pure virtual function stops Entity from being instantiated and forces it
+	// to be implemented in all derived types
 	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr) = 0;
 };
 
