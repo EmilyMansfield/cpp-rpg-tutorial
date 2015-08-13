@@ -10,22 +10,13 @@
 #include "creature.hpp"
 #include "area.hpp"
 #include "door.hpp"
+#include "entity.hpp"
 
 class EntityManager
 {
 	private:
 
-	std::map<std::string, Item> dataItem;
-	std::map<std::string, Weapon> dataWeapon;
-	std::map<std::string, Armor> dataArmor;
-	std::map<std::string, Creature> dataCreature;
-	std::map<std::string, Area> dataArea;
-	std::map<std::string, Door> dataDoor;
-
-	// Read the JSON file given by filename and interpret it according
-	// to the type T, before storing all entities read in the data map
-	template<typename T>
-	void loadJson(std::string filename, std::map<std::string, T>& data);
+	std::map<std::string, Entity*> data;
 
 	public:
 
@@ -41,5 +32,8 @@ class EntityManager
 	// Constructor
 	EntityManager();
 
+	// Destructor
+	~EntityManager();
 };
+
 #endif /* ENTITY_MANAGER_HPP */

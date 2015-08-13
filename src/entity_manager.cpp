@@ -9,10 +9,9 @@
 #include "area.hpp"
 #include "door.hpp"
 
-template<typename T>
-void EntityManager::loadJson(std::string filename, std::map<std::string, T>& data)
+template <class T>
+void EntityManager::loadJson(std::string filename)
 {
-	// Fill the data map
 	JsonBox::Value v;
 	v.loadFromFile(filename);
 
@@ -20,34 +19,38 @@ void EntityManager::loadJson(std::string filename, std::map<std::string, T>& dat
 	for(auto entity : o)
 	{
 		std::string key = entity.first;
-		data[key] = T(key, entity.second, this);
+		this->data[key] = new T(key, entity.second, this);
 	}
-
-	return;
 }
 
-// Specialisations of loadJson to convert the template argument to the
-// correct std::map destination
-#define loadJson_specialised(type, member) \
-template <> void EntityManager::loadJson<type>(std::string filename) \
-{ loadJson<type>(filename, member); }
-
-loadJson_specialised(Item, dataItem);
-loadJson_specialised(Weapon, dataWeapon);
-loadJson_specialised(Armor, dataArmor);
-loadJson_specialised(Creature, dataCreature);
-loadJson_specialised(Area, dataArea);
-loadJson_specialised(Door, dataDoor);
-
-#define getEntity_specialised(type, member) \
-template <> type* EntityManager::getEntity<type>(std::string id) \
-{ return &member.at(id); }
-
-getEntity_specialised(Item, dataItem);
-getEntity_specialised(Weapon, dataWeapon);
-getEntity_specialised(Armor, dataArmor);
-getEntity_specialised(Creature, dataCreature);
-getEntity_specialised(Area, dataArea);
-getEntity_specialised(Door, dataDoor);
+template <class T>
+T* EntityManager::getEntity(std::string id)
+{
+	return dynamic_cast<T*>(this->data.at(id));
+}
 
 EntityManager::EntityManager() {}
+
+EntityManager::~EntityManager()
+{
+	for(auto& entity : this->data)
+	{
+		delete entity.second;
+	}
+}
+
+// Template specialisations
+template void EntityManager::loadJson<Item>(std::string);
+template void EntityManager::loadJson<Weapon>(std::string);
+template void EntityManager::loadJson<Armor>(std::string);
+template void EntityManager::loadJson<Creature>(std::string);
+template void EntityManager::loadJson<Area>(std::string);
+template void EntityManager::loadJson<Door>(std::string);
+
+template Item* EntityManager::getEntity(std::string);
+template Weapon* EntityManager::getEntity(std::string);
+template Armor* EntityManager::getEntity(std::string);
+template Creature* EntityManager::getEntity(std::string);
+template Area* EntityManager::getEntity(std::string);
+template Door* EntityManager::getEntity(std::string);
+
