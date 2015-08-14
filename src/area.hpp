@@ -40,10 +40,6 @@ class Area : public Entity
 		std::vector<Creature*> creatures);
 	Area(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
-	// Search the area for items and give them to the searcher, notifying
-	// them of their rewards
-	void search(Creature& player);
-
 	// Load the area from the given Json value
 	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
 

@@ -58,17 +58,20 @@ int main(void)
 		// Mark the current player as visited
 		player.visitedAreas.insert(player.currentArea);
 
+		// Pointer to to the current area for convenience
+		Area* areaPtr = player.getAreaPtr(&entityManager);
+
 		// Autosave the game
 		player.save(&entityManager);
 
 		// If the area has any creatures in it, start a battle with them
-		if(player.getAreaPtr(&entityManager)->creatures.size() > 0)
+		if(areaPtr->creatures.size() > 0)
 		{
 			// Create a vector of pointers to the creatures in the area
 			std::vector<Creature*> combatants;
-			for(int i = 0; i < player.getAreaPtr(&entityManager)->creatures.size(); ++i)
+			for(int i = 0; i < areaPtr->creatures.size(); ++i)
 			{
-				Creature* c = &(player.getAreaPtr(&entityManager)->creatures[i]);
+				Creature* c = &(areaPtr->creatures[i]);
 				combatants.push_back(c);
 			}
 			// Add the player to the combatant vector
@@ -77,7 +80,7 @@ int main(void)
 			Battle battle(combatants);
 			battle.run();
 			// Assume all creatures were killed and remove them from the area
-			player.getAreaPtr(&entityManager)->creatures.clear();
+			areaPtr->creatures.clear();
 		}
 
 		// If the player has died then inform them as such and close
@@ -89,8 +92,8 @@ int main(void)
 		}
 
 		// Add the search and movement options to the dialogue
-		Dialogue roomOptions = player.getAreaPtr(&entityManager)->dialogue;
-		for(auto door : player.getAreaPtr(&entityManager)->doors)
+		Dialogue roomOptions = areaPtr->dialogue;
+		for(auto door : areaPtr->doors)
 		{
 			roomOptions.addChoice("Go through the " + door->description);
 		}
@@ -103,13 +106,13 @@ int main(void)
 		{
 			dialogueMenu(player);
 		}
-		else if(result <= player.getAreaPtr(&entityManager)->dialogue.size())
+		else if(result <= areaPtr->dialogue.size())
 		{
 			// Add more events here
 		}
 		else if(result < roomOptions.size())
 		{
-			Door* door = player.getAreaPtr(&entityManager)->doors.at(result-player.getAreaPtr(&entityManager)->dialogue.size()-1);
+			Door* door = areaPtr->doors.at(result-areaPtr->dialogue.size()-1);
 			int flag = player.traverse(door);
 
 			switch(flag)
@@ -128,7 +131,10 @@ int main(void)
 		}
 		else
 		{
-			player.getAreaPtr(&entityManager)->search(player);
+			std::cout << "You find:" << std::endl;
+			areaPtr->items.print();
+			player.inventory.merge(&(areaPtr->items));
+			areaPtr->items.clear();
 		}
 	}
 

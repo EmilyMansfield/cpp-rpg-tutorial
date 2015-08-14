@@ -25,17 +25,6 @@ Area::Area(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 	this->load(id, v, mgr);
 }
 
-void Area::search(Creature& player)
-{
-	std::cout << "You find:" << std::endl;
-
-	this->items.print();
-	player.inventory.merge(&(this->items));
-	this->items.clear();
-
-	return;
-}
-
 void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
@@ -44,16 +33,8 @@ void Area::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
 	// This is an optional parameter because it will not be saved
 	// when the area is modified
 	if(o.find("dialogue") != o.end())
-	{
-		JsonBox::Object dialogue = o["dialogue"].getObject();
-		std::string dialogueDescription = dialogue["description"].getString();
-		std::vector<std::string> dialogueChoices;
-		for(auto choice : dialogue["choices"].getArray())
-		{
-			dialogueChoices.push_back(choice.getString());
-		}
-		this->dialogue = Dialogue(dialogueDescription, dialogueChoices);
-	}
+		this->dialogue = Dialogue(o["dialogue"]);
+
 	// Build the inventory
 	this->items = Inventory(o["inventory"], mgr);
 
