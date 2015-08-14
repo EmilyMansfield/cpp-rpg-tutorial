@@ -33,26 +33,20 @@ class Inventory
 
 	public:
 
-	// Add an item to the inventory, specified by a pointer to it
-	// Should be from the entity manager
-	template <typename T>
-	void add(T* item, int count);
+	// Add an item to the inventory
+	void add(Item* item, int count);
 
 	// Remove the specified number of items from the inventory
-	template <typename T>
-	void remove(T* item, int count);
+	void remove(Item* item, int count);
 
 	// Returns the count of the specified item
+	int count(Item* item);
 	template <typename T>
-	unsigned int count(T* item);
+	int count(unsigned int n);
 
 	// Return the nth item in the storage list
 	template <typename T>
 	T* get(unsigned int n);
-
-	// Return the quantity of the nth item in the storage list
-	template <typename T>
-	int getq(unsigned int n);
 
 	// Output a list of the items onto stdout, formatted nicely and
 	// numbered if required
