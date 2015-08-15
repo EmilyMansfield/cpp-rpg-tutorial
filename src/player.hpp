@@ -43,7 +43,7 @@ class Player : public Creature
 	void save(EntityManager* mgr);
 
 	// Attempt to load all data from the JSON value
-	void loadSave(std::string id, JsonBox::Value& saveData, EntityManager* mgr);
+	void load(JsonBox::Value& saveData, EntityManager* mgr);
 	void loadArea(JsonBox::Value& areaData, EntityManager* mgr);
 };
 
