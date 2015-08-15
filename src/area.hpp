@@ -41,7 +41,7 @@ class Area : public Entity
 	Area(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
 	// Load the area from the given Json value
-	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
+	void load(JsonBox::Value& v, EntityManager* mgr);
 
 	// Return a Json object representing the area
 	JsonBox::Object getJson();

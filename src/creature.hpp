@@ -73,7 +73,7 @@ class Creature : public Entity
 	virtual JsonBox::Object toJson();
 
 	// Attempt to load all data from the JSON value
-	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
+	virtual void load(JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* CREATURE_HPP */

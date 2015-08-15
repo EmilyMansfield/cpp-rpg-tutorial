@@ -30,7 +30,7 @@ class Door : public Entity
 		int locked, Item* key = nullptr);
 	Door(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
-	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
+	void load(JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* DOOR_HPP */

@@ -14,10 +14,10 @@ Weapon::Weapon(std::string id, std::string name, std::string description, int da
 
 Weapon::Weapon(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item(id, v, mgr)
 {
-	this->load(id, v, mgr);
+	this->load(v, mgr);
 }
 
-void Weapon::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
+void Weapon::load(JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->damage = o["damage"].getInteger();

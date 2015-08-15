@@ -23,7 +23,7 @@ class Entity
 
 	// Pure virtual function stops Entity from being instantiated and forces it
 	// to be implemented in all derived types
-	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr) = 0;
+	virtual void load(JsonBox::Value& v, EntityManager* mgr) = 0;
 };
 
 #endif /* ENTITY_HPP */

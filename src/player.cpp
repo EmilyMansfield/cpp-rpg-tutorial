@@ -114,7 +114,7 @@ void Player::save(EntityManager* mgr)
 void Player::loadSave(std::string id, JsonBox::Value& saveData, EntityManager* mgr)
 {
 	// Load data shared with Creature
-	Creature::load(id, saveData, mgr);
+	Creature::load(saveData, mgr);
 
 	// Load optional variables
 	JsonBox::Object o = saveData.getObject();
@@ -132,7 +132,7 @@ void Player::loadArea(JsonBox::Value& areaData, EntityManager* mgr)
 	for(auto area : o)
 	{
 		std::string key = area.first;
-		mgr->getEntity<Area>(key)->load(key, area.second, mgr);
+		mgr->getEntity<Area>(key)->load(area.second, mgr);
 		this->visitedAreas.insert(key);
 	}
 

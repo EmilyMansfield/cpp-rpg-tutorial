@@ -19,7 +19,7 @@ class Armor : public Item
 	Armor(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
 	// Load the armor from the Json value
-	void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
+	void load(JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* ARMOR_HPP */

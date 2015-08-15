@@ -21,7 +21,7 @@ class Item : public Entity
 	Item(std::string id, JsonBox::Value& v, EntityManager* mgr);
 
 	// Load the item information from the JSON value
-	virtual void load(std::string id, JsonBox::Value& v, EntityManager* mgr);
+	virtual void load(JsonBox::Value& v, EntityManager* mgr);
 };
 
 #endif /* ITEM_HPP */

@@ -13,10 +13,10 @@ Armor::Armor(std::string id, std::string name, std::string description, int defe
 
 Armor::Armor(std::string id, JsonBox::Value& v, EntityManager* mgr) : Item(id, v, mgr)
 {
-	this->load(id, v, mgr);
+	this->load(v, mgr);
 }
 
-void Armor::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
+void Armor::load(JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->defense = o["defense"].getInteger();

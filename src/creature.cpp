@@ -27,7 +27,7 @@ Creature::Creature(std::string id, std::string name, int hp, int strength, int a
 
 Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
-	this->load(id, v, mgr);
+	this->load(v, mgr);
 }
 
 void Creature::equipWeapon(Weapon* weapon)
@@ -138,7 +138,7 @@ JsonBox::Object Creature::toJson()
 	return o;
 }
 
-void Creature::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
+void Creature::load(JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->name = o["name"].getString();

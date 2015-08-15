@@ -17,10 +17,10 @@ Door::Door(std::string id, std::string description, std::pair<std::string, std::
 
 Door::Door(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
 {
-	this->load(id, v, mgr);
+	this->load(v, mgr);
 }
 
-void Door::load(std::string id, JsonBox::Value& v, EntityManager* mgr)
+void Door::load(JsonBox::Value& v, EntityManager* mgr)
 {
 	JsonBox::Object o = v.getObject();
 	this->description = o["description"].getString();
