@@ -3,6 +3,7 @@
 #include "JsonBox.h"
 
 #include "area.hpp"
+#include "door.hpp"
 #include "entity.hpp"
 #include "inventory.hpp"
 #include "creature.hpp"
@@ -53,7 +54,19 @@ void Area::load(JsonBox::Value& v, EntityManager* mgr)
 		this->doors.clear();
 		for(auto door : o["doors"].getArray())
 		{
-			this->doors.push_back(mgr->getEntity<Door>(door.getString()));
+			Door* d = nullptr;
+			// Each door is either an array of the type [id, locked] or
+			// a single id string.
+			if(door.isString())
+			{
+				d = mgr->getEntity<Door>(door.getString());
+			}
+			else
+			{
+				d = mgr->getEntity<Door>(door.getArray()[0].getString());
+				d->locked = door.getArray()[1].getInteger();
+			}
+			this->doors.push_back(d);
 		}
 	}
 
@@ -75,6 +88,17 @@ JsonBox::Object Area::getJson()
 		a.push_back(JsonBox::Value(creature.id));
 	}
 	o["creatures"] = a;
+
+	// Save the doors
+	a.clear();
+	for(auto door : this->doors)
+	{
+		JsonBox::Array d;
+		d.push_back(door->id);
+		d.push_back(door->locked);
+		a.push_back(d);
+	}
+	o["doors"] = a;
 
 	return o;
 }
