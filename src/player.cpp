@@ -51,7 +51,7 @@ bool Player::levelUp()
 	// [hp, strength, agility]
 	unsigned int statIncreases[3] = {0, 0, 0};
 	float statMultipliers[3] = {0, 0, 0};
-	statMultipliers[0] = 1.3;
+	statMultipliers[0] = 13.0;
 	statMultipliers[1] = this->className == "Fighter" ? 8.0 : 6.0;
 	statMultipliers[2] = this->className == "Rogue" ? 8.0 : 6.0;
 

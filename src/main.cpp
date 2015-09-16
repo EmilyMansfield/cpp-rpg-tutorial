@@ -32,7 +32,7 @@ void dialogueMenu(Player& player);
 // Keeps track of items, weapons, creatures etc.
 EntityManager entityManager;
 
-int main(void)
+int main()
 {
 	// Load the entities
 	entityManager.loadJson<Item>("items.json");
