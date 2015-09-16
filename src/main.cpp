@@ -44,7 +44,7 @@ int main()
 
 	// Seed the random number generator with the system time, so the
 	// random numbers produced by rand() will be different each time
-	srand(time(NULL));
+	std::srand(std::time(nullptr));
 
 	Player player = startGame();
 
