@@ -117,14 +117,14 @@ void Battle::run()
 			[](Creature* a) { return a->id == "player"; });
 		end = this->combatants.end();
 
-		this->next_turn();
+		this->nextTurn();
 	}
 	while(player != end && this->combatants.size() > 1);
 
 	return;
 }
 
-void Battle::next_turn()
+void Battle::nextTurn()
 {
 	// Queue of battle events. Fastest combatants will be
 	// at the start of the queue, and so will go first,

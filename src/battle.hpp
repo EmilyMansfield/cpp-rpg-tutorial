@@ -46,6 +46,12 @@ class Battle
 	// Remove a creature from the combatants list, and report that it's dead
 	void kill(Creature* creature);
 
+	// Run the next turn for the enemies and the player.
+	// Computes what the enemies should do and asks for the player's
+	// action, then compiles an event queue of the actions before
+	// proceeding through the queue and running each action.
+	void nextTurn();
+
 	public:
 
 	// Constructor
@@ -54,12 +60,6 @@ class Battle
 	// Run the battle until either the player dies, or all the opposing
 	// combatants do
 	void run();
-
-	// Run the next turn for the enemies and the player.
-	// Computes what the enemies should do and asks for the player's
-	// action, then compiles an event queue of the actions before
-	// proceeding through the queue and running each action.
-	void next_turn();
 };
 
 #endif /* BATTLE_HPP */
