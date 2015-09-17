@@ -69,10 +69,12 @@ int main()
 		{
 			// Create a vector of pointers to the creatures in the area
 			std::vector<Creature*> combatants;
+			std::cout << "You are attacked by ";
 			for(int i = 0; i < areaPtr->creatures.size(); ++i)
 			{
 				Creature* c = &(areaPtr->creatures[i]);
 				combatants.push_back(c);
+				std::cout << c->name << (i == areaPtr->creatures.size()-1 ? "!\n" : ", ");
 			}
 			// Add the player to the combatant vector
 			combatants.push_back(dynamic_cast<Creature*>(&player));
