@@ -77,7 +77,7 @@ int main()
 				std::cout << c->name << (i == areaPtr->creatures.size()-1 ? "!\n" : ", ");
 			}
 			// Add the player to the combatant vector
-			combatants.push_back(dynamic_cast<Creature*>(&player));
+			combatants.push_back(&player);
 			// Run the battle
 			Battle battle(combatants);
 			battle.run();
