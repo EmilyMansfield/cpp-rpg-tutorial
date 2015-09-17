@@ -132,7 +132,7 @@ void Battle::nextTurn()
 	std::queue<BattleEvent> events;
 
 	// Sort the combatants in agility order
-	std::sort(combatants.begin(), combatants.end(), [](Creature* a, Creature* b) { return a->agility < b->agility; });
+	std::sort(combatants.begin(), combatants.end(), [](Creature* a, Creature* b) { return a->agility > b->agility; });
 
 	// Iterate over the combatants and decide what they should do,
 	// before adding the action to the event queue.
@@ -160,10 +160,16 @@ void Battle::nextTurn()
 				case 1:
 				{
 					// Player is attacking, so ask for the target.
-					// Dialogue returns the number of the choice, but we
-					// want the pointer that name corresponds to and so we
-					// must look it up in the combatant vector
-					Creature* target = this->combatants[targetSelection.activate()-1];
+					// Dialogue returns the number of the choice but with
+					// the player removed, so we have to do some fancy
+					// arithmetic to find the actual location of the target
+					// and then convert that to a pointer
+					int position = targetSelection.activate();
+					for(int i = 0; i < position; ++i)
+					{
+						if(this->combatants[i]->id == "player") ++position;
+					}
+					Creature* target = this->combatants[position-1];
 					// Add the attack command to the event queue
 					events.push(BattleEvent(com, target, BattleEventType::ATTACK));
 					break;
