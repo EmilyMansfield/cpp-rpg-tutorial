@@ -154,6 +154,7 @@ void Creature::load(JsonBox::Value& v, EntityManager* mgr)
 	this->strength = o["strength"].getInteger();
 	this->agility = o["agility"].getInteger();
 	this->evasion = o["evasion"].getDouble();
+	this->xp = o["xp"].getInteger();
 
 	if(o.find("inventory") != o.end())
 	{

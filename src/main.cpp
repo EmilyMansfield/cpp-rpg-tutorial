@@ -81,16 +81,28 @@ int main()
 			// Run the battle
 			Battle battle(combatants);
 			battle.run();
-			// Assume all creatures were killed and remove them from the area
-			areaPtr->creatures.clear();
-		}
 
-		// If the player has died then inform them as such and close
-		// the program
-		if(player.hp <= 0)
-		{
-			std::cout << "\t----YOU DIED----\n    Game Over\n";
-			return 0;
+			// If the player is still alive, grant them some experience, assuming
+			// that every creature was killed
+			if(player.hp > 0)
+			{
+				// Or use std::accumulate, but that requires an additional header
+				unsigned int xp = 0;
+				for(auto creature : areaPtr->creatures) xp += creature.xp;
+				std::cout << "You gained " << xp << " experience!\n";
+				player.xp += xp;
+				// Remove the creatures from the area
+				areaPtr->creatures.clear();
+				// Restart the loop to force a save, then the game will carry on
+				// as usual
+				continue;
+			}
+			// Otherwise player is dead, so end the program
+			else
+			{
+				std::cout << "\t----YOU DIED----\n    Game Over\n";
+				return 0;
+			}
 		}
 
 		// Add the search and movement options to the dialogue
