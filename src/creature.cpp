@@ -25,7 +25,8 @@ Creature::Creature(std::string id, std::string name, int hp, int strength, int a
 	this->xp = xp;
 }
 
-Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : Entity(id)
+Creature::Creature(std::string id, JsonBox::Value& v, EntityManager* mgr) : 
+	Creature(id, "", 0, 0, 0, 0, 0)
 {
 	this->load(v, mgr);
 }

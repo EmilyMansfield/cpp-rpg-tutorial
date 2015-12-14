@@ -6,6 +6,6 @@
 		"agility": 3,
 		"evasion": 0.015625,
 		"xp": 1,
-		"weapon": "weapon_rat_claw"
+		"equipped_weapon": "weapon_rat_claw"
 	}
 }
