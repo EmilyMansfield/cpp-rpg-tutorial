@@ -2,7 +2,7 @@
 #define ARMOR_HPP
 
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "item.hpp"
 

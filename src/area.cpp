@@ -1,6 +1,6 @@
 #include <vector>
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "area.hpp"
 #include "door.hpp"

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 // Gameplay is expressed using dialogues, which present a piece of
 // information and some responses, and the ask the user to pick one. If

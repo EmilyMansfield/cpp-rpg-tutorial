@@ -2,7 +2,7 @@
 #define ITEM_HPP
 
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "entity.hpp"
 

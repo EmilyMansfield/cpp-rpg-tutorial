@@ -1,7 +1,7 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-#include "JsonBox.h"
+#include <JsonBox.h>
 #include <string>
 
 class EntityManager;

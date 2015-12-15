@@ -1,6 +1,6 @@
 #include <string>
 #include <cstdlib>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "creature.hpp"
 #include "entity.hpp"

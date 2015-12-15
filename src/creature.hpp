@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cstdlib>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "entity.hpp"
 #include "inventory.hpp"

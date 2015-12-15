@@ -1,6 +1,6 @@
 #include <unordered_set>
 #include <cmath>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "area.hpp"
 #include "player.hpp"

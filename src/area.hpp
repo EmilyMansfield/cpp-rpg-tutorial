@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "entity.hpp"
 #include "inventory.hpp"

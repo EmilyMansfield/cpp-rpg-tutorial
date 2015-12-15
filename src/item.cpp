@@ -1,5 +1,5 @@
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "item.hpp"
 #include "entity.hpp"

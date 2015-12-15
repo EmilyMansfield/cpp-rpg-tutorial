@@ -2,7 +2,7 @@
 #include <string>
 #include <utility>
 #include <iostream>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "inventory.hpp"
 #include "item.hpp"

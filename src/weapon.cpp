@@ -1,5 +1,5 @@
 #include <string>
-#include "JsonBox.h"
+#include <JsonBox.h>
 
 #include "weapon.hpp"
 #include "item.hpp"
