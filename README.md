@@ -14,7 +14,7 @@ The following script will clone the required repositories and build the project'
 You'll need to have `git`, `clang` and `cmake` installed for the script to work
 
 ```bash
-# Clone jukebox & this tutorial
+# Clone jsonbox & this tutorial
 git clone https://github.com/anhero/JsonBox.git
 git clone https://github.com/Piepenguin1995/cpp-rpg-tutorial.git
 
