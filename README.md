@@ -1,6 +1,10 @@
 # cpp-rpg-tutorial
 
-Source code for my [C++ RPG tutorial](http://www.penguinprogrammer.co.uk/rpg-tutorial-2). The master branch is
+*This is an old tutorial written several years ago for a website which no longer exists. There are no guarantees that
+it adheres to the modern best-practices, and it could do with several improvements, but I have migrated it here in
+case people still find it useful.*
+
+Source code for my old C++ RPG tutorial, now contained in the tutorial folder. The master branch is
 (i.e. should be) up to date with the tutorial itself, and the other branches are for development and new additions.
 Code is distributed according to the MIT license, so basically do what you want as long as you preserve the copyright
 notices and give credit, other than that feel free to fork and use!
@@ -10,8 +14,8 @@ be installed separately.
 
 ## Building the code
 
-The following script will clone the required repositories and build the project's source on *nix systems.
-You'll need to have `git`, `clang` and `cmake` installed for the script to work
+The following script will clone the required repositories and build the project's source on \*nix systems.
+You'll need to have `git`, `clang` and `cmake` installed for the script to work.
 
 ```bash
 # Clone jsonbox & this tutorial
