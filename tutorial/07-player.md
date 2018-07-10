@@ -281,25 +281,13 @@ always 13.0, whereas the strength and agility multipliers are either 8.0
 or 6.0, depending on the player's class. Each multiplier `k` is then
 fed into the slightly scary formula
 
-<figure>
-    <img src="/tutorial/07-experience-formula.svg" alt="Stat multiplier formula
-    given by 1 + k * tanh(n / 30), all multiplied by n mod 2 + 1, then
-    floored.">
-    <figcaption>Stat increase per level in terms of the multiplier
-    `k`</figcaption>
-</figure>
+![Stat multiplier formula given by 1 + k * tanh(n / 30), all multiplied
+    by n mod 2 + 1, then floored.](/tutorial/07-experience-formula.svg)
 
 This function and its cumulative form look like
 
-<figure>
-    <img src="/tutorial/increase-experience-graph.svg" alt="Attribute increases">
-    <figcaption>Attribute increases per level</figcaption>
-</figure>
-
-<figure>
-    <img src="/tutorial/cumulative-experience-graph.svg" alt="Total attributes">
-    <figcaption>Total attribute at given level</figcaption>
-</figure>
+![Attribute increases per level](/tutorial/increase-experience-graph.svg)
+![Total attribute at given level](/tutorial/cumulative-experience-graph.svg)
 
 As you can see, the attribute increases spike at every other level but
 still slowly increases as the player's level goes up. This gives us a
